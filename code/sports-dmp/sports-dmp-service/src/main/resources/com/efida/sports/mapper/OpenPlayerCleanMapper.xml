@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.efida.sports.dmp.dao.mapper.OpenPlayerCleanMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.efida.sports.dmp.dao.entity.OpenPlayerClean">
+        <id column="id" property="id" />
+        <result column="player_code" property="playerCode" />
+        <result column="apply_code" property="applyCode" />
+        <result column="player_name" property="playerName" />
+        <result column="sex" property="sex" />
+        <result column="player_cer_type" property="playerCerType" />
+        <result column="player_cer_no" property="playerCerNo" />
+        <result column="player_birth" property="playerBirth" />
+        <result column="age" property="age" />
+        <result column="is_adult" property="isAdult" />
+        <result column="terminal" property="terminal" />
+        <result column="apply_time" property="applyTime" />
+        <result column="gmt_create" property="gmtCreate" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, player_code, apply_code, player_name, sex, player_cer_type, player_cer_no, player_birth, age, is_adult,terminal, apply_time, gmt_create
+    </sql>
+    
+    
+    <select id="getSexStatistics" resultType="java.util.HashMap"> 
+	  SELECT sex,COUNT(1) AS total FROM open_player_clean where sex is not null  GROUP BY sex
+	</select>  
+	
+	 <select id="getAdultStatistics" resultType="java.util.HashMap"> 
+	  SELECT is_adult,COUNT(1) AS total FROM open_player_clean where is_adult is not null GROUP BY is_adult
+	</select>  
+	   <select id="getSexStatistics" resultType="java.util.HashMap"> 
+	  SELECT sex,COUNT(1) AS total FROM open_player_clean where sex is not null  GROUP BY sex
+	</select>  
+	
+	 <select id="getTerminalStatistics" resultType="java.util.HashMap"> 
+	  SELECT terminal,COUNT(1) AS total FROM open_player_clean where terminal is not null GROUP BY terminal
+	</select>  
+	
+	
+	
+
+</mapper>

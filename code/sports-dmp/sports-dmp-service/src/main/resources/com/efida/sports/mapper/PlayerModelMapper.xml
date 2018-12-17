@@ -1,0 +1,216 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.efida.sports.dmp.dao.mapper.PlayerModelMapper">
+	<resultMap id="BaseResultMap"
+		type="com.efida.sports.dmp.dao.entity.PlayerModel">
+		<result column="apply_time" jdbcType="TIMESTAMP"
+			property="applyTime" />
+		<result column="apply_code" jdbcType="VARCHAR"
+			property="applyCode" />
+		<result column="leader_name" jdbcType="VARCHAR"
+			property="leaderName" />
+		<result column="leader_phone" jdbcType="VARCHAR"
+			property="leaderPhone" />
+		<result column="team_name" jdbcType="VARCHAR"
+			property="teamName" />
+		<result column="event_type" jdbcType="VARCHAR"
+			property="eventType" />
+		<result column="registration_num" jdbcType="INTEGER"
+			property="registrationNum" />
+		<result column="apply_amount" jdbcType="BIGINT"
+			property="applyAmount" />
+		<result column="apply_status" jdbcType="VARCHAR"
+			property="applyStatus" />
+		<result column="unit_code" jdbcType="VARCHAR"
+			property="unitCode" />
+		<result column="game_code" jdbcType="VARCHAR"
+			property="gameCode" />
+		<result column="game_name" jdbcType="VARCHAR"
+			property="gameName" />
+		<result column="match_code" jdbcType="VARCHAR"
+			property="matchCode" />
+		<result column="match_name" jdbcType="VARCHAR"
+			property="matchName" />
+		<result column="field_code" jdbcType="VARCHAR"
+			property="fieldCode" />
+		<result column="field_name" jdbcType="VARCHAR"
+			property="fieldName" />
+		<result column="match_group_name" jdbcType="VARCHAR"
+			property="matchGroupName" />
+		<result column="match_group_code" jdbcType="VARCHAR"
+			property="matchGroupCode" />
+		<result column="event_code" jdbcType="VARCHAR"
+			property="eventCode" />
+		<result column="event_name" jdbcType="VARCHAR"
+			property="eventName" />
+		<result column="event_start_time" jdbcType="TIMESTAMP"
+			property="eventStartTime" />
+		<result column="event_end_time" jdbcType="TIMESTAMP"
+			property="eventEndTime" />
+		<result column="expire_time" jdbcType="TIMESTAMP"
+			property="expireTime" />
+		<result column="channel_code" jdbcType="VARCHAR"
+			property="channelCode" />
+		<result column="idempotent_id" jdbcType="VARCHAR"
+			property="idempotentId" />
+		<result column="source" jdbcType="TINYINT" property="source" />
+		<result column="sync" jdbcType="TINYINT" property="sync" />
+		<result column="sync_total" jdbcType="INTEGER"
+			property="syncTotal" />
+		<result column="player_code" jdbcType="VARCHAR"
+			property="playerCode" />
+		<result column="player_phone" jdbcType="VARCHAR"
+			property="playerPhone" />
+		<result column="player_name" jdbcType="VARCHAR"
+			property="playerName" />
+		<result column="sex" jdbcType="VARCHAR" property="sex" />
+		<result column="register_code" jdbcType="VARCHAR"
+			property="registerCode" />
+		<result column="email" jdbcType="VARCHAR" property="email" />
+		<result column="player_height" jdbcType="INTEGER"
+			property="playerHeight" />
+		<result column="player_weight" jdbcType="DOUBLE"
+			property="playerWeight" />
+		<result column="player_birth" jdbcType="DATE"
+			property="playerBirth" />
+		<result column="player_nationality" jdbcType="VARCHAR"
+			property="playerNationality" />
+		<result column="player_work_unit" jdbcType="VARCHAR"
+			property="playerWorkUnit" />
+		<result column="player_address" jdbcType="VARCHAR"
+			property="playerAddress" />
+		<result column="player_cer_type" jdbcType="VARCHAR"
+			property="playerCerType" />
+		<result column="player_cer_no" jdbcType="VARCHAR"
+			property="playerCerNo" />
+		<result column="player_blood_type" jdbcType="VARCHAR"
+			property="playerBloodType" />
+		<result column="player_nation" jdbcType="VARCHAR"
+			property="playerNation" />
+		<result column="player_cloth_size" jdbcType="VARCHAR"
+			property="playerClothSize" />
+		<result column="player_emergency_name" jdbcType="VARCHAR"
+			property="playerEmergencyName" />
+		<result column="player_emergency_phone" jdbcType="VARCHAR"
+			property="playerEmergencyPhone" />
+		<result column="att_url" jdbcType="VARCHAR" property="attUrl" />
+		<result column="img_url" jdbcType="VARCHAR" property="imgUrl" />
+		<result column="player_category" jdbcType="VARCHAR"
+			property="playerCategory" />
+		<result column="open_plat_type" jdbcType="VARCHAR"
+			property="openPlatType" />
+		<result column="open_id" jdbcType="VARCHAR" property="openId" />
+		<result column="ext_prop" jdbcType="VARCHAR" property="extProp" />
+		<result column="gmt_create" jdbcType="TIMESTAMP"
+			property="gmtCreate" />
+		<result column="gmt_modified" jdbcType="TIMESTAMP"
+			property="gmtModified" />
+		<result column="batch_number" jdbcType="VARCHAR"
+			property="batchNumber" />
+	</resultMap>
+
+
+	<sql id="Base_Column_List1">
+		apply_time, t1.apply_code, leader_name, leader_phone,
+		team_name, event_type,
+		registration_num, apply_amount, apply_status,
+		unit_code, game_code,
+		game_name, match_code,
+		match_name, field_code,
+		field_name, match_group_name, match_group_code,
+		event_code,
+		event_name,
+		event_start_time, event_end_time, is_delet, expire_time,
+		channel_code,
+		idempotent_id, source, sync,batch_number, sync_total, sync_status,
+		next_sync_time
+	</sql>
+
+	<sql id="Base_Column_List2">
+		player_code, player_no, player_phone, player_name, sex,
+		t2.register_code,
+		email, player_height, player_weight, player_birth,
+		player_nationality,
+		player_work_unit,
+		player_address, player_cer_type,
+		player_cer_no, player_blood_type, player_nation,
+		player_cloth_size,
+		player_emergency_name, player_emergency_phone,
+		att_url, img_url,
+		player_category, open_plat_type, open_id, ext_prop, t2.is_delete,
+		t2.gmt_create,
+		t2.gmt_modified
+	</sql>
+
+	<!--自定义查询 -->
+	<!-- * uniCode * match * player * playerPhone -->
+	<select id="selectPlayerByLikeParams" parameterType="map"
+		resultMap="BaseResultMap">
+		select
+		t1.id,
+		<include refid="Base_Column_List1" />
+		,
+		<include refid="Base_Column_List2" />
+		, t2.id as playerId
+		from open_apply_info t1, open_player t2
+		<where>
+			t2.apply_code = t1.apply_code
+			<if test="unitCodes != null ">
+				and t1.unit_code in
+				<foreach collection="unitCodes" index="index" item="item"
+					open="(" separator="," close=")">
+					#{item}
+				</foreach>
+			</if>
+			<if test="eventType != null and eventType !='' ">
+				and t1.event_type = #{eventType,jdbcType=VARCHAR}
+			</if>
+			<if test="player != null and player !='' ">
+				and (t2.player_name like
+				CONCAT('%',#{player,jdbcType=VARCHAR},'%') or
+				player_code like
+				CONCAT('%',#{player,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="playerPhone != null and playerPhone !='' ">
+				and (t2.player_phone like
+				CONCAT('%',#{playerPhone,jdbcType=VARCHAR},'%') )
+			</if>
+			<if test="startTime != null and startTime !='' ">
+				and (<![CDATA[t1.apply_time > #{startTime,jdbcType=VARCHAR}]]>)
+			</if>
+			<if test="endTime != null and endTime !='' ">
+				and (<![CDATA[t1.apply_time < #{endTime,jdbcType=VARCHAR}]]>)
+			</if>
+			<if test="match != null and match !='' ">
+				and (t1.match_code like
+				CONCAT('%',#{match,jdbcType=VARCHAR},'%') or
+				match_name like
+				CONCAT('%',#{match,jdbcType=VARCHAR},'%'))
+			</if>
+			<if test="source != null and source==1">
+				and (t1.source=#{source})
+			</if>
+			<if test="source != null and source!=1">
+				and (t1.source!=1)
+			</if>
+			<if test="channelCode != null and channelCode !='' ">
+				and (t1.channel_code=#{channelCode})
+			</if>
+		</where>
+		<if test="sortField != null and sortField !='' ">
+			<if test="sortField =='applyTime' ">
+				order by t1.apply_time
+			</if>
+			<if test="sortField =='gmtCreate' ">
+				order by t1.gmt_create
+			</if>
+		</if>
+		<if test="sortOrder =='desc' ">
+			desc
+		</if>
+		<if test="sortOrder =='asc' ">
+			asc
+		</if>
+	</select>
+</mapper>

@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>成绩记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			table{
+			width:100%!important;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+					<div class="layui-inline">
+						<label class="layui-form-label">承办编号</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="unitCode" placeholder="承办编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">赛事</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="match" placeholder="赛事编号/名称" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员名</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="playerName" placeholder="运动员名称" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员手机</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="playerPhone" placeholder="运动员手机号" autocomplete="off">
+						</div>
+					</div>
+
+				
+
+					<div class="layui-inline">
+						<label class="layui-form-label">状态</label>
+						<div class="layui-input-inline width180">
+							<select name="select-main" id="valid" lay-verify="required">
+								<option value="">全部</option>
+								<option value="1">有效</option>
+								<option value="0">无效</option>
+							</select>
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">开始时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="startTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">结束时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="endTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+						<label class="layui-btn" id="import" style='margin-left: 20px'>成绩导入</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>
+
+	<script type="text/html" id="sexTem">
+		{{# if(d.sex == 'm'){ }}
+		<span style="color: #5FB878;">男</span> {{# } else if(d.sex == 'f'){ }}
+		<span style="color: #FF5722;">女</span> {{# } else if(d.sex == '0'){ }}
+		<span style="color: #1E9FFF;">未知</span> {{# } }}
+	</script>
+
+	<script type="text/html" id="isValidTem">
+		{{# if(d.isValid == '1'){ }}
+		<span style="color: #5cb85c;">有效</span> {{# } else if(d.isValid == '0'){ }}
+		<span style="color: #FF5722;">无效</span> {{# } }}
+	</script>
+
+	<script id="scoreTem" type="text/html">
+		{{d.score}}{{d.scoreUnit}}
+	</script>
+
+	<script id="partTimeTem" type="text/html">
+		{{getDate(d.partTime)}}
+	</script>
+
+	<script id="gmtCreateTem" type="text/html">
+		{{getDate(d.gmtCreate)}}
+	</script>
+
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='660px';
+			height="450px";
+		}else{
+			width='660px';
+			height="650px";
+		}
+		var dataApi = "/dmp/api/score/list";
+		var realUrl="${ctx}";
+		layui.use(['table', 'form', 'layedit', 'laydate','upload'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var upload = layui.upload;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 10;
+			var page = 1;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?channelCode=import&timestamp=" + (new Date()).valueOf(), //数据接口
+				cols: [
+					[{
+						field: 'batchNumber',
+						title: '批次号',
+						width:180
+					},{
+						field: 'scoreCode',
+						title: '成绩编号',
+						width: 180,
+						fixed:'left'
+					}, {
+						field: 'playerName',
+						title: '运动员名',
+						width: 100
+					}, {
+						field: 'playerPhone',
+						title: '运动员电话',
+						width: 130
+					}, {
+						field: 'sex',
+						title: '性别',
+						width: 80,
+						templet: "#sexTem",
+					}, {
+						field: 'score',
+						title: '成绩',
+						templet: "#scoreTem",
+						width: 100
+					}, {
+						field: 'isValid',
+						title: '是否有效',
+						templet: "#isValidTem",
+						width: 80
+					},{
+						field: 'scoreName',
+						title: '科目',
+						width: 130
+					}, {
+						field: 'partTimeStr',
+						title: '参赛时间',
+						width: 130
+
+					},  {
+						field: 'unitCode',
+						title: '承办方',
+						width: 120
+					},{
+						title: '操作',  
+						templet:'#listBar',
+						fixed:"right",
+						align:"center",
+						width:100
+					} ]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [10, 20, 30, 50, 100],
+				limit: 10, //每页默认显示的数量
+				done: function(res, curr, count) {
+					if(res.code==0){
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr;
+						}
+						if(res.unitCode != null) {
+							//设置承办编号
+							$('#unitCode').val(res.unitCode);
+							$('#unitCode').attr("readonly", "readonly");
+							$('#unitCode').attr("disabled", "disabled");
+						}
+					}else{
+						layer.close(indexclose);
+						setTimeout(function() {
+							layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 100)
+					}
+				}
+			});
+			
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+				console.log(data,"data1")
+
+				if(layEvent === 'edit') { //编辑
+					var index = layui.layer.open({
+						title: "详情",
+						type: 2,
+						content: "pscoreInfo.html",
+						id: 'pscoreInfo',
+						area: [width, height],
+						zIndex: layer.zIndex,
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							console.log(data,"data")
+							//if(data) {
+								//编辑
+								body.find('#pscoreId').val(JSON.stringify(data));
+								//body.find(".addBtn").hide();
+								body.find('#btn').click();
+							//}
+							setTimeout(function() {
+								layui.layer.tips('点击此处返回列表', '.layui-layer-setwin .layui-layer-close', {
+									tips: 3
+								});
+							}, 500)
+						}
+					})
+				}
+			});
+			
+			upload.render({
+			    elem: '#import'
+			    ,url: '/dmp/api/template/score/import'
+			    ,accept: 'file' //普通文件
+			    ,exts:'xls|xlsx'
+		    	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		    		indexLayer = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+		    	  }
+			    ,done: function(res){
+			      	//console.log(res)
+			      	top.layer.close(indexLayer);
+			      	if(res.code==0){
+			      		layer.msg('导入成功');
+			      		setTimeout(function(){
+			      			location.reload();
+			      		},1000)
+			      	}else{
+			      		layer.open({
+			 			  title: '导入结果'
+			 			  ,content: res.errorMsg
+			 			}); 
+			      	}
+			    }
+			 	,error: function(){
+			 		$(".inportIcon").hide();
+			 		//layer.msg('导入失败');
+			 		layer.open({
+		 			  title: '导入结果'
+		 			  ,content: '导入失败'
+		 			});     
+		 			  
+			    }
+			 });
+			
+
+			$('#search').on('click', function() {
+				var unitCode = $('#unitCode').val();
+				var match = $('#match').val();
+				var playerName = $('#playerName').val();
+				var playerPhone = $('#playerPhone').val();
+				var valid = $('#valid').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						unitCode: unitCode,
+						match: match,
+						playerName: playerName,
+						playerPhone: playerPhone,
+						valid: valid,
+						channelCode:'import',
+						startTime: startTime,
+						endTime: endTime,
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}
+				});
+			});
+		});
+	</script>
+
+</html>

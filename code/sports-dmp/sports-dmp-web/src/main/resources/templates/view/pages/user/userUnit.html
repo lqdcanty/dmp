@@ -1,0 +1,398 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>用户中心</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+		<style>
+			.layui-table-cell {
+				height: 32px;
+				line-height: 32px
+			}
+			
+			.childrenBody{
+			margin-right:30px!important;
+			}
+			.layui-elem-quote{
+			margin-right:0px!important;
+			}
+			table{
+			width:100%!important;;
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			.layui-form-label{
+				width:60px!important;
+			}
+			.width110{
+			width:110px!important;}
+				.layerLqd{
+				background: #fff;
+			    width: 750px;
+			    left: 50%;
+			    margin-left: -375px;
+			    position: absolute;
+			    top: 70px;
+			    max-height:450px;
+			    overflow-y:scroll;
+			}
+			.width300{
+				width:300px;
+			}
+			.listbox{
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.boxLeft,boxRight{
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.ulList{
+				width:100%;
+				border:1px solid #ccc;
+				padding:10px;
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+				height:300px;
+				overflow-y:scroll;
+				
+			}
+			.ulList li{
+				padding:5px 0;
+				line-height:20px;
+				font-size:14px;
+			}
+			.ulList li i{
+				cursor: pointer;
+			}
+			.btnDiv{
+				margin:0;
+				text-align:center;
+				margin-top:15px;
+			}
+			.ulList.left li{
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<div id="app">
+			<blockquote class="layui-elem-quote quoteBox">
+				<form class="layui-form" onsubmit="return false;">
+					<div class='layui-form-item'>
+	
+						<div class="layui-inline">
+							<label class="layui-form-label">搜索</label>
+							<div class="layui-input-inline width180">
+								<input type="text" class="layui-input searchVal" id="keyword" placeholder="用户名/用户/真实名/手机号" />
+							</div>
+						</div>
+	
+						<!-- <div class="layui-inline">
+							<label class="layui-form-label">角色</label>
+							<div class="layui-input-inline width180">
+								<select name="select-main" id="success" lay-verify="required">
+									<option value="">全部</option>
+								</select>
+							</div>
+						</div> -->
+						<div class="layui-inline">
+							<a class="layui-btn search_btn" data-type="reload" @click="search">搜索</a>
+						</div>
+					</div>
+				</form>
+			</blockquote>
+			<div class="tableBox">
+				<table class="layui-table" style='margin-top:0;'>
+					<thead>
+						<tr>
+					    	<th>ID</th>
+					    	<th>用户名</th>
+					    	<th>真实姓名</th>
+					    	<th>Email</th>
+				   			<th>电话</th>
+		                    <th width="130">操作</th>
+					    </tr>
+					</thead>
+					<tbody>
+						<tr v-for="item in listArr">
+							<td>{{item.id}}</td>
+							<td>{{item.userName}}</td>
+							<td>
+								{{item.realName}}
+							</td>
+							<td>{{item.email}}</td>
+							<td>
+								{{item.phone}}
+							</td>
+							<td>
+								<button class="layui-btn layui-btn-xs" style='background: #15BC9C;' @click='updateInfo(item)'><i class="layui-icon layui-icon-edit"></i></button>
+							</td>
+						</tr>
+					</tbody>
+					
+				</table>
+				
+				<div id="pageWrap"></div>
+				<div class="modle-wrap" v-if="editStatus" >
+					<div class="modle-container">
+						<div class="layerLqd" style="background:#fff;">
+							<div class="tableBox" style="width:100%;"> 
+								<form action="" class="layui-form" onsubmit="return false">
+									<div class="listbox layui-item ">
+										<div class="boxLeft layui-inline width300">
+											<button class="layui-btn" style="width:100%;">所有承办方</button>
+											<ul class="ulList left">
+												<li v-for="list in allUnitArr" @click.stop="unitOne(list)">{{list.unitName}}<!-- <i class="layui-icon" >&#xe61f;</i> --></li>
+												
+											</ul>
+										</div>
+										<div class="boxCenter layui-inline" style="width:105px;">
+											<svg class="icon" style="width:80px;color:#009688;margin-left: 13px;vertical-align: middle;fill: currentColor;overflow: hidden;" viewBox="0 0 1264 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="3098"><path d="M1250.057513 473.992162L794.480863 15.313483a50.054101 50.054101 0 0 0-72.069473 0l-72.00924 73.394612a52.22251 52.22251 0 0 0 0 73.213911l246.716726 247.680464H52.674262C23.551328 409.60247 0 432.491228 0 460.801009v102.397079c0 28.309781 23.551328 51.198539 52.704379 51.198539h841.613636l-246.837193 247.740697a52.342977 52.342977 0 0 0 0 73.304261l72.039356 73.424729c19.78673 20.178248 52.102043 20.178248 72.069474 0l458.467861-461.47954a52.824846 52.824846 0 0 0 0-73.394612" p-id="3099"></path></svg>
+										</div>
+										<div class="boxRight layui-inline width300">
+											<button class="layui-btn" style="width:100%;">关联承办方</button>
+											<ul class="ulList">
+												<li v-for="one in UnitArr">{{one.unitName}}<i class="layui-icon" style="font-size:16px;" @click="cancelOne(one)">&#x1007;</i></li>
+											</ul>
+										</div>
+									</div>
+									
+									 <div class="layui-form-item btnDiv">
+										<div class="layui-inline">
+											<a class="layui-btn btn"  data-type="reload"  @click="saveAddInfo">确定</a>
+										</div>
+										<div class="layui-inline">
+											<a class="layui-btn btn bgWhite"  @click='colseEdit()'>取消</a>
+										</div>
+									</div>
+								</form>
+							</div> 
+						</div>	
+					</div>
+				</div>
+			</div>
+			
+		</div>
+	
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+			
+		</script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script>
+		layui.use(['table','form','layer','laypage','laydate'],function(){
+			var table = layui.table,
+				laypage = layui.laypage,
+				laydate=layui.laydate,
+				form = layui.form,
+				layer =layui.layer,
+				$ = layui.jquery;
+			$(".modle-wrap").attr("style","display:block");
+			var vm = new Vue({
+				el: '#app',
+				data:{
+					listArr:[],
+					pageNumber:1,
+					pageSize:10,
+					editStatus:false,
+					allUnitArr:[],//所有的承办方
+					UnitArr:[],//已经关联的承办方
+					UnitArrCode:[],
+					uid:'',
+					keyword:'',
+				},
+				mounted:function(){
+					form.render();
+					
+				},
+				created: function() {
+					this.getData('');
+					this.getUnitList();
+				},
+				updated:function(){
+					 var that=this;
+					   laypage.render({
+						   elem: 'pageWrap'
+						   ,count: this.allRow //数据总数，从服务端得到
+						   ,curr:this.pageNumber
+						   ,limit:this.pageSize
+						   ,jump: function(obj, first){
+						     //首次不执行
+						     if(!first){
+							     that.pageNumber=obj.curr
+							     that.getData(that.keyword)		     
+						     }
+						   }
+						 });
+					   form.render()
+					form.render();
+				},
+				methods:{
+					getData:function(keyword){
+						var that = this;
+						var index = layer.load(2, {shade: false}); 
+						$.ajax({
+							type: 'get',
+							url: realPath + "/api/user/list",
+							cache: false,
+							data: {
+								pageNumber: that.pageNumber,
+								size: that.pageSize,
+								keyword: keyword ? keyword : '',
+								fresh: Math.random()
+							},
+							success: function(obj) {
+								layer.close(index);
+								if(obj.code==0){
+									that.listArr=obj.data.list;
+									that.allRow=obj.data.allRow;
+								}else{
+									layer.msg(obj.errorMsg)
+								}
+							}
+						})
+					},
+					getUnitList:function(){
+						var that = this;
+						var index = layer.load(2, {shade: false}); 
+						$.ajax({
+							type: 'get',
+							url: realPath + "/dmp/api/unit/list",
+							data: {
+								pageNumber: 1,
+								size: 9999,
+								fresh: Math.random()
+							},
+							success: function(obj) {
+								layer.close(index);
+								if(obj.code==0){
+									that.allUnitArr=obj.data.list;
+									console.log(that.allUnitArr,"that.allUnitArr")
+								}else{
+									layer.msg(obj.errorMsg)
+								}
+							}
+						})
+					},
+					updateInfo:function(item){
+						var that = this;
+						that.editStatus=true;
+						that.uid=item.uuid;
+						var index = layer.load(2, {shade: false}); 
+						$.ajax({
+							type: 'get',
+							url: realPath + "/dmp/api/user/unit",
+							data: {
+								uid:item.uuid,
+								fresh: Math.random()
+							},
+							success: function(obj) {
+								layer.close(index);
+								if(obj.code==0){
+									that.UnitArr=obj.data;
+									console.log(that.UnitArr,"that.UnitArr")
+								}else{
+									layer.msg(obj.errorMsg)
+								}
+							}
+						})
+					},
+					unitOne:function(list){
+						var that = this;
+						if(that.UnitArr.length>0){
+							var a=0;
+							for(var i=0;i<that.UnitArr.length;i++){
+								if(that.UnitArr[i].unitCode==list.unitCode){
+									break;
+								}else{
+									a++;
+								}
+							}
+							if(a==that.UnitArr.length){
+								that.UnitArr.push(list);
+							}else if(a<that.UnitArr.length){
+								layer.msg("已经关联该承办方")
+							}
+						}else{
+							that.UnitArr.push(list);
+						}
+					},
+					cancelOne:function(list){
+						var that = this;
+						console.log(list);
+						for(var i=0;i<that.UnitArr.length;i++){
+							if(that.UnitArr[i].unitCode==list.unitCode){
+								console.log(that.UnitArr[i].unitCode)
+								that.UnitArr.splice(i,1);
+								break;
+							}
+						}
+					},
+					saveAddInfo:function(){
+						var that = this;
+						if(that.UnitArr.length==0){
+							return layer.msg("关联承办方不能为空")
+						}
+						console.log(that.UnitArr,"提交");
+						var data= {
+							unitCodes:that.UnitArr,
+							uid: that.uid,
+							fresh: Math.random()
+						}
+						console.log(data);
+						var index=layer.msg('数据提交中', {icon: 16,shade: 0.1,time:0});
+						 $.ajax({
+							type: 'post',
+							contentType: "application/json",
+							url: realPath + "/dmp/api/user/up?uid="+that.uid,
+							data:JSON.stringify(that.UnitArr),
+							success: function(obj) {
+								layer.close(index);
+								if(obj.code==0){
+									that.editStatus=false;
+									layer.msg("编辑成功");
+								}else{
+									layer.msg(obj.errorMsg);
+								}
+							}
+						})
+					},
+					colseEdit:function(){
+						var that = this;
+						that.editStatus=false;
+					},
+					search:function(){
+						var that = this;
+						that.keyword=$("#keyword").val();
+						console.log(that.keyword,"关键字");
+						that.pageNumber=1;
+						that.getData(that.keyword);
+					}
+				}//方法结束
+			})//vue结束
+		})
+		</script> 
+	</body>
+
+</html>

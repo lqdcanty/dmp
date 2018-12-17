@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>调用日志记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+.layui-elem-quote.quoteBox{
+				border-left:none!important;
+			}
+			.width182{
+				width:210px!important;
+			}
+			.width182 input{
+				width:210px!important;
+			}	
+			table{
+				width:100%!important;
+			}	
+			
+			</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item mb0'>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">开始时间</label>
+						<div class="layui-inline width182">
+							<input class="layui-input" id="startTime" placeholder="请选择开始时间" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">结束时间</label>
+						<div class="layui-inline width182">
+							<input class="layui-input" id="endTime" placeholder="请选择结束时间" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="issue" style='margin-left: 20px'>点击发布</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="importCurrPage" style='margin-left: 20px'>导出当前页</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="importAllPage" style='margin-left: 20px'>导出所有页</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<table class="layui-hide" id="tableDemo" lay-filter="tableDemo"></table>
+		<div id='pageWrap'></div>
+	</body>
+	<script type="text/html" id="btnBar">
+		
+				<span class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+    				<i class="layui-icon">&#xe647;</i>详情
+  				</span>
+		</script>
+	<script type="text/html" id="matchStatusT">
+		{{# if(d.matchStatus == 0){ }}
+		<span style="color: #5cb85c;">未开始</span>
+        {{# } else if(d.matchStatus == 1){ }}
+		<span style="color: #FF5722;">进行中</span> 
+        {{# } else if(d.matchStatus == 2){ }}
+		<span style="color: #FF5722;">已结束</span> 
+        {{# } else { }}
+        {{# } }}
+	</script>
+
+	<script id="endDate" type="text/html">
+		{{getDate(d.gmtCreate)}}
+	</script>
+
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='900px';
+			height="450px";
+		}else{
+			width='900px';
+			height="750px";
+		}
+		
+		layui.use(['table', 'form', 'layedit', 'laydate','laypage'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var laypage=layui.laypage;
+			var limit = 1000;
+			var page = 1;
+			var size=10;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({							
+				elem: '#endTime'
+			});
+			//展示已知数据
+				var tableIns=table.render({
+					elem: '#tableDemo',
+					id: 'tableDemo',
+				
+					cols: [
+						[
+						{
+							field: 'matchCode',
+							title: '赛事编号',
+							width: 300,
+							fixed: "left"
+						},
+						{
+							field: 'matchName',
+							title: '赛事名称',
+							width: 300
+						},
+						{
+							field: 'unitCode',
+							title: '承办方编号',
+							width:170
+						},
+	
+						 {
+								field: 'gameCode',
+								title: '项目编号',
+								width: 300
+							},
+							{
+								field: 'gameName',
+								title: '项目名称',
+								width: 180
+							},
+							 {
+								field: 'gmtCreate',
+								title: '赛事创建时间',
+								templet: '#endDate',
+								align:'center',
+								width: 220
+							}, {
+								title: '操作',
+								templet:'#btnBar',
+								fixed: "right",
+								align:'center',
+								width: 100
+							}
+							
+						]
+					],
+				});
+			
+			getData(page, size);
+
+			table.on('tool(tableDemo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data.matchCode;
+				console.log(data,"abc");
+				if(layEvent === 'detail') { //编辑
+					var index = layui.layer.open({
+						title: "比赛信息详情",
+						type: 2,
+						content: "seeMathInfo.html",
+						id: 'calllogInfo',
+						area: [width, height],
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							body.find('#addIframIndex').val(data);
+							body.find('#btn').click()
+						}
+					})
+				}
+				  layui.layer.full(index); 
+				//改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+				$(window).on("resize", function() {
+					layui.layer.full(index);
+				})
+			})
+			
+			//获取列表数据
+				function getData(page, size) {
+					var unitCode = $('#unitCode').val();
+					var keyword = $('#keyword').val();
+					
+					var index = parent.layer.load(2, {
+						shade: false
+					}); //0代表加载的风格，支持0-2
+				
+					$.ajax({
+						type: 'get',
+						url: "/dmp/api/match/list",
+						cache: false,
+						data: {
+							unitCode: unitCode,
+							keyword: keyword,
+							page: page,
+							size: size,
+							fresh: Math.random()
+						},
+						success: function(obj) {
+							parent.layer.close(index);
+							if(obj.code != 0) {
+								layer.alert(obj.errorMsg, {
+									icon: 2
+								});
+								return;
+							}
+							tableIns.reload({
+								data: obj.data.list
+							});
+							laypage.render({
+								elem: 'pageWrap',
+								count: obj.data.allRow,
+								curr: obj.data.currentPage,
+								layout: ['count', 'prev', 'page', 'next', 'skip'],
+								jump: function(res, first) {
+									console.log(first);
+									console.log(res);
+									if(!first) {
+										console.log(res.curr);
+										getData(res.curr, size)
+									}
+								}
+							});
+						}
+					})
+				}
+
+			$('#search').on('click', function() {
+				getData(1, 10);
+			});
+		});
+	</script>
+
+</html>

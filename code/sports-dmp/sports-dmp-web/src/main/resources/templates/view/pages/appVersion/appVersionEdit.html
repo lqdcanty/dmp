@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style type="text/css">
+			
+			.layui-form-item .layui-input-inline{
+				width:190px;
+			}
+			.layui-form{
+				padding:0 10px;
+			}
+			.layui-form-item .online_div:nth-child(2n) .layui-input-inline{
+				margin-right:0;
+			}
+			.layui-form-item .online_div{
+				margin-bottom: 15px;
+			    display: block;
+			    float: left;
+			    height: 38px;
+			}
+			.remark{
+			  min-height:36px!important;
+			}
+            .layui-form-pane .layui-form-label {
+                width: 120px;
+                padding: 8px 15px;
+                height: 38px;
+                line-height: 20px;
+                border-width: 1px;
+                border-style: solid;
+                border-radius: 2px 0 0 2px;
+                text-align: center;
+                background-color: #FBFBFB;
+                overflow: hidden;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                box-sizing: border-box;
+            }
+
+		</style>
+	</head>
+
+	<body>
+
+			<form class="layui-form layui-form-pane">
+				<input type='hidden' id='appVersionID'>
+                <div class="layui-form-item" >
+                </div>
+				    <div class="layui-form-item" >
+						<label class="layui-form-label" >版本号</label>
+						<div class="layui-input-inline">
+							<input type="text" class="layui-input" lay-verify="required" id="appVersion" name="appVersion" placeholder="版本号" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">平台</label>
+						<div class="layui-input-block">
+							<input type="radio" name="appType" value="ios" title="ios" lay-filter="radiotype" checked>
+							<input type="radio" name="appType" value="android" title="android" lay-filter="radiotype">
+						</div>
+					</div>
+					<div class="layui-form-item ">
+						<label class="layui-form-label">附件下载地址</label>
+						<div class="layui-input-inline">
+			
+							<input type="text" class="layui-input" id="appdownUrl" name="appdownUrl" autocomplete="off" lay-verify="appdownUrlVerify"/>
+						</div>
+						<button type="button" class="layui-btn" id="appdownEvem">
+							<i class="layui-icon">&#xe67c;</i>上传附件
+						</button>
+					</div>
+
+					<div class="layui-form-item ">
+						<label class="layui-form-label">应用商店地址</label>
+						<div class="layui-input-inline">
+						
+							<input type="text" class="layui-input" id="downUrl" name="downUrl" lay-verify="downUrlVerify" placeholder="请输入应用商店地址" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-form-item layui-form-text">
+						<label class="layui-form-label">更新内容</label>
+						<div class="layui-input-block">
+							<textarea placeholder="请输入更新内容" class="layui-textarea" id="appDesc" name="appDesc" lay-verify="required"></textarea>
+						</div>
+					</div>
+					<div class="layui-form-item">
+						<label class="layui-form-label">是否强制升级</label>
+						<div class="layui-input-block">
+							<input type="radio" name="isForcedUpgrade" value="0" title="否" checked>
+							<input type="radio" name="isForcedUpgrade" value="1" title="是">
+						</div>
+					</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">是否通过审核</label>
+					<div class="layui-input-block">
+						<input type="radio" name="status" value="0" title="否" checked>
+						<input type="radio" name="status" value="1" title="是">
+					</div>
+				</div>
+                    <div align="center">
+                        <div class="layui-form-item">
+                            <button class="layui-btn layui-btn-sm addBtn" lay-submit lay-filter="addBtn">立即添加</button>
+                            <button class="layui-btn layui-btn-sm updateBtn" lay-submit lay-filter="updateBtn">确认修改</button>
+                        </div>
+                    </div>
+			</form>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			layui.use(['layer', 'form', 'upload'], function () {
+				var layer = layui.layer, form = layui.form , upload = layui.upload;
+
+				function GetQueryString(name) {
+					var reg = new RegExp("(^|&)"+ name +"=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					if(r!=null) return  unescape(r[2]);	return null;
+				}
+
+				layer.ready(function () {
+					var appVersionID = GetQueryString('appVersionID');
+					console.log("==================" + appVersionID);
+					if ('undefined' != appVersionID && null != appVersionID) {
+						getAppVersion(appVersionID);
+					}
+					form.render();
+				});
+
+				var uploadInst = upload.render({
+					elem: '#appdownEvem' //绑定元素
+					,url: realPath + '/dmpfile/pc/upload/' //上传接口
+                    ,accept: 'file'
+					,done: function(res){
+						//上传完毕回调
+						console.log("上传完毕回调");
+						console.log("上传完毕回调code"+res.resultCode);
+                        console.log("上传完毕回调resultMsg"+res.resultMsg);
+                        console.log("上传完毕回调result"+res.result);
+                        console.log("上传完毕回调url"+res.result.url);
+						if(res.resultCode == 200){
+							$('#appdownUrl').val(res.result.url);
+						}
+					}
+					,error: function(){
+						//请求异常回调
+						console.log("请求异常回调")
+					}
+				});
+
+				form.on('submit(addBtn)', function(data) {
+					var appVersion = $('#appVersion').val();
+					var appType =$('[name=appType]:checked').val();
+					var downUrl = $('#downUrl').val();
+					var appDesc = $('#appDesc').val();
+					var appdownUrl = $('#appdownUrl').val();
+					var isForcedUpgrade = $('[name=isForcedUpgrade]:checked').val();
+                    var status = $('[name=status]:checked').val();
+					$.ajax({
+						type: 'POST',
+						url: realPath + "/dmp/api/appVersion/save",
+						cache: false,
+						data: {
+							appVersion:appVersion,
+							appType:appType,
+							downUrl:downUrl,
+							appDesc:appDesc,
+							appdownUrl:appdownUrl,
+							isForcedUpgrade:isForcedUpgrade,
+                            status:status
+						},
+						success: function(obj) {
+							if(obj.code == 0) {
+								layer.msg("添加成功");
+								//刷新父页面
+								window.setTimeout(function() {
+									layer.closeAll("iframe");
+									parent.location.reload();
+								}, 800);
+							} else {
+								layer.alert(obj.errorMsg);
+							}
+						},
+						err: function() {
+							layer.alert("网络异常,请稍后再试");
+						}
+
+					})
+					return false;
+				});
+
+				form.on('submit(updateBtn)', function(data) {
+					var appVersionID = GetQueryString('appVersionID');
+					var appVersion = $('#appVersion').val();
+					var appType =$('[name=appType]:checked').val();
+					var downUrl = $('#downUrl').val();
+					var appdownUrl = $('#appdownUrl').val();
+					var appDesc = $('#appDesc').val();
+					var isForcedUpgrade = $('[name=isForcedUpgrade]:checked').val();
+                    var status = $('[name=status]:checked').val();
+					$.ajax({
+						type: 'POST',
+						url: realPath + "/dmp/api/appVersion/save",
+						cache: false,
+						data: {
+							id:appVersionID,
+							appVersion:appVersion,
+							appType:appType,
+							downUrl:downUrl,
+							appdownUrl:appdownUrl,
+							appDesc:appDesc,
+							isForcedUpgrade:isForcedUpgrade,
+                            status:status
+						},
+						success: function(obj) {
+							if(obj.code == 0) {
+								layer.msg('修改成功');
+								window.setTimeout(function() {
+									//刷新父页面
+									layer.closeAll("iframe");
+									parent.location.reload();
+								}, 800);
+							} else {
+								layer.alert(obj.errorMsg);
+							}
+						},
+						err: function() {
+							layer.alert("网络异常,请稍后再试");
+						}
+					});
+					return false;
+				});
+
+				form.verify({
+					appdownUrlVerify: function(value, item){
+						var appType =$('[name=appType]:checked').val();
+						if(appType == "android"){
+							if(value.length == 0){
+								return 'android客户端,附件下载地址不能为空！';
+							}
+						}
+					}
+					,downUrlVerify: function(value, item){
+						var appType =$('[name=appType]:checked').val();
+						if(appType == "ios"){
+							if(value.length == 0){
+								return 'ios客户端,应用商店地址不能为空！';
+							}
+						}
+					}
+				});
+				//初始化
+				function getAppVersion(id){
+					var index = parent.layer.load(1, {shade: false}); //0代表加载的风格，支持0-2
+					$.ajax({
+						type:'get',
+						url:realPath+ "/dmp/api/appVersion/get",
+						data: {appVersionID:id},
+						success: function(obj){
+							if(obj.code == 0){
+								$("#appVersion").val(obj.data.appVersion);
+								$("#downUrl").val(obj.data.downUrl);
+								$("#appdownUrl").val(obj.data.appdownUrl);
+								$("#appDesc").val(obj.data.appDesc);
+								$('[name=appType]').each(function(i,item){
+									if($(item).val()==obj.data.appType){
+										$(item).prop('checked',true);
+									}
+								});
+								$('[name=isForcedUpgrade]').each(function(i,item){
+									if($(item).val()==obj.data.isForcedUpgrade){
+										$(item).prop('checked',true);
+									}
+								});
+                                $('[name=status]').each(function(i,item){
+                                    if($(item).val()==obj.data.status){
+                                        $(item).prop('checked',true);
+                                    }
+                                });
+							}else{
+								layer.alert("网络异常,请稍后再试");
+							}
+							parent.layer.close(index);
+							form.render();
+						}
+					});
+				}
+			});
+		</script>
+	</body>
+
+</html>

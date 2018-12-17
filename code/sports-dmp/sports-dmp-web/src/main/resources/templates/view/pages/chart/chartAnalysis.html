@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>图表分析</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" /> 
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+		*{box-sizing: border-box;-webkit-box-sizing:-webkit-border-box;-moz-box-sizing:-moz-border-box;-ms-box-sizing:-ms-border-box;}
+		body {font-family:'Helvetica Neue',Helvetica,sans-serif;font-size:14px;-webkit-overflow-scrolling:touch}
+		.flex{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
+		.flex-v{-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}
+		.flex-1{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
+	/* 每一子元素的边缘延边的中间开始===垂直居中,取值有start=baseline end center */
+		.flex-align-center{-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;}
+	/* 每一子元素的边缘延边的中间开始===水平居中,取值有start end center justify */
+		.flex-pack-center{-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}
+	/* 在每个子元素之间分割多余的空间（首个子元素前和最后一个子元素后没有多余的空间 */
+		.flex-pack-justify{-webkit-box-pack:justify;-webkit-justify-content:space-between;-ms-flex-pack:justify;justify-content:space-between;}
+		.flex-inline{display: inline-block;vertical-align: middle;}
+		.layui-form-item .layui-input-inline {margin-right: 0}
+		.layui-form-label {padding: 9px 10px 0 0;}
+		.layui-form-item {margin-bottom: 10px}
+		.layui-elem-quote.quoteBox{border-left:none!important;}
+		.width182{width:180px!important;}
+		.width182 input{width:180px!important;}
+		.bg-gray{background:#f2f2f2!important;box-sizing: border-box; -webkit-box-sizing:-webkit-border-box;-moz-box-sizing:-moz-border-box;-ms-box-sizing:-ms-border-box;padding:10px;}	
+		.title{font-size:14px;color:#1AA094;line-height:28px;margin-bottom:10px;}	
+		.kuai span,.kuai b{display:block;line-height:24px;font-size:14px;padding:0 10px;color:#666;}
+		.ml20{margin-left:20px;}
+		.flex-input{width:200px;line-height:38px;height:38px;border:1px solid #ccc;border-radius: 4px;outline:none;padding:0 10px;box-sizing: border-box;-webkit-box-sizing:-webkit-border-box;-moz-box-sizing:-moz-border-box;-ms-box-sizing:-ms-border-box;}
+		.mt10{margin-top:10px;}
+		.mt30{margin-top:30px;}
+		.mt20{margin-top:20px;}
+		.mt28{margin-top:28px;}
+		.pad30{padding:0 30px;}
+		.tu_title{font-size:12px;color:#666;line-height:24px;}
+		.ml30{margin-left:30px;}
+		.matchCode{position:relative;height:38px;}
+		.matchCode input{width:100%;display:block;height:38px;border:1px solid #ccc;border-radius:4px;background:#fff;padding:0 10px;box-sizing:border-box;-webkit-box-sizing:-webkit-border-box;-moz-box-sizing:-moz-border-box;-ms-box-sizing:-ms-border-box;}
+		.selectBox{width:100%;height:250px;overflow-y:scroll;position:absolute;left:0;top:40px;background:#fff;z-index:100;box-shadow: 0px 3px 3px rgba(0,0,0,0.2);padding:5px 0;border-radius: 4px;display:none;}
+		.selectBox span{line-height:36px;display:block;padding:0 8px;cursor: pointer;}
+		.contentRight .lineBox .lineBoxRight .labelUl.hide{display: none;}
+		.labelUl li{line-height: 22px;padding: 5px 0;font-size: 14px;color: rgb(68,68,68);padding-left:10px;}
+		.labelUl li span,
+		.labelUl li input,
+		.labelUl li b{display: inline-block;vertical-align: middle;font-size: 14px;color: rgb(68,68,68);margin-right:0!important;}
+		.labelUl li b{width: 16px;height: 16px;margin-right: 10px;position: relative;margin-botton:5px;border:1px solid #ccc;}
+		.labelUl li b.active{background:#009688;}
+		.labelUl li input{width: 16px;height: 16px;position: absolute;left: 0;top:0;position: 10;}
+		.labelUl li span{font-size: 14px;line-height: 20px;color: rgb(68,68,68);width:200px;}
+		.labelinput input{width: 16px;height: 16px; display:inline-block;vertical-align: middle;	}
+		.labelinput .btn{display: inline-block;height: 28px;line-height: 28px;background-color: #009688;color: #fff;white-space: nowrap;padding:0 8px;text-align: center;font-size: 14px;border: none;border-radius: 2px;cursor: pointer;margin-left:95px;}
+		.pad10{padding:0 10px;}
+		.color1{color:#009688!important;cursor: pointer;}
+		.color999{color:#999999 !important;cursor: pointer;}
+		canvas{width:100%!important;}
+		[v-cloak] {display: none;} 
+		.left-num .flex-inline{width:32%}
+		.right-num .flex-inline{width:32%;}
+		.matchCode .layui-anim-upbit{width:100%}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<div id="unitApp" v-cloak>
+			<h1 class="title">赛事统计</h1>
+			<div class="flex flex-pack-justify"><!-- 第一横块开始 -->
+				<div class="bg-gray left-num" style="text-align:center;padding:40px 0 20px;width:49%">
+					<div class="flex-inline">
+						<div class="kuai">
+							<span>总报名人次</span>
+							<b>{{getMathData.enroll}}</b>
+						</div>
+					</div>
+					<div class="flex-inline">
+						<div class="kuai ">
+							<span>总完赛人次</span>
+							<b>{{getMathData.finish}}</b>
+						</div>
+					</div>
+					<div class="flex-inline ">
+						<div class="kuai">
+							<span>总完赛比率</span>
+							<b>{{getMathData.percent}}</b>
+						</div>
+					</div>
+					<div class="flex-inline mt28">
+						<div class="kuai">
+							<span>总报名人数</span>
+							<b>{{getMathData.applyPeople}}</b>
+						</div>
+					</div>
+					<div class="flex-inline mt28">
+						<div class="kuai ">
+							<span>总完赛人数</span>
+							<b>{{getMathData.finishPepole}}</b>
+						</div>
+					</div>
+					<div class="flex-inline mt28">
+						<div class="kuai">
+							<span>总完赛比率</span>
+							<b>{{getMathData.peoplePercent}}</b>
+						</div>
+					</div>
+				</div>
+				<div class="bg-gray" style="width:49%">
+					<div class="">
+				        <input type="text" class="flex-input" id="matchTime" placeholder="开始 到 结束" readonly v-model="matchTimeNull?'':dataStart">
+				         <a @click="exportFun('totalMain')" style='float:right;margin-top: 10px;'><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+				     </div>
+				     <div class="mt10 right-num" style="text-align:center;">
+			     		<div class="flex-inline">
+							<div class="kuai ">
+								<span>报名人数</span>
+								<b>{{getMathTimeData.enrollPeople}}</b>
+							</div>
+						</div>
+						<div class="flex-inline">
+							<div class="kuai ">
+								<span>完赛人数</span>
+								<b>{{getMathTimeData.finishPeople}}</b>
+							</div>
+						</div>
+						<div class="flex-inline ">
+							<div class="kuai ">
+								<span>完赛比率</span>
+								<b>{{getMathTimeData.percentPeople}}</b>
+							</div>
+						</div>
+				     	<div class="flex-inline mt10">
+							<div class="kuai ">
+								<span>报名人次</span>
+								<b>{{getMathTimeData.enroll}}</b>
+							</div>
+						</div>
+						<div class="flex-inline mt10">
+							<div class="kuai ">
+								<span>完赛人次</span>
+								<b>{{getMathTimeData.finish}}</b>
+							</div>
+						</div>
+						<div class="flex-inline mt10">
+							<div class="kuai ">
+								<span>完赛比率</span>
+								<b>{{getMathTimeData.percent}}</b>
+							</div>
+						</div>
+				     </div>
+				</div>
+			</div><!-- 第一横块结束 -->
+			<div class="flex  flex-pack-justify mt20">
+				<div class="bg-gray" style="width:33%">
+					<h1 class="tu_title" style='display:inline-block'>项目方报名人次总占比</h1>
+					<div class="chart">
+						 <div id="main" style="width: 100%;height:350px;min-width:300px;"></div>
+					</div>
+				</div>
+				<div class="bg-gray" style="width:66%">
+					<div class="layui-form">
+						<div class="layui-form-item">
+						    <label class="tu_title layui-inline">项目方完赛人次比</label>
+						    <div class="layui-inline matchCode"  style="width:250px">
+								
+								<input type="text" placeholder="选择项目方" readonly id="unitcodeOne"  @click="optionSelectFun" v-model=getAllStringName>	
+								<div class="layui-form-item selectBox" id="selectBox0" v-if="optionSelectShow" @mouseleave="leaveSelect">
+									
+									<div class="layui-form-item labelinput pad10">
+										<input type="checkbox" name="zzz" title="全选" :checked="selectedboolea?true:false" lay-skin="primary" id="sourceCheck" lay-filter="sourceCheck"><button class="btn" @click="okOne">确定</button>
+									</div>
+									 <ul id="labelId" class="labelUl">
+										<li v-for="unit in getAllUnit" ><b @click="unitSelectFun(unit)" :class="{active: unit.top}"><input type="hidden" :value="unit.unitName"  /></b> <span>{{unit.unitName}}</span></li>
+									</ul>
+								</div>
+								
+							</div>
+							 <a @click="exportFun('percent')" style='float:right;margin-top: 10px;'><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+						  </div>
+					</div>
+					<div class="chart">
+						 <div id="bar" style="width: 100%;height:350px;min-width:660px"></div>
+					</div>
+				</div>
+			</div><!-- 第二块结束 -->
+			<div>
+				<h1 class="title mt20">每日新增报名人次</h1>
+				<div class="bg-gray" style="width:100%;">
+					<div class="layui-form">
+						<div class="layui-inline">
+							 <input type="text" class="flex-input" id="unitTime" placeholder="请输入时间" readonly>
+						</div>
+					    <div class="layui-inline matchCode"  style="width:250px">
+							<select  lay-verify="matchSel" id='matchSel' lay-search>
+							  <option value="">请选择一个赛事</option>
+							  
+							</select>    
+						</div>
+					</div>
+					
+					<div class="chart">
+						 <div id="barUnit" style="width: 100%;height:300px;min-width:1000px;"></div>
+					</div>
+				</div>
+				<div class="bootom bg-gray" style="border-top:2px solid #ccc;">
+					<div class="layui-item">
+						<div class="layui-inline">
+						    <a @click="openDtailOne"><span class="color999">数据明细</span><i class="layui-icon" v-show="!openDtailOneShow">&#xe61a;</i><i class="layui-icon"  v-show="openDtailOneShow">&#xe619;</i></a>
+					     </div>
+					     <div class="layui-inline ml30">
+						      <a @click="exportFun('exportUnit')"><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+					      </div>
+					</div>
+					<div  v-show="openDtailOneShow">
+						<table class="layui-table" style='text-align:center'>
+							<thead>
+								<tr>
+									<th style='text-align:center'>日期</th>
+									<th style='text-align:center'>单个赛事当日新增报名人次</th>
+									<th style='text-align:center'>赛事系统当日新增报名人次</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="unit in getDiagramChartDataDetail">
+									<td>{{unit.date}}</td>
+									<td>{{unit.enrollDay}}</td>
+									<td>{{unit.enrollTotalDay}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="pageOne"></div>
+					</div>
+				</div>
+			</div><!-- 第三块结束 -->
+			<div class="">
+				<h1 class="title mt20">赛事报名渠道分析</h1>
+				<div class="bg-gray" style="width:100%;">
+					<div class="layui-form">
+					     <div class="layui-inline matchCode"  style="width:250px">
+							<input type="text" placeholder="选择赛事" readonly id="unitcodeTree"  @click="optionSelectThreeFun" v-model="getAllStringName3">
+							<div class="layui-form-item selectBox" id="selectBox0" v-if="optionSelectThreeShow" @mouseleave="leaveSelect">
+								<div class="layui-form-item labelinput pad10">
+									<input type="checkbox" name="" lay-skin="primary" :checked="selectedboolea3?true:false" title="全选"  lay-filter="sourceCheck3"><button class="btn" @click="okThree">确定</button>	
+								</div>
+								 <ul id="labelId" class="labelUl">
+									<li v-for="unit in getAllUnit3" ><b @click="unitSelectFun3(unit)" :class="{active: unit.top}"><input type="hidden" :value="unit.matchName"  /></b> <span>{{unit.matchName}}</span></li>
+								</ul>
+							</div>
+						</div> 
+					    <div class="layui-inline ml30 ">
+						      <a @click="exportFun('channelUnit')"><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+					    </div>
+					</div>
+					
+					<div>
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th>赛事名称</th>
+									<th>项目方</th>
+									<th>总报名人次</th>
+									<th>项目方数据</th>
+									<th>官方数据</th>
+									<th>项目方数据占比</th>
+									<th>官方数据占比</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="unit in getChannelData">
+									<td>{{unit.matchName}}</td>
+									<td>{{unit.unitName}}</td>
+									<td>{{unit.enrollTotalCount}}</td>
+									<td>{{unit.organizerCount}}</td>
+									<td>{{unit.officialCount}}</td>
+									<td>{{unit.organizerPercent}}</td>
+									<td>{{unit.officialPercent}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="pageTwo"></div>
+					</div>
+				</div>
+				
+			</div><!-- 第四块结束 -->
+			<div class="">
+				<h1 class="title mt20">官方平台完赛率分析</h1>
+				
+				<div class="bootom bg-gray" >
+					<div class="layui-form">
+					     <div class="layui-inline matchCode"  style="width:250px">
+							<input type="text"  placeholder="选择赛事" readonly id="unitcodeFour"  @click="optionSelectFourFun" v-model="getAllStringName4">
+							<div class="layui-form-item selectBox" id="selectBox0" v-if="optionSelectFourShow"  @mouseleave="leaveSelect">
+								<div class="layui-form-item labelinput pad10">
+									<input type="checkbox" name=""  lay-skin="primary" title="全选" :checked="selectedboolea4?true:false" lay-filter="sourceCheck4"><button class="btn" @click="okFour">确定</button>	
+								</div>
+								 <ul id="labelId" class="labelUl">
+									<li v-for="unit in getAllUnit4" ><b @click="unitSelectFun4(unit)" :class="{active: unit.top}"><input type="hidden" :value="unit.matchName"  /></b> <span>{{unit.matchName}}</span></li>
+								</ul>
+							</div>
+						</div> 
+					</div>
+					<div class="chart">
+						 <div id="bargf"  style="width: 100%;height:300px;min-width:1000px;"></div>
+					</div>
+				</div>
+				<div class="bootom bg-gray" style="border-top:2px solid #ccc;padding-bottom:20px;">
+					<div class="layui-item">
+						<div class="layui-inline">
+						    <a @click="openDtailTwo"><span class="color999">数据明细</span><i class="layui-icon" v-show="!openDtailTwoShow">&#xe61a;</i><i class="layui-icon"  v-show="openDtailTwoShow">&#xe619;</i></a>
+					     </div>
+					     <div class="layui-inline ml30">
+						      <a @click="exportFun('officeUnit')"><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+					      </div>
+					</div>
+					<div v-show="openDtailTwoShow">
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th>赛事名称</th>
+									<th>报名人次</th>
+									<th>完赛人次</th>
+									<th>完赛率</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="unit in getOfficeDataDetail">
+									<td>{{unit.matchName}}</td>
+									<td>{{unit.enrollCount}}</td>
+									<td>{{unit.finishCount}}</td>
+									<td>{{unit.percent}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="pageThree"></div>
+					</div>
+				</div>
+			</div><!-- 第五块结束 -->
+			<div class="">
+				<h1 class="title mt20">奖章购买数据统计</h1>
+				<div class="bg-gray" style="width:100%;">
+					<div class="layui-form">
+					   <div class="layui-inline">
+							 <input type="text" class="flex-input" id="goods" placeholder="请选择时间" readonly v-model="dataStart3">
+						</div>
+					    <div class="layui-inline ml30 ">
+						      <a @click="exportFun('goods')"><span class="color999">导出报表</span><i class="layui-icon">&#xe621;</i></a>
+					    </div>
+					</div>
+					
+					<div>
+						<table class="layui-table">
+							<thead>
+								<tr>
+									<th>日期</th>
+									<th>完赛人数</th>
+									<th>电子奖章领取人数</th>
+									<th>实物奖章领取人数</th>
+									<th>实物奖章在线订购数</th>
+								</tr>
+							</thead>
+							<tbody>
+								<tr v-for="goods in goodsList">
+									<td>{{goods.dateStr}}</td>
+									<td>{{goods.finishCount}}</td>
+									<td>{{goods.medalReceive}}</td>
+									<td>{{goods.entityReceive}}</td>
+									<td>{{goods.onlineOrder}}</td>
+								</tr>
+							</tbody>
+						</table>
+						<div id="pageFour"></div>
+					</div>
+				</div>
+				
+			</div><!-- 第四块结束 -->
+		</div>
+	</body>
+	
+	<!-- <script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script> -->
+	<script type="text/javascript" src="/assets/common/echarts.min.js"></script>
+	<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	
+	 
+	<script>
+	var realPath="${ctx}";
+			
+		layui.use(['table','form','layer','laypage','laydate'],function(){
+			var table = layui.table,
+				laypage = layui.laypage,
+				laydate=layui.laydate,
+				form = layui.form,
+				layer =layui.layer,
+				$ = layui.jquery;
+				var mainEChartObj=null,barEChartObj =null,barUnitEChartObj =null,bargfEChartObj=null;
+		         $("canvas").css("width", "100%");//设置图表的div宽度
+				$(".selectBox").attr("style","display:block");
+				
+
+			var vm = new Vue({
+				el:'#unitApp',
+				data:{
+					machDateRange:'',//赛事时间段
+					optionSelectShow:false,//选择项目方弹层
+					matchList:[], //赛事集合
+					optionSelectThreeShow:false,
+					optionSelectFourShow:false,
+					getMathData:{},//赛书模块一
+					startOne:'',
+					endOne:'',
+					startTwo:'',
+					endTwo:'',
+					//每日新增报名人数
+					matchStartDate:'',
+					matchEndDate:'',
+					matchCodeNum:'match201807300959161453',
+					
+					//每日新增报名人数
+					goodStartDate:'',
+					goodEndDate:'',
+					goodsList:[],
+					goodsPage:1,
+					goodsCurPage:1,
+					dataStart3:'',
+					selectedboolea:false,
+					selectedboolea2:false,
+					selectedboolea3:false,
+					selectedboolea4:false,
+					getMathTimeData:{},
+					unitSelectArr:[],
+					unitSelectArr2:[],
+					unitSelectArr3:[],
+					unitSelectArr4:[],
+					pieChartData: [],
+					getBarChartData:[],
+					dataStart:'',
+					dataStart2:'',
+				
+					pageSize:5,
+					pageNumberUnitEnOne:1,
+					pageNumberUnitEnOneTotal:1,
+					getDiagramChartData:[],
+					getDiagramChartDataDetail:[],
+					openDtailOneShow:true,
+					getChannelData:[],
+					pageNumberUnitEnTwo:1,
+					pageNumberUnitEnTwoTotal:1,
+					getGFChartData:[],
+					openDtailTwoShow:true,
+					getOfficeDataDetail:[],
+					pageNumberUnitEnThree:1,
+					pageNumberUnitEnThreeTotal:1,
+					getAllStringName:'',getAllUnit:[],getAllStringCode:'',
+					getAllStringName2:'',getAllUnit2:[],getAllStringCode2:'',
+					getAllStringName3:'',getAllUnit3:[],getAllStringCode3:'',
+					getAllStringName4:'',getAllUnit4:[],getAllStringCode4:'',unitTimeNull:false,matchTimeNull:false,
+				},
+				created: function() {
+					var that=this;
+					that.getMathAll();
+					that.getGoods();
+					that.getMathTime(that.startOne,that.endOne);
+				},
+				mounted:function(){
+					var that=this;
+					that.getPieChart();
+					/* that.getMathAll();
+					that.getMathTime(that.startOne,that.endOne); */
+					that.allEchartInit();
+					that.unitOne();that.unitTwo();that.unitThree();that.unitFour();
+					laydate.render({
+					    elem: '#matchTime'
+					    ,range: true
+					    ,done: function(value, date){
+					    	if(value==''){
+					    		vm.matchTimeNull=true;
+					    		vm.machDateRange=value;
+						    	vm.getMathTime('','');
+					    	}else{
+					    		vm.matchTimeNull=false;
+					    		vm.machDateRange=value;
+						    	vm.startOne=vm.machDateRange.split(" - ")[0];
+						    	vm.endOne=vm.machDateRange.split(" - ")[1];
+						    	vm.getMathTime(vm.startOne,vm.endOne);
+					    	}
+					    	
+					      }
+					  });
+					laydate.render({
+					    elem: '#goods'
+					    ,range: true
+					    ,max:0
+					    ,done: function(value, date){
+					    	if(value==''){
+					    		vm.goodStartDate='';
+					    		vm.goodEndDate='';
+						    	vm.getGoods;
+					    	}else{
+					    		vm.machDateRange=value;
+						    	vm.goodStartDate=vm.machDateRange.split(" - ")[0];
+						    	vm.goodEndDate=vm.machDateRange.split(" - ")[1];
+						    	vm.goodsCurPage=1;
+						    	vm.getGoods()
+					    	}
+					    	
+					      }
+					  });
+					
+				},
+				updated:function(){
+					var that=this;
+					laydate.render({
+					    elem: '#unitTime'
+					    ,value: vm.matchStartDate+' - '+vm.matchEndDate
+					    ,max:0
+					    ,range: true
+					    ,done: function(value, date,endDate){
+					    	var str1=date.date,str2=endDate.date;
+					    	if(date.date<10){
+					    		str1='0'+date.date
+					    	}
+							if(endDate.date<10){
+								str2='0'+endDate.date
+					    	}
+					    	vm.matchStartDate=date.year+'-'+date.month+'-'+str1;
+					    	vm.matchEndDate=endDate.year+'-'+endDate.month+'-'+str2;
+					    	vm.getUnitEn();
+					    	vm.getUnitEnDetail();
+					      }
+					  });
+					form.on('select', function(data){
+						that.matchCodeNum=data.value; //得到被选中的值
+						that.pageNumberUnitEnOne=1;
+						that.getUnitEn();
+						that.getUnitEnDetail();
+					});	
+					form.render('select') 
+					 form.on('checkbox(sourceCheck)', function(data) {
+						if(data.elem.checked) {
+							vm.getAllUnit.forEach(function(v) {v.top = true});
+							vm.unitSelectArr.splice(0, vm.unitSelectArr.length);
+							vm.unitSelectArr = vm.getAllUnit.map(function(v) {return {unitCode: v.unitCode, unitName: v.unitName}});
+							that.getAllStringCode= that.unitSelectArr.map(function(k) {return k.unitCode}).join(',');
+							that.getAllStringName= that.unitSelectArr.map(function(k) {return k.unitName}).join(',');
+							that.selectedboolea=true;
+							
+						}else {
+							vm.getAllUnit.forEach(function(v) {v.top = false});
+							vm.unitSelectArr.splice(0, vm.unitSelectArr.length);
+							that.getAllStringCode='';
+							that.getAllStringName='';
+							that.selectedboolea=false
+						};
+					}) 
+					
+					form.on('checkbox(sourceCheck2)', function(data) {
+						if(data.elem.checked) {
+							vm.getAllUnit2.forEach(function(v) {v.top = true});
+							vm.unitSelectArr2.splice(0, vm.unitSelectArr2.length);
+							vm.unitSelectArr2 = vm.getAllUnit2.map(function(v) {return {unitCode: v.unitCode, unitName: v.unitName}});
+							that.getAllStringCode2= that.unitSelectArr2.map(function(k) {return k.unitCode}).join(',');
+							that.getAllStringName2= that.unitSelectArr2.map(function(k) {return k.unitName}).join(',');
+							that.selectedboolea2=true;
+						}else {
+							vm.getAllUnit2.forEach(function(v) {v.top = false});
+							vm.unitSelectArr2.splice(0, vm.unitSelectArr2.length);
+							that.getAllStringCode2='';
+							that.getAllStringName2='';
+							that.selectedboolea2=false;
+						};
+					})
+					form.on('checkbox(sourceCheck3)', function(data) {
+						if(data.elem.checked) {
+							vm.getAllUnit3.forEach(function(v) {v.top = true});
+							vm.unitSelectArr3.splice(0, vm.unitSelectArr3.length);
+							vm.unitSelectArr3 = vm.getAllUnit3.map(function(v) {return {matchCode: v.matchCode, matchName: v.matchName}});
+							that.getAllStringCode3= that.unitSelectArr3.map(function(k) {return k.matchCode}).join(',');
+							that.getAllStringName3= that.unitSelectArr3.map(function(k) {return k.matchName}).join(',');
+							that.selectedboolea3=true;
+						}else {
+							vm.getAllUnit3.forEach(function(v) {v.top = false});
+							vm.unitSelectArr3.splice(0, vm.unitSelectArr3.length);
+							that.getAllStringCode3='';
+							that.getAllStringName3='';
+							that.selectedboolea3=false;
+						};
+					})
+					form.on('checkbox(sourceCheck4)', function(data) {
+						if(data.elem.checked) {
+							vm.getAllUnit4.forEach(function(v) {v.top = true});
+							vm.unitSelectArr4.splice(0, vm.unitSelectArr3.length);
+							vm.unitSelectArr4 = vm.getAllUnit4.map(function(v) {return {matchCode: v.matchCode, matchName: v.matchName}});
+							that.getAllStringCode4= that.unitSelectArr4.map(function(k) {return k.matchCode}).join(',');
+							that.getAllStringName4= that.unitSelectArr4.map(function(k) {return k.matchName}).join(',');
+							that.selectedboolea4=true;
+						}else {
+							vm.getAllUnit4.forEach(function(v) {v.top = false});
+							vm.unitSelectArr4.splice(0, vm.unitSelectArr4.length);
+							that.getAllStringCode4='';
+							that.getAllStringName4='';
+							that.selectedboolea4=false;
+						};
+					})
+					 laypage.render({
+					   elem: 'pageOne'
+					   ,count: this.pageNumberUnitEnOneTotal //数据总数，从服务端得到
+					   ,curr:this.pageNumberUnitEnOne
+					   ,limit:this.pageSize
+					   ,jump: function(obj, first){
+					     //首次不执行
+					     if(!first){
+						     that.pageNumberUnitEnOne=obj.curr; 
+						     that.getUnitEnDetail();	     
+					     }
+					   }
+					 });
+					 laypage.render({
+						   elem: 'pageTwo'
+						   ,count: this.pageNumberUnitEnTwoTotal //数据总数，从服务端得到
+						   ,curr:this.pageNumberUnitEnTwo
+						   ,limit:10
+						   ,jump: function(obj, first){
+						     //首次不执行
+						     if(!first){
+							     that.pageNumberUnitEnTwo=obj.curr; 
+							     that.getChannelDataFun(that.getAllStringCode3);	     
+						     }
+						   }
+						 });
+					 laypage.render({
+						   elem: 'pageThree'
+						   ,count: this.pageNumberUnitEnThreeTotal //数据总数，从服务端得到
+						   ,curr:this.pageNumberUnitEnThree
+						   ,limit:this.pageSize
+						   ,jump: function(obj, first){
+						     //首次不执行
+						     if(!first){
+							     that.pageNumberUnitEnThree=obj.curr; 
+							     that.getOfficeEnDetail(that.getAllStringCode4);
+							    
+						     }
+						   }
+						 });
+					 laypage.render({
+						   elem: 'pageFour'
+						   ,count: that.goodsPage //数据总数，从服务端得到
+						   ,curr:that.goodsCurPage
+						   ,jump: function(obj, first){
+						     //首次不执行
+						     if(!first){
+							     that.goodsCurPage=obj.curr; 
+							     that.getGoods();
+							    
+						     }
+						   }
+						 });
+					 form.render("checkbox")
+				},
+				
+				methods:{ 
+					 allEchartInit:function() {
+						 mainEChartObj = echarts.init(document.querySelector('#main'));
+						 barEChartObj = echarts.init(document.querySelector('#bar'));
+						 barUnitEChartObj = echarts.init(document.querySelector('#barUnit'));
+						 bargfEChartObj = echarts.init(document.querySelector('#bargf'));
+					},
+
+					okOne:function(){
+						var that=this;
+						that.getBarChart(that.getAllStringCode);
+						that.optionSelectShow=false;
+					},
+/* 					okTwo:function(){
+						var that=this;
+						that.optionSelectTwoShow=false;
+						that.pageNumberUnitEnOne=1;
+						that.getUnitEn();
+						that.getUnitEnDetail(that.getAllStringCode2);
+					}, */
+					okThree:function(){
+						var that=this;
+						that.optionSelectThreeShow=false;
+						that.pageNumberUnitEnTwo=1;
+						that.getChannelDataFun(that.getAllStringCode3)
+					},
+					okFour:function(){
+						var that=this;
+						that.optionSelectFourShow=false;
+						that.pageNumberUnitEnThree=1;
+						that.graphBar(that.getAllStringCode4);
+						that.getOfficeEnDetail(that.getAllStringCode4);
+					},
+					
+					graphBar:function(string){//八、官方平台完赛率分析图表
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/official/enroll/graph',
+							type:'get',
+							data:{
+								likeParams:'',
+								inParams:string
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getGFChartData=obj.result.officials;
+									that.bargf(that.getGFChartData);
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getChannelDataFun:function(string){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/source/enroll',
+							type:'get',
+							data:{
+								likeParams:'',
+								inParams:string,
+								pageNumber:that.pageNumberUnitEnTwo,
+								pageSize:10
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getChannelData=obj.result.dates;
+									that.pageNumberUnitEnTwoTotal=obj.result.total;
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					openDtailOne:function(){
+						var that=this;
+						that.openDtailOneShow=!that.openDtailOneShow;
+					},
+					openDtailTwo:function(){
+						var that=this;
+						that.openDtailTwoShow=!that.openDtailTwoShow;
+						
+					},
+					exportFun: function(type){
+						var that=this;
+						var url = '', params = {};
+						if(type == 'exportUnit') {
+							url = '/match/export/enroll/person/count';
+							params = 'startDate='+that.matchStartDate+'&endDate='+that.matchEndDate+'&matchCode='+that.matchCodeNum;
+						}else if(type == 'channelUnit'){
+							url = '/match/export/unit/enroll';
+							params = 'likeParams=&inParams='+that.getAllStringCode3+'&pageNumber='+that.pageNumberUnitEnTwo;
+						}else if(type == 'officeUnit'){
+							url = '/match/export/official/enroll';
+							params = 'likeParams=&inParams='+that.getAllStringCode4+'&pageNumber='+that.pageNumberUnitEnThree;
+						}else if(type == 'percent'){
+							url = '/match/unit/finish/percent/export';
+							params = 'likeParams=&inParams='+that.getAllStringCode;
+						}else if(type == 'totalMain'){
+							url = '/match/export/match/enroll/total';
+							params = 'startTime='+that.startOne+'&endTime='+that.endOne;
+						}else if(type == 'goods'){
+							url = '/match/export/goods/order';
+							params = 'startDate='+that.goodStartDate+'&endDate='+that.goodEndDate;
+						}
+						var newUrl = realPath + url + '?' + params;
+						 //var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+						window.location.href = newUrl;
+						
+					},
+					
+					getOfficeEnDetail:function(string){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/official/enroll/detail',
+							type:'get',
+							data:{
+								likeParams:'',
+								inParams:string,
+								pageNumber:that.pageNumberUnitEnThree,
+								pageSize:that.pageSize
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getOfficeDataDetail=obj.result.dates;
+									that.pageNumberUnitEnThreeTotal=obj.result.total;
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getUnitEnDetail:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/enroll/person/count/detail',
+							type:'get',
+							data:{
+								startDate:that.matchStartDate,
+								endDate:that.matchEndDate,
+								matchCode:that.matchCodeNum,
+								pageNumber:that.pageNumberUnitEnOne,
+								pageSize:that.pageSize
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getDiagramChartDataDetail=obj.result.dates;
+									that.pageNumberUnitEnOneTotal=obj.result.total;
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getUnitEn:function(){//五、项目方报名数据图表 的哥选择弹层
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/enroll/person/total',
+							type:'get',
+							data:{
+								startDate:that.matchStartDate,
+								endDate:that.matchEndDate,
+								matchCode:that.matchCodeNum,
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getDiagramChartData=obj.result.data;
+									that.matchStartDate=obj.result.startDate;
+									that.matchEndDate=obj.result.endDate;
+									that.barUnit(that.getDiagramChartData);
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					
+					getBarChart:function(inParams){//项目方完赛人次比 第四个接口
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/unit/finish/percent',
+							type:'get',
+							data:{
+								likeParams:'',
+								type:'all',
+								inParams:inParams
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getBarChartData=obj.result.enrolls;
+									that.bar(that.getBarChartData);
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					
+					
+					unitSelectFun:function(unit){//全选1
+						var that=this;
+						unit.top = !unit.top;
+						that.selectedboolea=false;
+						if(unit.top) that.unitSelectArr.push({unitCode: unit.unitCode, unitName: unit.unitName});
+						else {
+							that.unitSelectArr.forEach(function(v, index) {
+								if(v.unitCode == unit.unitCode) that.unitSelectArr.splice(index, 1);
+							});
+						};
+						that.getAllStringCode= this.unitSelectArr.map(function(k) {return k.unitCode}).join(',');
+						that.getAllStringName= this.unitSelectArr.map(function(k) {return k.unitName}).join(',');
+						
+					},
+					unitSelectFun2:function(unit){
+						var that=this;
+						unit.top = !unit.top;
+						that.selectedboolea2=false;
+						if(unit.top) that.unitSelectArr2.push({unitCode: unit.unitCode, unitName: unit.unitName});
+						else {
+							that.unitSelectArr2.forEach(function(v, index) {
+								if(v.unitCode == unit.unitCode) that.unitSelectArr2.splice(index, 1);
+							});
+						};
+						that.getAllStringCode2= this.unitSelectArr2.map(function(k) {return k.unitCode}).join(',');
+						that.getAllStringName2= this.unitSelectArr2.map(function(k) {return k.unitName}).join(',');
+						
+					},
+					unitSelectFun3:function(unit){
+						var that=this;
+						unit.top = !unit.top;
+						that.selectedboolea3=false;
+						if(unit.top) that.unitSelectArr3.push({matchCode: unit.matchCode, matchName: unit.matchName});
+						else {
+							that.unitSelectArr3.forEach(function(v, index) {
+								if(v.matchCode == unit.matchCode) that.unitSelectArr3.splice(index, 1);
+							});
+						};
+						that.getAllStringCode3= that.unitSelectArr3.map(function(k) {return k.matchCode}).join(',');
+						that.getAllStringName3= that.unitSelectArr3.map(function(k) {return k.matchName}).join(',');
+						
+					},
+					unitSelectFun4:function(unit){
+						var that=this;
+						unit.top = !unit.top;
+						that.selectedboolea4=false;
+						if(unit.top) that.unitSelectArr4.push({matchCode: unit.matchCode, matchName: unit.matchName});
+						else {
+							that.unitSelectArr4.forEach(function(v, index) {
+								if(v.matchCode == unit.matchCode) that.unitSelectArr4.splice(index, 1);
+							});
+						};
+						that.getAllStringCode4= this.unitSelectArr4.map(function(k) {return k.matchCode}).join(',');
+						that.getAllStringName4= this.unitSelectArr4.map(function(k) {return k.matchName}).join(',');
+						
+					},
+					getPieChart:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/unit/enroll/percent',
+							type:'get',
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.pieChartData=obj.result.units;
+									that.main(that.pieChartData);
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getGoods:function(){
+						var that=this;
+						$.ajax({
+							url:realPath+'/match/goods/order/detail',
+							type:'get',
+							cache: false,
+							data:{
+								startDate:that.goodStartDate,
+								endDate:that.goodEndDate,
+								pageNumber:that.goodsCurPage
+							},
+							success:function(obj){
+								if(obj.resultCode==200){
+									that.goodsList=obj.result.dates;
+									that.dataStart3=obj.result.startDate +' - '+obj.result.endDate;
+									that.goodsPage=obj.result.total
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getMathTime:function(start,end){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/enroll/bydate',
+							type:'get',
+							cache: false,
+							data:{
+								startTime:start,
+								endTime:end
+							},
+							success:function(obj){
+								layer.close(index);
+								if(obj.resultCode==200){
+									that.getMathTimeData=obj.result;
+									that.dataStart=obj.result.startTime +' - '+obj.result.endTime;
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					getMathAll:function(){//总报名数接口-第一个接口
+						var that=this;
+						var index1 = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/enroll/total',
+							type:'get',
+							cache: false,
+							success:function(obj){
+								layer.close(index1);
+								if(obj.resultCode==200){
+									that.getMathData=obj.result;
+								}else{
+									layer.msg(obj.resultMsg);
+								}
+							},
+							error:function(){
+								layer.close(index1);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					 main:function(data){
+						var option = {
+								 tooltip: {
+								        trigger: 'item',
+								        formatter: "{b}<br/>{c} ({d}%)"
+								    },
+								legend: {
+							        data:data.map(function(v) {return v.name}),
+							        right:10,
+							        top:20,
+							        bottom:10,
+							        orient: 'vertical',
+							        formatter: function (name) {
+							            return echarts.format.truncateText(name, 80, '12px Microsoft Yahei', '…');
+							        },
+							        type: 'scroll',
+							        tooltip: {
+							            show: true
+							        }
+							    }, 
+							    series: [
+							        {
+							            name:'访问来源',
+							            type:'pie',
+							            radius: ['40%', '50%'],
+							            center: ['30%', '50%'],
+							            avoidLabelOverlap: false,
+							            label: {
+							               show:false,
+							              
+							            },
+							            labelLine: {
+							               show:false,
+							            },
+							            data:data
+							        }
+							    ]
+							};
+					        // 使用刚指定的配置项和数据显示图表。
+					       // main.setOption(option);
+					        mainEChartObj.setOption(option);
+					        
+					        
+					 
+					},
+					 bar:function(barData){
+						 var dataX=[],dataYFinsh=[],dataYEnroll=[];
+						 for(var i=0;i<barData.length;i++){
+							 dataX.push(barData[i].unitName);
+							 dataYEnroll.push(barData[i].enrollCount);
+							 dataYFinsh.push(barData[i].finshCount);
+						 }
+						//var app = echarts.init(document.getElementById('bar'));
+						
+						var option = {
+								tooltip: {
+							        trigger: 'axis'
+							    },
+								grid: {
+		                            left: '3%',
+		                            right: '4%',
+		                            top:'10%',
+		                            height:'80%',
+		                            bottom: '3%',
+		                            containLabel: true
+		                        },
+							   legend: {
+							        data:['报名人次','完赛人次'],
+							        itemWidth:20,
+							        itemHeight:20,
+							        borderRadius:0,
+							        itemGap:90,
+							        borderRadius:0,
+							        orient:"horizontal"
+							    }, 
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            data :dataX
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value'
+							        }
+							    ],
+							    dataZoom: [
+							                {
+							                   show: true,
+							                   start: 80,
+							                   end: 100
+							               },
+							             {
+							                //   show: true,
+							                 //  yAxisIndex: 0,
+							                  // filterMode: 'empty',
+							                   width: 40,
+							                //   height: '80%',
+							                //   showDataShadow: false,
+							                  // left: '0%'
+							               }
+							           ],
+							    series : [
+							        {
+							            name:'报名人次',
+							            type:'bar',
+							            data: barData.map(function(k){return k.enrollCount}),//dataYEnroll
+							        },
+							        {
+							            name:'完赛人次',
+							            type:'bar',
+							            data:barData.map(function(k){return k.finshCount}),//dataYFinsh
+							        },
+							        
+							    ],
+							   
+							};
+						//if(dataX.length > 5) option.dataZoom = [{startValue: 0}, {type: 'inside'}];
+						barEChartObj.setOption(option);
+				     
+				      // setTimeout(()=>{},500)
+				        
+					}, 
+					barUnit:function(barData){
+						 var dataX=[],dataYFinsh=[],dataYEnroll=[];
+						 for(var i=0;i<barData.length;i++){
+							 dataX.push(barData[i].date);
+							dataYEnroll.push(barData[i].enrollDay);
+						 }
+						var option = {
+								tooltip: {
+							        trigger: 'axis'
+							    },
+								grid: {
+		                            left: '3%',
+		                            right: '4%',
+		                            top:'5%',
+		                            height:'79%',
+		                            bottom: '15%',
+		                            containLabel: true
+		                        },
+							   legend: {
+							        data:['当日新增报名人次'],
+							        itemWidth:20,
+							        itemHeight:20,
+							        borderRadius:0,
+							        itemGap:90,
+							        borderRadius:0,
+							        orient:"horizontal"
+							    }, 
+							    calculable : true,
+							    xAxis : [
+							        {
+							            type : 'category',
+							            data :dataX
+							        }
+							    ],
+							    yAxis : [
+							        {
+							            type : 'value'
+							        }
+							    ],
+							    series : [
+							        {
+							            name:'新增报名人次',
+							            type: "line",
+							            symbolSize:10,
+							            symbol:'circle',
+							            data:dataYEnroll
+							        }
+							       
+							    ]
+							};
+						if(dataX.length > 5) option.dataZoom = [{startValue: 0}, {type: 'inside'}];
+				         barUnitEChartObj.setOption(option);
+				        
+					},
+					bargf:function(barData){
+						 var dataX=[],dataYFinsh=[],dataYEnroll=[];
+						 
+						 for(var i=0;i<barData.length;i++){
+							 dataX.push(barData[i].matchName);
+							 dataYEnroll.push(barData[i].officialCount);
+							 dataYFinsh.push(barData[i].finishCount);
+						 }
+						
+						//var appgf = echarts.init(document.getElementById('bargf'));
+						var option = { 
+								 tooltip: {
+								        trigger: 'item',
+								        formatter: "{a} <br/>{b}: {c}"
+								    },
+						 grid: {
+	                            left: '3%',
+	                            right: '4%',
+	                            top:'13%',
+	                            height:'75%',
+	                            bottom: '3%',
+	                            containLabel: true
+	                        },
+						   legend: {
+						        data:['报名人次','完赛人次'],
+						        itemWidth:20,
+						        itemHeight:20,
+						        borderRadius:0,
+						        itemGap:90,
+						        borderRadius:0,
+						        orient:"horizontal"
+						    }, 
+						    calculable : true,
+						    xAxis : [
+						        {
+						            type : 'category',
+						            data : dataX
+						        }
+						    ],
+						    yAxis : [
+						        {
+						            type : 'value'
+						        }
+						    ],
+						    series : [
+						        {
+						            name:'报名人次',
+						            type:'bar',
+						            data:dataYEnroll
+						        },
+						        {
+						            name:'完赛人次',
+						            type:'bar',
+						            data:dataYFinsh
+						        }
+						    ]
+						};
+						if(dataX.length >5) option.dataZoom = [{startValue: 0}, {type: 'inside'}];
+						//appgf.setOption(option);
+						bargfEChartObj.setOption(option);
+						
+						
+					},
+					unitOne:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						$.ajax({
+							url:realPath+'/match/unit/top5',
+							type:'get',
+							data:{
+								size:999,
+								page:1,
+								type:'all'
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.code==0){
+									obj.data.forEach(function(v){
+										if(!v.top){
+											v.top=true;
+										}
+									})
+									that.getAllUnit=obj.data;
+									that.unitSelectArr.splice(0, vm.unitSelectArr.length);
+									obj.data.forEach(function(v) {
+										if(v.top) that.unitSelectArr.push({unitCode: v.unitCode, unitName: v.unitName});
+									});
+									
+									that.getAllStringCode= that.unitSelectArr.map(function(k) {return k.unitCode}).join(',');
+									that.getAllStringName= that.unitSelectArr.map(function(k) {return k.unitName}).join(',');
+									 that.getBarChart(that.getAllStringCode);
+								}else{
+									layer.msg(obj.errorMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					optionSelectFun:function(){
+						var that = this;
+						that.optionSelectShow=true;
+						//that.getAllUnitFun(that.getAllStringName);
+						if(that.unitSelectArr.length==that.getAllUnit.length){
+							//$("#sourceCheck").attr('checked',true)
+							that.selectedboolea=true;
+							form.render("checkbox")
+						}else{
+							that.selectedboolea=false;
+							form.render("checkbox")
+						}
+						 form.render("checkbox")
+					},
+					unitTwo:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						
+						$.ajax({
+							url:realPath+'/match/match/top5',
+							type:'get',
+							data:{
+								size:999,
+								page:1
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.code==0){
+									obj.data.forEach(function(p1,p2){
+										var str='';
+										if(p1.matchCode=="match201807300959161453"){
+											str="<option selected value='"+p1.matchCode+"'>"+p1.matchName+"</option>";
+										}else{
+											str="<option value='"+p1.matchCode+"'>"+p1.matchName+"</option>";
+										}
+										$('#matchSel').append(str)
+									})
+									form.render('select') 
+									that.unitSelectArr2.splice(0, vm.unitSelectArr2.length);
+									obj.data.forEach(function(v) {
+										if(v.top) vm.unitSelectArr2.push({unitCode: v.unitCode, unitName: v.unitName});
+									});
+									
+									that.getAllStringCode2= that.unitSelectArr2.map(function(k) {return k.unitCode}).join(',');
+									that.getAllStringName2= that.unitSelectArr2.map(function(k) {return k.unitName}).join(',');
+									that.getUnitEnDetail();
+									that.getUnitEn();
+								}else{
+									layer.msg(obj.errorMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					
+					unitThree:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						
+						$.ajax({
+							url:realPath+'/match/match/top5',
+							type:'get',
+							data:{
+								type:2
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.code==0){
+									that.getAllUnit3=obj.data;
+									that.unitSelectArr3.splice(0, vm.unitSelectArr3.length);
+									obj.data.forEach(function(v) {
+										if(v.top) that.unitSelectArr3.push({matchCode: v.matchCode, matchName: v.matchName});
+									});
+									
+									that.getAllStringCode3= that.unitSelectArr3.map(function(k) {return k.matchCode}).join(',');
+									that.getAllStringName3= that.unitSelectArr3.map(function(k) {return k.matchName}).join(',');
+									that.getChannelDataFun(that.getAllStringCode3)
+								}else{
+									layer.msg(obj.errorMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					
+					optionSelectThreeFun:function(){
+						var that = this;
+						that.optionSelectThreeShow=true;
+					},
+					unitFour:function(){
+						var that=this;
+						var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+						
+						$.ajax({
+							url:realPath+'/match/match/top5',
+							type:'get',
+							data:{
+								type:1
+							},
+							cache: false,
+							success:function(obj){
+								layer.close(index);
+								if(obj.code==0){
+									that.getAllUnit4=obj.data;
+									that.unitSelectArr4.splice(0, vm.unitSelectArr4.length);
+									obj.data.forEach(function(v) {
+										if(v.top) that.unitSelectArr4.push({matchCode: v.matchCode, matchName: v.matchName});
+									});
+									
+									that.getAllStringCode4= that.unitSelectArr4.map(function(k) {return k.matchCode}).join(',');
+									that.getAllStringName4= that.unitSelectArr4.map(function(k) {return k.matchName}).join(',');
+									that.getOfficeEnDetail(that.getAllStringCode4);
+									that.graphBar(that.getAllStringCode4);
+								}else{
+									layer.msg(obj.errorMsg);
+								}
+							},
+							error:function(){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					},
+					optionSelectFourFun:function(){
+						var that = this;
+						that.optionSelectFourShow=true;
+					},
+					getSourceSeries: function(trendModels, channelCode) {
+						var text = '';
+						trendModels.forEach(function(d) {
+							if(d.unitCode == channelCode) text = d.enrollCount;
+						});
+						return text;
+					},
+					leaveSelect:function(){
+						var that=this;
+						that.optionSelectShow=false;
+						that.optionSelectThreeShow=false;
+						that.optionSelectFourShow=false;
+					}
+				}//方法结束
+			})
+			
+		})
+		
+	</script>
+
+</html>

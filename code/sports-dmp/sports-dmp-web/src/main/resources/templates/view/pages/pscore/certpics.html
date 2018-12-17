@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>证书列表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			table{
+			width:100%!important;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+					<div class="layui-inline">
+						<label class="layui-form-label">证书编号</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="unitCode" placeholder="证书编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">证书颁发名</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="playerName" placeholder="证书颁发名" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员手机</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="playerPhone" placeholder="运动员手机号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">证书状态</label>
+						<div class="layui-input-inline width180">
+							<select name="status" id="status" lay-verify="required">
+								<option value="">全部</option>
+								<option value="normal">证书正常</option>
+								<option value="waitPic">证书生成中</option>
+								<option value="wait_check">需要人工介入</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">短信状态</label>
+						<div class="layui-input-inline width180">
+							<select name="isSmsSend" id="isSmsSend" lay-verify="required">
+								<option value="">全部</option>
+								<option value="1">已发送</option>
+								<option value="2">未发送</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+		<div id='pageWrap1'></div>
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+           {{# if(d.isPicOk){ }}
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="viewCer">
+    			<i class="layui-icon">&#xe66a;</i>查看证书
+  			</button>
+           {{# } }}
+			{{# if(!d.isSmsSend){ }}
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="sendMsg">
+    			<i class="layui-icon">&#xe611;</i>发送短信
+  			</button>
+           {{# } }}
+           {{# if(d.isSmsSend){ }}
+            <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="reSendMsg">
+    			<i class="layui-icon">&#xe611;</i>再次发送
+  			</button>
+           {{# } }}
+		</div>
+	</script>
+
+	<script type="text/html" id="isSmsSendShow">
+		{{# if(d.isSmsSend){ }}
+		<span style="color: #5FB878;">已发送</span> {{# } else { }}
+		<span style="color: #FF5722;">未发送</span> {{# } }}
+	</script>
+	<script type="text/html" id="isViewPic">
+		{{# if(d.isViewPic){ }}
+		<span style="color: #5FB878;">是</span> {{# } else { }}
+		<span style="color: #FF5722;">否</span> {{# } }}
+	</script>
+	<script type="text/html" id="needSendSms">
+		{{# if(d.needSendSms){ }}
+		<span style="color: #5FB878;">是</span> {{# } else { }}
+		<span style="color: #FF5722;">否</span> {{# } }}
+	</script>
+	<script type="text/html" id="isPicOk">
+        {{# if(d.status=='normal'){ }}
+         	<span style="color: #5cb85c;">证书正常</span>
+        {{# } }}
+	    {{# if(d.status=='waitPic'){ }}
+	        <span style="color: #FF5722;">等待证书</span>
+        {{# } }}
+        {{# if(d.status=='wait_check'){ }}
+		    <span style="color: #FF5722;">需要人工介入</span>
+        {{# } }}
+	</script>
+
+	<script id="scoreTem" type="text/html">
+		{{d.score}}{{d.scoreUnit}}
+	</script>
+
+	<script id="partTimeTem" type="text/html">
+		{{getDate(d.partTime)}}
+	</script>
+
+	<script id="gmtCreateTem" type="text/html">
+		{{getDate(d.gmtCreate)}}
+	</script>
+
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var _width,_height,indexclose;
+		if(document.body.clientWidth<1500){
+			_width='660px';
+			_height="450px";
+		}else{
+			_width='660px';
+			_height="650px";
+		}
+		var dataApi = "/dmp/api/scoreCert/cert/pic";
+		layui.use(['table', 'form','laypage', 'laydate'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laypage=layui.laypage,
+			layer = parent.layer === undefined ? layui.layer : top.layer;
+			var playerPhone,certSn,certName,isSmsSend,status,pageNumber=1,pageSize=10;
+
+			//展示已知数据
+			var tablePic=table.render({
+				elem: '#demo',
+			  	cellMinWidth : 95,
+		       
+				id: 'tableDemo',
+				cols: [
+	                [{field: 'certSn', title: '证书序列号'},
+	                {field: 'certMatchName', title: '赛事名'}
+	                , {field: 'certName', title: '证书颁发名',width: 150}
+	                , {field: 'status', title: '证书状态', templet: "#isPicOk",width: 130}
+	                , {field: 'isSmsSend', title: '短信状态', templet: "#isSmsSendShow", width: 130}
+	                , {field: 'isViewPic', title: '是否已经查看证书', templet: "#isViewPic",width:150}
+	                , {field: 'needSendSms', title: '是否需要发送短信', templet: "#needSendSms",width:150}
+	                , {field: 'playerPhone', title: '运动员电话',width:130}
+	                ,{title: '操作', templet:'#listBar', fixed:"right", align:"left",width:200}]
+	            ]
+			});
+			getData(playerPhone,certSn,certName,isSmsSend,status,pageNumber,pageSize);
+			
+			function getData(_playerPhone,_certSn,_certName,_isSmsSend,_status,_pageNumber,_pageSize){
+				 var index = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2 
+				$.ajax({
+					type:'get',
+					url:dataApi,
+					cache: false,
+					data:{playerPhone:_playerPhone,certSn:_certSn,certName:_certName,isSmsSend:_isSmsSend,status:_status,pageNumber:_pageNumber,pageSize:_pageSize,fresh:Math.random()}, 
+					success:function(obj){
+				 		layer.close(index); 		
+						tablePic.reload({data:obj.data.list});
+					    laypage.render({
+					        elem: 'pageWrap1'
+				            ,count: obj.data.allRow
+					        ,curr:obj.data.currentPage
+					        ,layout: ['count', 'prev', 'page', 'next',  'skip']
+					        ,jump: function(obj,first){
+					        	if(!first){
+					        	 pageNumber=obj.curr
+					        	 getParaData();
+				        	    }
+					        }
+				        });
+					}
+				})
+			}
+			
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+				if(layEvent === 'viewCer'){
+					if(data.certPicUrl){
+								parent.layer.open({
+									  type: 1,
+									  title: "成绩证书" , //不显示标题栏
+									  skin: 'layui-layer-demo', //样式类名
+									  shade: 0, //不显示遮罩
+									  area: ['455px','645.4px'], //宽高
+									  shadeClose: true, //开启遮罩关闭
+									  content: "<img style='width:100%;height:100%' src='"+data.certPicUrl+"'>"
+								});
+					}
+				}
+				if(layEvent === 'sendMsg'){ //发送短信
+					$.get("/dmp/api/scoreCert/ims",{
+			          	  id :data.id //将需要删除的newsId作为参数传入
+			            },function(obj){
+			           	 	if(obj.code!=0||obj.data==false){
+			           	 		layer.alert(obj.errorMsg, {icon: 5});
+			            	}else{
+			            		layer.open({
+			            			  title: '提示'
+			            			  ,content: '请求成功'
+			            	     }); 
+			            		getParaData();
+			            	}
+			            })
+				  }
+				
+				
+				if(layEvent === 'reSendMsg'){ 
+					$.get("/dmp/api/scoreCert/ims/replay",{
+			          	  id :data.id //将需要删除的newsId作为参数传入
+			            },function(obj){
+			           	 	if(obj.code!=0||obj.data==false){
+			           	 		layer.alert(obj.errorMsg, {icon: 5});
+			            	}else{
+			            		layer.open({
+			            			  title: '提示'
+			            			  ,content: '请求成功'
+			            	     }); 
+			            		getParaData();
+			            	}
+			            })
+				  }
+				
+			});
+			
+
+			$('#search').on('click', function() {
+				 getParaData();
+			});
+			
+			function getParaData(){
+		    	var certSn = $('#unitCode').val();
+				var certName = $('#playerName').val();
+				var playerPhone = $('#playerPhone').val();
+				var isSmsSend = $('#isSmsSend').val();
+				var status = $('#status').val();
+				console.log(isSmsSend);
+				getData(playerPhone,certSn,certName,isSmsSend,status,pageNumber,pageSize)
+		    }
+			
+		});
+	</script>
+
+</html>

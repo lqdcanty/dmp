@@ -1,0 +1,575 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>图表分析</title>
+	    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script type="text/javascript">
+        (function(){var phoneWidth=parseInt(window.screen.width),phoneScale=phoneWidth/750,ua=navigator.userAgent;if(/Android (\d+\.\d+)/.test(ua)){var version=parseFloat(RegExp.$1);if(version>2.3){document.write('<meta name="viewport" content="width=750, minimum-scale = '+phoneScale+", maximum-scale = "+phoneScale+', target-densitydpi=device-dpi">')}else{document.write('<meta name="viewport" content="width=750, target-densitydpi=device-dpi">')}}else{document.write('<meta name="viewport" content="width=750, user-scalable=no, target-densitydpi=device-dpi">')};})();
+    </script>
+    <meta  name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta content="telephone=no" name="format-detection" />
+    <meta name="format-detection" content="email=no" />
+    <meta name="full-screen" content="true"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <meta name="360-fullscreen" content="true"/>
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta http-equiv="expires" content="0" />
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+    <meta name="apple-touch-fullscreen" content="yes" />	
+	<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" /> 
+	<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+	<link rel="stylesheet" href="/assets/common/css/pagination.css" media="all" />
+		<style type="text/css">
+		    [v-cloak] {
+			  display: none;
+			} 
+			#app{background: #f0f0f0;padding-top:95px}
+			#echart_1{width:690px;height:530px;margin:20px auto 0}
+			#echart_2{width:690px;height:200px;margin:40px auto 0}
+			.eachrt-item{margin-bottom:20px;background:#fff;padding-top:20px;padding-bottom:30px}
+			.title_1{font-size: 26px;color: #1C9F95;border-left:10px solid #1C9F95;padding-left:20px}
+			.d-num{text-align:center;font-size: 20px;color: #999999;margin-top:20px}
+			.d-num span{font-size: 26px;color: #1C9F95;display:inline-block;width:40px;height:40px;line-height:40px;text-align:center;border-top: 1px solid #CCCCCC;border-left: 1px solid #CCCCCC;border-bottom: 1px solid #CCCCCC;}
+			.d-num span:last-child{border-right:1px solid #CCCCCC}
+			.d-num a{margin-left:20px}
+			.echart_2_wrap{position:relative}
+			#echart_3,#echart_4{width:530px;height:350px;margin:0 auto}
+			#echart_5{width:530px;height:410px;margin:0 auto}
+			.flex{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
+			.flex-v{-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}
+			.flex-1{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}	
+			.iconHeader{width:40px;height:40px;background:rgba(0,0,0,0.5);position:fixed;top:45%;left:50px;text-align:center;z-index:1000000;}
+			.iconHeader i{font-size:20px;color:#fff;line-height:40px;}
+			.m-header{background: #1C9F95;height:75px;position:fixed;left:0;top:0;width:100%;line-height:75px;z-index:1000000;}
+			.m-header .title{line-height:75px;text-align:center;color:#fff;font-size:28px;}
+			.m-header .title.on{border-bottom:8px solid #fff;}
+		</style>
+	</head>
+	<body>
+	<div id='vueWrap' v-cloak>
+		<div class="m-header flex">
+			<a v-for="(unit,index) in urlData" class="title flex-1 " :class="{on:clickFunParam==unit.menuUrl}" @click="clickFun(unit)" :href="unit.menuUrl">{{unit.menuName}}</a>
+		</div>
+	</div>
+		<div id='app'>
+
+			<div class='eachrt-item'>
+				<div class='title_1'>全国报名人次分布图</div>
+				<div class='d-num'>总报名人次
+					<a></a>
+				</div>
+				<div id='echart_1'></div>
+			</div>
+			<div class='echart_2_wrap eachrt-item'>
+				<div class='title_1'>赛事报名用户</div>
+				<div id='echart_2'></div>
+			</div>			
+			<div class='eachrt-item'>
+				<div class="title_1">
+				用户群体分析
+				</div>
+				<div id='echart_3'></div>
+				<div class='echart_4'>
+					<div id='echart_4'></div>
+				</div>
+				<div class='echart_5'>
+					<div id='echart_5'></div>
+				</div>				
+			</div>		
+		</div>
+	</body>
+	
+
+		
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/common/echarts.min.js"></script>
+	<script type="text/javascript" src="/assets/common/china.js"></script>
+	<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+	<script>
+	layui.use(['table','form','layer','laypage','laydate'],function(){
+		var table = layui.table,
+			laypage = layui.laypage,
+			laydate=layui.laydate,
+			form = layui.form,
+			layer =layui.layer,
+			$ = layui.jquery;
+		var app=new Vue({
+			el:'#vueWrap',
+			data:{
+				urlData:[],
+				clickFunParam:'/pages/open/chart/userAnalysis',
+			},
+			created:function(){
+				this.getNav()
+			},
+			methods:{
+				clickFun:function(item){
+					this.clickFunParam=item.menuUrl;
+				},
+				getNav:function(){
+					var index = layer.load(2, {shade: 0.01});
+					var that=this;
+				    $.ajax({
+			        	url:'${ctx}/api/sys/moblie/menu/all',
+				        data:{},
+				        type: 'get',
+				        dataType: 'json',
+				        cache:false,
+				        success: function(data) {
+				        	layer.close(index);
+				        	if(data.code==0) {
+				        		that.urlData=data.data;
+		                		var object={menuName:'退出',menuUrl:'/main/logout'};
+		                		that.urlData.push(object);
+				        	}else {
+				        		layer.msg("请求出错");
+				        	}
+				        },
+					    error:function(){
+							layer.msg("请求出错");
+						}
+				    });
+				}
+				
+			}
+		})
+	})
+		var Echart_1 = echarts.init(document.getElementById('echart_1'));
+		var Echart_2 = echarts.init(document.getElementById('echart_2'));
+		var Echart_3 = echarts.init(document.getElementById('echart_3'));
+		var Echart_4 = echarts.init(document.getElementById('echart_4'));
+		var Echart_5 = echarts.init(document.getElementById('echart_5'));
+		getDistribution();
+		Analysis();
+		getGroups();
+		getTotalNum();
+		setInterval(function(){
+			getTotalNum();
+		},60000)
+		function getDistribution(){
+			$.ajax({
+				url:'${ctx}/dmp/api/register/analysis/area/distribution',
+				dataType: 'json',
+				type:'GET',
+				success:function(res){
+					var _data=[];
+					res.data.underLine.forEach(function(p1,p2){
+						if(p1.applyCount>0){
+							_data.push({
+								 name: p1.fileName,
+				                 value: [p1.lon,p1.lat,p1.applyCount,p1.level]
+							})
+						}
+					});
+					var option = {
+					        backgroundColor: '#FFFFFF',
+					        tooltip: {
+					            trigger: 'item',
+					            textStyle:{
+						        	fontSize:24
+						        },
+					            formatter: function(params) {
+					                return params.name + ' : ' + params.value[2];
+					            }
+					        },
+					        grid:{
+					        	left:0,
+					        	right:0
+					        },
+					        visualMap: {
+					            min: 0,
+					            max: 200,
+					            calculable: true,
+					            inRange: {
+					                color: ['#84bddd', '#64afdb', '#306daa']
+					            },
+					            textStyle: {
+					                color: '#fff'
+					            },
+					            show:false
+					        },
+					        geo: {
+					            map: 'china',
+					            roam:true,
+					            label: {
+					                emphasis: {
+					                    show: false
+					                }
+					            },
+					            left:0,
+					            right:0,
+					            itemStyle: {
+					                normal: {
+					                    areaColor: '#41536f',
+					                    borderColor: '#FFFFFF'
+					                },
+					                emphasis: {
+					                    areaColor: 'rgb(10, 105, 187)'
+					                }
+					            }
+					        },
+					        series: [{
+					                name: '',
+					                type: 'scatter',
+					                coordinateSystem: 'geo',
+					                data: _data,
+					                symbolSize: function(val,params) {
+					                	console.log(val)
+					                    if(val[3]==1){
+					                    	return 20
+					                    }else if(val[3]==2){
+					                    	return 16
+					                    }else if(val[3]==3){
+					                    	return 12
+					                    }else if(val[3]==4){
+					                    	return 8
+					                    }else if(val[3]==5){
+					                    	return 4
+					                    }
+					                },
+					                label: {
+					                    normal: {
+					                        show: false
+					                    },
+					                    emphasis: {
+					                        show: false
+					                    }
+					                },
+					                itemStyle: {
+					                    emphasis: {
+					                        borderColor: '#fff',
+					                        borderWidth: 1
+					                    }
+					                }
+					            },
+
+
+					            {
+					                type: 'map',
+					                map: 'china',
+					                geoIndex: 0,
+					                zoom:1.5,
+					                aspectScale: 1, //长宽比
+					                tooltip: {
+					                    show: false
+					                }
+					            }
+					        ]
+					    };
+					
+		 			Echart_1.setOption(option, true);
+				}
+			})
+		}
+		
+		function Analysis(){
+			$.ajax({
+				url:'${ctx}/dmp/api/register/analysis/apply/analysis',
+				dataType: 'json',
+				type:'GET',
+				success:function(res){
+					var _data=[];
+					res.data.forEach(function(p1,p2){
+						var num=[];
+						for(var i=0;i<res.data.length;i++){
+							if(i==p2){
+								num.push(p1.quantity)
+							}else{
+								num.push(0)
+							}
+						}
+						_data.push({
+					        type: 'bar',
+					        name:p1.typeDesc,
+					        stack: 'all',
+					        itemStyle: {
+				                normal: {
+				                    color: function(params) {
+				                        // build a color map as your need.
+				                        var colorList = ['#f8ba00','#60d937','#00a1ff'];
+				                        return colorList[p2]
+				                    }
+				                }
+				            },
+					        data: num
+					    })
+					});
+					var option = {
+
+						    tooltip: {
+						        trigger: 'item',
+						        textStyle:{
+						        	fontSize:24
+						        },
+						        formatter: "{a}: {c}"
+						    },
+						    legend: {
+						     
+						    	left:"center",
+						        bottom:'0',
+						        itemWidth:24,
+						        itemHeight:24,
+						        itemGap:20,
+						        textStyle:{
+						        	fontSize:20
+						        }
+						    },
+						    grid: {
+						    	top:0,
+						        left: '20',
+						        right: '0',					   	
+						        bottom:"40",
+						        containLabel: true
+						    },
+						    xAxis: {
+						        type: 'value',
+						        boundaryGap: [0, 0.01],
+						        interval: 50,
+						        axisLabel: {
+						            formatter: '{value}',
+						            textStyle: {
+						                //color: '#fff',  
+						                fontWeight: '80'
+						            }
+						        },
+						        axisLine:{
+						        	show:false
+						        }
+						    },
+						    yAxis: {
+						        type: 'category',
+						        axisLabel: {
+						            show: true,
+						            interval: 0,
+						            rotate: 0,
+						            margin: 10,
+						            inside: false,
+						            textStyle: {
+						                //color: '#fff',
+						                fontWeight: '50'
+						            }
+						        }
+						    },
+						    series: _data
+						};
+					Echart_2.setOption(option, true);
+			}
+		})
+	}
+
+		function getGroups(){
+			$.ajax({
+				url:'${ctx}/dmp/api/register/analysis/group',
+				dataType: 'json',
+				type:'GET',
+				success:function(res){
+					var	option1 = {
+						    tooltip: {
+						        trigger: 'item',
+						        textStyle:{
+						        	fontSize:24
+						        },
+						        formatter: "{a} <br/>{b}: {c} ({d}%)"
+						    },
+						    legend: {
+						        left: 'center',
+						        bottom:'15',
+						        data:['男','女'],
+						        itemWidth:24,
+						        itemHeight:24,
+						        itemGap:20,
+						        textStyle:{
+						        	fontSize:20
+						        }
+						    },
+						    series: [
+						        {
+						            name:'性别分布',
+						            type:'pie',
+						            center:["50%","40%"],
+						            color: ['#f8ba00','#ff9400'],
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                show:true,
+						                color:'#333',
+						                formatter: "{d}%",
+						                fontSize:30
+						            },
+						            labelLine: {
+						            	length:2,
+						                lineStyle:{
+						                	color:"#999"
+						                }
+						            },
+						            data:[
+						                {value:res.data.group.maleTotal, name:'男'},
+						                {value:res.data.group.femaleTotal, name:'女'}
+						            ]
+						        }
+						    ]
+						};
+					var	option2 = {
+						    tooltip: {
+						        trigger: 'item',
+						        textStyle:{
+						        	fontSize:24
+						        },
+						        formatter: "{a} <br/>{b}: {c} ({d}%)"
+						    },
+						    legend: {
+						        left: 'center',
+						        bottom:'15',
+						        data:['成年人','未成年'],
+						        itemWidth:24,
+						        itemHeight:24,
+						        itemGap:20,
+						        textStyle:{
+						        	fontSize:20
+						        }
+						    },
+						    series: [
+						        {
+						            name:'年龄段分布',
+						            type:'pie',
+						            center:["50%","40%"],
+						            color: ['#00a1ff','#60d937'],
+						            radius: ['50%', '70%'],
+						            avoidLabelOverlap: false,
+						            label: {
+						                show:true,
+						                color:'#333',
+						                formatter: "{d}%",
+						                fontSize:30
+						            },
+						            labelLine: {
+						            	length:2,
+						                lineStyle:{
+						                	color:"#999"
+						                }
+						            },
+						            data:[
+						                {value:res.data.group.adultTotal, name:'成年人'},
+						                {value:res.data.group.unAdultTotal, name:'未成年'}
+						            ]
+						        }
+						    ]
+						};
+					var names=['iOS端报名人数','Android端报名人数','公众号报名人数','其他'];
+					var color=['#f8ba00','#60d937','#00a1ff','#1AA094'];
+					var option3 = {
+						    color:color,
+						    tooltip: {
+						        trigger: 'item',
+						        formatter: function (params, ticket, callback) {
+						           console.log(params)
+						           return params.data.name+':'+params.data.value;
+						       
+						        }
+						    },
+						    grid: {
+						        top:"20",
+						        bottom:'90',
+						        containLabel: true
+						    },
+						    legend: {
+						    	orient: 'vertical',
+						        show: true,
+						        left:'center',
+						        bottom:'0',
+						        itemGap:5,
+						        selected: {
+						            '其他': false
+						        },
+						        data: names
+						    },
+						    xAxis: {
+						    	type : 'category',
+						    },
+						    yAxis: {
+						    	axisLine:{
+						    		show:false
+						    	},
+						    	axisTick:{
+						    		show:false
+						    	}
+						    },
+						    series: [{
+						    	type: 'bar',
+						        data: [res.data.group.iosTotal,0,0,0],
+						        name: 'iOS端报名人数',
+						        barWidth: '30px',
+						        stack:"报名人数",
+						        itemStyle: {
+						            normal: {
+						                color:'#f8ba00'
+						            }
+						        }
+						    }, {
+						    	type: 'bar',
+						        data: [0,res.data.group.androidTotal,0,0],
+						        name: 'Android端报名人数',
+						        barWidth: '30px',
+						        stack:"报名人数",
+						        itemStyle: {
+						            normal: {
+						                color:'#60d937'
+						            }
+						        }
+						    }, {
+						    	type: 'bar',
+						        data: [0,0,res.data.group.weichatTotal,0],
+						        name: '公众号报名人数',
+						        barWidth: '30px',
+						        stack:"报名人数",
+						        itemStyle: {
+						            normal: {
+						                color:'#00a1ff'
+						            }
+						        }
+						    }, {
+						    	type: 'bar',
+						        data: [0,0,0,res.data.group.dmpTotal],
+						        name: '其他',
+						        stack:"报名人数",
+						        barWidth: '30px',
+						        itemStyle: {
+						            normal: {
+						                color:'#1AA094'
+						            }
+						        }
+						    }]
+						};
+					Echart_3.setOption(option1, true);
+					Echart_4.setOption(option2, true);
+					Echart_5.setOption(option3, true);
+				}
+			})
+		}
+		function digitize1(n) {
+            return (n + "").split("").map(Number); //链式调用，split拆分字符串返回数组，在数组上调用map，对数组上每一项
+        } 
+		function getTotalNum(){
+			$.ajax({
+				url:'${ctx}/dmp/api/register/analysis/apply/total',
+				dataType: 'json',
+				type:'GET',
+				success:function(res){
+					var numArrary=digitize1(res.data)
+					$('.d-num').find('a').html('')
+					var s='';
+					numArrary.forEach(function(p1,p2){
+						 s+='<span>'+p1+'</span>'
+					})
+					$('.d-num').find('a').html(s)
+					
+				}
+			})
+		}
+	</script>
+</html>

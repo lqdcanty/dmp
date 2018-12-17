@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>报名列表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			table{
+			width:100%!important;
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			.width80{
+				width:80px!important;
+			}
+			.width80 input{
+				width:80px!important;
+			}
+
+			
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+					<div class="layui-inline">
+						<label class="layui-form-label" >关键字</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="keyword" placeholder="系统名/系统编号" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label" >负责人</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="managerRealname" placeholder="负责人" autocomplete="off">
+						</div>
+					</div>
+					
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="add" style='margin-left: 20px' >添加</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		</div>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+		<input type="hidden" id="count">
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe642;</i>修改
+  			</button>
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="detail">
+    			<i class="layui-icon">&#xe647;</i>详情
+  			</button>
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="delete">
+    			<i class="layui-icon">&#xe640;</i>删除
+  			</button>
+		</div>
+	</script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='680px';
+			height="450px";
+		}else{
+			width='680px';
+			height="580px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/api/eapp/list";
+		layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+			var $ = layui.jquery;
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 10;
+			var page = 1;
+			var count=0;
+			var keyword='';
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			
+			var tableIns=table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				cols: [
+						[{
+							field: 'appCode',
+							title: '系统编号',
+							fixed:'left',
+							width:120
+						},{
+							field: 'appName',
+							title: '系统名称',
+							width:160
+						}, {
+							field: 'appVersion',
+							title: '系统版本',
+							width:120
+						},
+						 {
+							field: 'codeType',
+							title: '代码类型',
+							width:140
+						},{
+							field: 'appVersion',
+							title: '系统简介',
+							width:140
+						},
+						 {
+							field: 'createUser',
+							title: '创建者',
+							width:120
+						}, {
+							field: 'dutyUserName',
+							title: '值班人员账号',
+							width:100
+						}, {
+							field: 'gmtCreateStr',
+							title: '创建时间',
+							width:100,
+						},
+						{
+							field: 'managerRealname',
+							width: 100,
+							title: '系统负责人姓名'
+						},
+						{
+							field: 'managerName',
+							title: '系统负责人账号',
+							width: 140
+						},
+						{
+							field: 'managerPhone',
+							title: '系统负责人账号',
+							width: 140
+						},
+						{
+							field: 'managerEmail',
+							title: '系统负责人邮箱',
+							width: 140
+						},
+						 {
+							title: '操作',  
+							templet:'#listBar',
+							fixed:"right",
+							align:"center",
+							width: 200
+						} 
+					]
+				],
+			});
+			getData();
+		   function	getData(){
+			   keyword=$("#keyword").val();
+			   var indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			   $.ajax({
+				type: 'get',
+				url: dataApi,
+				cache: false,
+				data: {
+					keyword:keyword,
+					timestamp : (new Date()).valueOf()
+				},
+				success: function(obj) {
+					layer.close(indexclose);
+					if(obj.code != 0) {
+						layer.msg(obj.errorMsg)
+						return;
+					}
+					tableIns.reload({
+						data: obj.data
+					});
+				}
+			 })
+		   }
+
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+				if(layEvent === 'detail') detailFun(data.appCode);//编辑
+				
+				if(layEvent === 'delete') deleteFun(data.appCode);//删除
+				
+				if(layEvent === 'edit') editFun(data.appCode);//修改
+				
+			});
+			
+			$("#add").click(function(){
+				editFun('');
+			})
+			
+			function editFun(appCode){
+				var index = layui.layer.open({
+					title: appCode==''?"添加":"修改",
+					type: 2,
+					content: "app_edit.html",
+					id: 'app_edit',
+					area: ['850px', height],
+					zIndex: layer.zIndex,
+					success: function(layero, index) {
+						var body = layui.layer.getChildFrame('body', index);
+						if(appCode) {
+							//编辑
+							body.find('#appCode').val(appCode);
+							//body.find(".addBtn").hide();
+							body.find('#btn').click();
+							body.find("#submitId").val('edit');
+						}else{
+							body.find('#appCode').val('');
+							body.find('#btn').click();
+							body.find("#submitId").val('add');
+						}
+					},
+					end:function(){
+						getData();
+					}
+				})
+			}
+			function detailFun(appCode){
+				var index = layui.layer.open({
+					title: "详情",
+					type: 2,
+					content: "app_detail.html",
+					id: 'app_detail',
+					area: [width, '400px'],
+					zIndex: layer.zIndex,
+					success: function(layero, index) {
+						var body = layui.layer.getChildFrame('body', index);
+						if(appCode) {
+							//编辑
+							body.find('#appCode').val(appCode);
+							//body.find(".addBtn").hide();
+							body.find('#btn').click();
+						}
+					}
+				})
+			}
+			function deleteFun(appCode){
+				layer.confirm('确定要删除该信息!', {
+			 		  btn: ['确定','取消'] //按钮
+		 		}, function(){//按钮一
+		 			var indexclose=layer.msg('数据提交中', { icon: 16 ,shade: 0.1 ,time:0 });
+		 			$.ajax({
+						type: 'get',
+						url: realPath+'/api/eapp/del',
+						cache: false,
+						data: {
+							appCode:appCode,
+							timestamp : (new Date()).valueOf()
+						},
+						success: function(obj) {
+							layer.close(indexclose);
+							if(obj.code != 0) {
+								layer.msg(obj.errorMsg)
+								return;
+							}
+							layer.msg("删除成功");
+							getData();
+						}
+					 })
+		 		}, function(){//按钮er
+		 			//return false 
+		 		});
+				
+				 
+			}
+			$('#search').on('click', function() {
+				getData();
+			});
+			
+		});
+	</script>
+
+</html>

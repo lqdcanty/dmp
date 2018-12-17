@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+		
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app' v-cloak>
+			<input type='hidden' id='appCode'>
+			<div class="tableBox">
+				<table class="tableWidth">
+					<tr>
+						<td class='infoItem'>系统编号</td>
+						<td class='valueWidth'>{{calllogInfo.appCode}}</td>
+					
+						<td class='infoItem'>系统名称</td>
+						<td class='valueWidth'>{{calllogInfo.appName}}</td>
+					</tr>
+					
+					<tr >
+						<td class='infoItem'>系统版本</td>
+						<td class='valueWidth'>{{calllogInfo.appVersion}}</td>
+						<td class='infoItem'>系统简介</td>
+						<td class='valueWidth'>{{calllogInfo.appIntro}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>值班人员账号</td>
+						<td class='valueWidth'>{{calllogInfo.dutyUserName}}</td>
+						<td class='infoItem'>系统负责人名称</td>
+						<td class='valueWidth'>{{calllogInfo.managerRealname}}</td>
+						
+					</tr>
+					<tr >
+						<td class='infoItem'>系统负责人账号</td>
+						<td class='valueWidth'>{{calllogInfo.managerName}}</td>
+						<td class='infoItem'>统负责人电话</td>
+						<td class='valueWidth'>{{calllogInfo.managerPhone}}</td>
+						
+					</tr>
+					<tr >
+						<td class='infoItem'>系统负责人邮箱</td>
+						<td class='valueWidth'>{{calllogInfo.managerEmail}}</td>
+						<td class='infoItem'>修改者</td>
+						<td class='valueWidth'>{{calllogInfo.lastModifyUser}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>修改时间</td>
+						<td class='valueWidth'>{{calllogInfo.lastModifyTimeStr}}</td>
+						<td class='infoItem'>创建时间</td>
+						<td class='valueWidth'>{{calllogInfo.gmtCreateStr}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>代码类型</td>
+						<td class='valueWidth'>{{calllogInfo.codeType}}</td>
+						<td class='infoItem'>代码地址</td>
+						<td class='valueWidth'>{{calllogInfo.codeUrl}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form;
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							calllogInfo: {},
+							appCode:'',
+						},
+						created: function() {
+							var that = this;
+							that.appCode = $("#appCode").val();
+							that.getData(that.appCode);
+						},
+						methods:{
+							getData:function(appCode){
+								var that=this;
+								var indexclose=layer.load(2, {shade: false});
+								$.ajax({
+									type: 'get',
+									url: realPath+'/api/eapp/get',
+									cache: false,
+									data: {
+										appCode:appCode,
+										timestamp : (new Date()).valueOf()
+									},
+									success: function(obj) {
+										layer.close(indexclose);
+										if(obj.code != 0) {
+											layer.msg(obj.errorMsg)
+											return;
+										}
+										that.calllogInfo=obj.data;
+									}
+								 })
+							}
+						}
+					})
+				});
+			}
+		</script>
+	</body>
+</html>

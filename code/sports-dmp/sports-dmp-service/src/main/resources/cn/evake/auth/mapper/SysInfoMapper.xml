@@ -1,0 +1,151 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.evake.auth.dao.mapper.SysInfoMapper" >
+	<resultMap id="BaseResultMap" type="cn.evake.auth.dao.model.SysInfo" >
+		<id column="Id" property="id" jdbcType="BIGINT" />
+		<result column="name" property="name" jdbcType="VARCHAR" />
+		<result column="create_user_name" property="createUserName" jdbcType="VARCHAR" />
+		<result column="icon" property="icon" jdbcType="VARCHAR" />
+		<result column="dispaly" property="dispaly" jdbcType="BIT" />
+		<result column="host" property="host" jdbcType="VARCHAR" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modifed" property="gmtModifed" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    Id, name, create_user_name, icon, dispaly, host, gmt_create, gmt_modifed
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 'false' as QUERYID,
+		<include refid="Base_Column_List" />
+    from sys_info
+    where Id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_info
+    where Id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="cn.evake.auth.dao.model.SysInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_info (Id, name, create_user_name, 
+      icon, dispaly, host, gmt_create, 
+      gmt_modifed)
+    values (#{id,jdbcType=BIGINT}, #{name,jdbcType=VARCHAR}, #{createUserName,jdbcType=VARCHAR}, 
+      #{icon,jdbcType=VARCHAR}, #{dispaly,jdbcType=BIT}, #{host,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModifed,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="cn.evake.auth.dao.model.SysInfo" useGeneratedKeys="true" keyProperty="id">
+    insert into sys_info
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+        Id,
+			</if>
+			<if test="name != null" >
+        name,
+			</if>
+			<if test="createUserName != null" >
+        create_user_name,
+			</if>
+			<if test="icon != null" >
+        icon,
+			</if>
+			<if test="dispaly != null" >
+        dispaly,
+			</if>
+			<if test="host != null" >
+        host,
+			</if>
+			<if test="gmtCreate != null" >
+        gmt_create,
+			</if>
+			<if test="gmtModifed != null" >
+        gmt_modifed,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+        #{id,jdbcType=BIGINT},
+			</if>
+			<if test="name != null" >
+        #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="createUserName != null" >
+        #{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null" >
+        #{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="dispaly != null" >
+        #{dispaly,jdbcType=BIT},
+			</if>
+			<if test="host != null" >
+        #{host,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModifed != null" >
+        #{gmtModifed,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.evake.auth.dao.model.SysInfo" >
+    update sys_info
+		<set >
+			<if test="name != null" >
+        name = #{name,jdbcType=VARCHAR},
+			</if>
+			<if test="createUserName != null" >
+        create_user_name = #{createUserName,jdbcType=VARCHAR},
+			</if>
+			<if test="icon != null" >
+        icon = #{icon,jdbcType=VARCHAR},
+			</if>
+			<if test="dispaly != null" >
+        dispaly = #{dispaly,jdbcType=BIT},
+			</if>
+			<if test="host != null" >
+        host = #{host,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModifed != null" >
+        gmt_modifed = #{gmtModifed,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+    where Id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.evake.auth.dao.model.SysInfo" >
+    update sys_info
+    set name = #{name,jdbcType=VARCHAR},
+      create_user_name = #{createUserName,jdbcType=VARCHAR},
+      icon = #{icon,jdbcType=VARCHAR},
+      dispaly = #{dispaly,jdbcType=BIT},
+      host = #{host,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modifed = #{gmtModifed,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+	</update>
+	<!--以下为自定义sql-->
+	<select id="selectByName" resultMap="BaseResultMap" parameterType="java.lang.String" >
+		select <include refid="Base_Column_List" />  from sys_info where name=#{name}
+	</select>
+  
+	<select id="selectAll" resultMap="BaseResultMap" >
+		select <include refid="Base_Column_List" /> from sys_info
+	</select>
+	
+	<select id="selectSysIds" resultMap="BaseResultMap"  parameterType="java.util.List">
+		select <include refid="Base_Column_List" /> from sys_info 
+		<if test="list.size() > 0"> 
+		where id in  
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">  
+            #{item}  
+			</foreach>
+		</if>
+		<if test="list.size() == 0"> 
+    	   where id=0
+		</if>
+	</select>
+	
+	
+</mapper>

@@ -1,0 +1,881 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>比赛配置</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/system/common/css/font-awesome.min.css" media="all" />
+		<style>
+		[v-cloak] {
+	display: none;
+}
+			.layui-form-label{
+			   width:60px;
+			}
+			body .modle-wrap{
+    position: fixed;top: 0;right: 0;bottom: 0;left: 0;z-index: 1040;width: 100%;height: 100%;
+}
+body .modle-container{
+    background:rgba(0, 0, 0, 0.5) none repeat scroll 0 0 !important;position: relative; width: 100%; height: 100%;
+}
+
+.layerLqd{
+	    background: #fff;
+    width: 650px;
+    left: 50%;
+    margin-left: -335px;
+    position: absolute;
+    top: 70px;
+    max-height:450px;
+    overflow-y:scroll;
+}
+
+.btnDiv{
+				text-align:center;
+				padding:20px 0;
+			}
+			.btnDiv .btn{
+				width:140px;
+				border:1px solid #009688;
+			}
+			.btnDiv .btn.bgWhite{
+				background:#fff;
+				color:#009688;
+			}
+			svg{
+				width:16px;
+			    height: 16px;
+			    dispaly:inline-block;
+			    vertical-align: middle;
+			    fill: currentColor;
+			    overflow: hidden;
+			    color:#15BC9C;
+			    margin-top:-2px;
+			    
+			}
+			.layui-form-item .layui-form-checkbox{
+				display:none;
+			} 
+			.checkboxLabel{
+				display: inline-block;
+    			line-height: 38px;
+    			margin-right:10px;
+			}
+			
+			.h1Title{
+				height:50px;
+				line-height:50px;
+				font-size: 16px;
+				color: #15BC9C;
+				text-align: left;
+				border-bottom:1px solid #15BC9C;
+				padding-left:20px;
+			}
+			.matchCode{
+				position:relative;
+				height:38px;
+			}
+			.matchCode input{
+				width:100%;
+				display:block;
+				height:38px;
+				border:1px solid #ccc;
+				border-radius:4px;
+				background:#fff;
+				padding:0 10px;
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.selectBox{
+				width:100%;
+				height:250px;
+				overflow-y:scroll;
+				position:absolute;
+				left:0;
+				top:40px;
+				background:#fff;
+				z-index:100;
+				box-shadow: 0px 3px 3px rgba(0,0,0,0.2);
+				padding:5px 0;
+				border-radius: 4px;
+			}
+			.selectBox span{
+				line-height:36px;
+				display:block;
+				padding:0 8px;
+				cursor: pointer;
+			}
+			.tableBox{
+				min-height:350px;
+			}
+			.h1Title{
+				position:fixed;
+				width:610px;
+				background:#fff;
+				z-index:1000;
+			}
+			.h1Title.fixed{
+				width:760px;
+			}
+			.h1Title i{
+				color:#009688;font-size:22px;
+				margin-right:15px;
+				float:right;
+				cursor: pointer;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody" >
+		<div id="app" v-cloak >
+			<blockquote class="layui-elem-quote quoteBox">
+				<form class="layui-form" onsubmit="return false;">
+					<div class='layui-form-item mb0'>
+						<div class="layui-inline">
+							<label class="layui-form-label">赛事名称</label>
+							<div class="layui-inline matchCode"  style="width:300px">
+								<div name="select-main matchCode"  lay-filter='matchSel'>
+									<input type="text" placeholder="请选择赛事" readonly id="matchCode0" v-model="matchNameSelect" :data-code="matchCodeSelect" @click="optionSelectInput">	
+									<div class="layui-form-item selectBox" id="selectBox0"  v-if="optionSelectShow" @mouseleave="mouseleaveSelect">
+										<span v-for="match in matchSelect" :data-value="match.matchCode" @click="optionSelect(match)">{{match.matchName}}</span> 
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="layui-inline" style="float:right;">
+							<label class="layui-form-label"></label>
+							<div class="layui-inline">
+								<a class="layui-btn search_btn" id="creatMacth" @click="creatMacth" data-type="reload"><i class="layui-icon" style="font-size:12px;line-height:36px;">&#xe654;</i>创建比赛</a>
+							</div>
+						</div>
+					</div>
+				</form>
+			</blockquote>
+			<form class="layui-form">
+			<table class="layui-table" style='margin-top:0'>
+				<thead>
+					<tr>
+				    	<th>赛事</th>
+				    	<th>比赛名称</th>
+				    	<th>赛场</th>
+				    	
+			   			<th>比赛分组</th>
+			   			<th>比赛项目</th>
+			   			<th>创建者</th>
+	                    <th width="130">操作</th>
+	                    <th>状态</th>
+				    </tr>
+				</thead>
+				<tbody>
+				
+					<tr v-for="item in listArr">
+						<td>{{item.matchName}}</td>
+						<td>{{item.name}}</td>
+						<td>
+							<p v-for='(site,indexA) in item.sites' v-if='site.isChoose'>{{site.name}}</p>
+						</td>
+						
+						<td>
+							<p v-for='(group,indexB) in item.groups' v-if='group.isChoose'>{{group.name}}</p>
+						</td>
+						<td>
+							<p v-for='(enevt,indexC) in item.events' v-if='enevt.isChoose'>{{enevt.name}}</p>
+						</td>
+						<td>{{item.creator?item.creator:""}}</td>
+						<td>
+							<a class="layui-btn layui-btn-xs" style='background: #15BC9C;' @click='updateInfo(item)'><i class="layui-icon layui-icon-edit"></i></a>
+				    		<a class="layui-btn layui-btn-xs layui-btn-danger" @click='dellInfo(item)'><i class="layui-icon layui-icon-delete"></i></a>
+				    		<a class="layui-btn layui-btn-xs  layui-btn-warm" @click="rank(item)">排名</a>
+						</td>
+						<td>
+							<input type="checkbox" name="isShow" lay-skin="switch" lay-filter="isShow" lay-text="开启|关闭" :data-value="item.competitionCode"  :value="item.isShow" v-modle="item.isShow" :checked="item.isShow==1?true:false">
+						</td>
+					</tr>
+					
+				</tbody>
+				
+			</table>
+			</form>
+			
+			<div class="modle-wrap" v-if="editStatus">
+				<div class="modle-container">
+					<div class="layerLqd" style="background:#fff;">
+						<h1 class="h1Title" v-if='editType==1'>新增赛事 <i class="layui-icon" @click='colseEdit()' >&#x1006;</i></h1>
+						<h1 class="h1Title" v-if='editType==2'>编辑赛事 <i class="layui-icon" @click='colseEdit()' >&#x1006;</i></h1>
+						<div class="tableBox" style="margin-top:50px"> 
+							<form action="" class="layui-form" onsubmit="return false">
+									<div class="layui-form-item" v-if="selectInput">
+										<label class="layui-form-label">赛事名称</label>
+										<div class="matchCode layui-input-block" >
+										    <div name="select-main matchCode"  lay-filter='matchSel' >
+												<!-- <option value=''>请选择赛事</option> -->
+												<input type="text" placeholder="请选择赛事" readonly id="matchCode1"  v-model="matchNameSelectLayer" :data-code="matchCodeSelectLayer" @click="optionSelectInputLayer">	
+												<div class="layui-form-item selectBox"  v-if="optionSelectShowLayer" @mouseleave="mouseleaveSelect">
+													<span v-for="match in matchSelectLayer" :key="match.matchCode" :data-code="match.matchCode" @click="optionSelectLayer(match)">{{match.matchName}}</span> 
+												</div>
+											</div>
+										</div>
+									</div>
+									<div class="layui-form-item">
+										<label class="layui-form-label">比赛名称</label>
+										<div class="layui-input-block">
+											<input type="text" name="name" v-model="name" placeholder="请输入比赛名称" autocomplete="off" class="layui-input">
+										</div>
+									</div>
+									<div v-if="macthLayerCheckbox">
+										<div class="layui-form-item" >
+											<label class="layui-form-label">比赛项目</label>
+											<div class="layui-input-block" id="events">
+												<a v-for="item in eventsArr" :key="item.code" class="checkboxLabel" @click.stop="eventsSelect(item)">
+													<svg class="icon" v-if="!item.isChoose" style="width:16px;height:16px;vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929"><path d="M818.655 971.545h-613.312c-84.303 0-152.886-66.343-152.886-147.89v-623.306c0-81.549 68.585-147.89 152.886-147.89h613.312c84.303 0 152.886 66.342 152.886 147.89v623.306c0 81.548-68.585 147.89-152.886 147.89zM205.345 123.155c-45.318 0-82.19 34.628-82.19 77.191v623.306c0 42.564 36.869 77.191 82.19 77.191h613.312c45.318 0 82.19-34.627 82.19-77.191v-623.306c0-42.563-36.869-77.191-82.19-77.191h-613.312z" fill="" p-id="930"></path></svg>
+													<svg class="icon iconSelcted" v-if="item.isChoose" style="vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="704"><path d="M930.909091 0H93.090909C41.890909 0 0 41.890909 0 93.090909v837.818182c0 51.2 41.890909 93.090909 93.090909 93.090909h837.818182c51.2 0 93.090909-41.890909 93.090909-93.090909V93.090909c0-51.2-41.890909-93.090909-93.090909-93.090909z m-79.127273 335.127273L481.745455 728.436364c-9.309091 9.309091-23.272727 9.309091-32.581819 0l-230.4-230.4c-9.309091-9.309091-9.309091-23.272727 0-32.581819 9.309091-9.309091 23.272727-9.309091 32.581819 0l214.10909 214.109091L819.2 302.545455c9.309091-9.309091 23.272727-9.309091 32.581818 0 9.309091 9.309091 9.309091 23.272727 0 32.581818z" fill="#15BC9C;" p-id="705"></path></svg>
+													<input type="checkbox" :name="item.name"  :value="item.code"  v-model="item.isChoose" :data-code="item.isChoose">{{item.name}}
+												</a>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">比赛分组</label>
+											<div class="layui-input-block" id="groups">
+												<a v-for="item in groupsArr" :key="item.code" class="checkboxLabel" @click="groupsSelect(item)">
+												
+													<svg class="icon" v-if="!item.isChoose" style="width:16px;height:16px;vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929"><path d="M818.655 971.545h-613.312c-84.303 0-152.886-66.343-152.886-147.89v-623.306c0-81.549 68.585-147.89 152.886-147.89h613.312c84.303 0 152.886 66.342 152.886 147.89v623.306c0 81.548-68.585 147.89-152.886 147.89zM205.345 123.155c-45.318 0-82.19 34.628-82.19 77.191v623.306c0 42.564 36.869 77.191 82.19 77.191h613.312c45.318 0 82.19-34.627 82.19-77.191v-623.306c0-42.563-36.869-77.191-82.19-77.191h-613.312z" fill="" p-id="930"></path></svg>
+													<svg class="icon iconSelcted" v-if="item.isChoose" style="vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="704"><path d="M930.909091 0H93.090909C41.890909 0 0 41.890909 0 93.090909v837.818182c0 51.2 41.890909 93.090909 93.090909 93.090909h837.818182c51.2 0 93.090909-41.890909 93.090909-93.090909V93.090909c0-51.2-41.890909-93.090909-93.090909-93.090909z m-79.127273 335.127273L481.745455 728.436364c-9.309091 9.309091-23.272727 9.309091-32.581819 0l-230.4-230.4c-9.309091-9.309091-9.309091-23.272727 0-32.581819 9.309091-9.309091 23.272727-9.309091 32.581819 0l214.10909 214.109091L819.2 302.545455c9.309091-9.309091 23.272727-9.309091 32.581818 0 9.309091 9.309091 9.309091 23.272727 0 32.581818z" fill="#15BC9C;" p-id="705"></path></svg>
+													<input type="checkbox" :name="item.name"  :value="item.code" :data-code="item.isChoose">{{item.name}}
+												</a>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">选择赛场</label>
+											<div class="layui-input-block" id="sites">
+												<a v-for="item in sitesArr" :key="item.code" class="checkboxLabel" @click="sitesSelect(item)">
+													<svg class="icon" v-if="!item.isChoose" style="width:16px;height:16px;vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929"><path d="M818.655 971.545h-613.312c-84.303 0-152.886-66.343-152.886-147.89v-623.306c0-81.549 68.585-147.89 152.886-147.89h613.312c84.303 0 152.886 66.342 152.886 147.89v623.306c0 81.548-68.585 147.89-152.886 147.89zM205.345 123.155c-45.318 0-82.19 34.628-82.19 77.191v623.306c0 42.564 36.869 77.191 82.19 77.191h613.312c45.318 0 82.19-34.627 82.19-77.191v-623.306c0-42.563-36.869-77.191-82.19-77.191h-613.312z" fill="" p-id="930"></path></svg>
+													<svg class="icon iconSelcted" v-if="item.isChoose" style="vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="704"><path d="M930.909091 0H93.090909C41.890909 0 0 41.890909 0 93.090909v837.818182c0 51.2 41.890909 93.090909 93.090909 93.090909h837.818182c51.2 0 93.090909-41.890909 93.090909-93.090909V93.090909c0-51.2-41.890909-93.090909-93.090909-93.090909z m-79.127273 335.127273L481.745455 728.436364c-9.309091 9.309091-23.272727 9.309091-32.581819 0l-230.4-230.4c-9.309091-9.309091-9.309091-23.272727 0-32.581819 9.309091-9.309091 23.272727-9.309091 32.581819 0l214.10909 214.109091L819.2 302.545455c9.309091-9.309091 23.272727-9.309091 32.581818 0 9.309091 9.309091 9.309091 23.272727 0 32.581818z" fill="#15BC9C;" p-id="705"></path></svg>
+													<input type="checkbox" :name="item.name"  :value="item.code"  :data-code="item.isChoose">{{item.name}}
+												</a>
+											</div>
+										</div>
+										<div class="layui-form-item">
+											<label class="layui-form-label">排名方式</label>
+											<div class="layui-input-block" id="sites">
+											      <input type="radio" name="rankType" value="unit" title="合作伙伴排名" v-model="radioselect" lay-filter="rankType">
+											      <input type="radio" name="rankType" value="dmp" title="官方排名" v-model="radioselect" lay-filter="rankType"> 
+											     <!--  <a >
+													<svg class="icon" v-if="radioselect=='unit'" style="width:16px;height:16px;vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929"><path d="M818.655 971.545h-613.312c-84.303 0-152.886-66.343-152.886-147.89v-623.306c0-81.549 68.585-147.89 152.886-147.89h613.312c84.303 0 152.886 66.342 152.886 147.89v623.306c0 81.548-68.585 147.89-152.886 147.89zM205.345 123.155c-45.318 0-82.19 34.628-82.19 77.191v623.306c0 42.564 36.869 77.191 82.19 77.191h613.312c45.318 0 82.19-34.627 82.19-77.191v-623.306c0-42.563-36.869-77.191-82.19-77.191h-613.312z" fill="" p-id="930"></path></svg>
+													<svg class="icon iconSelcted" v-if="!radioselect=='unit'" style="vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="704"><path d="M930.909091 0H93.090909C41.890909 0 0 41.890909 0 93.090909v837.818182c0 51.2 41.890909 93.090909 93.090909 93.090909h837.818182c51.2 0 93.090909-41.890909 93.090909-93.090909V93.090909c0-51.2-41.890909-93.090909-93.090909-93.090909z m-79.127273 335.127273L481.745455 728.436364c-9.309091 9.309091-23.272727 9.309091-32.581819 0l-230.4-230.4c-9.309091-9.309091-9.309091-23.272727 0-32.581819 9.309091-9.309091 23.272727-9.309091 32.581819 0l214.10909 214.109091L819.2 302.545455c9.309091-9.309091 23.272727-9.309091 32.581818 0 9.309091 9.309091 9.309091 23.272727 0 32.581818z" fill="#15BC9C;" p-id="705"></path></svg>
+													<input type="hidden" name="rankType" value="unit" >合作伙伴排名
+												</a>
+												  <a >
+													<svg class="icon" v-if="radioselect=='dmp'" style="width:16px;height:16px;vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="929"><path d="M818.655 971.545h-613.312c-84.303 0-152.886-66.343-152.886-147.89v-623.306c0-81.549 68.585-147.89 152.886-147.89h613.312c84.303 0 152.886 66.342 152.886 147.89v623.306c0 81.548-68.585 147.89-152.886 147.89zM205.345 123.155c-45.318 0-82.19 34.628-82.19 77.191v623.306c0 42.564 36.869 77.191 82.19 77.191h613.312c45.318 0 82.19-34.627 82.19-77.191v-623.306c0-42.563-36.869-77.191-82.19-77.191h-613.312z" fill="" p-id="930"></path></svg>
+													<svg class="icon iconSelcted" v-if="!radioselect=='dmp'" style="vertical-align: middle;color:#15BC9C;fill: currentColor;overflow: hidden;" viewBox="0 0 1024 1024" version="1.1" xmlns="http://www.w3.org/2000/svg" p-id="704"><path d="M930.909091 0H93.090909C41.890909 0 0 41.890909 0 93.090909v837.818182c0 51.2 41.890909 93.090909 93.090909 93.090909h837.818182c51.2 0 93.090909-41.890909 93.090909-93.090909V93.090909c0-51.2-41.890909-93.090909-93.090909-93.090909z m-79.127273 335.127273L481.745455 728.436364c-9.309091 9.309091-23.272727 9.309091-32.581819 0l-230.4-230.4c-9.309091-9.309091-9.309091-23.272727 0-32.581819 9.309091-9.309091 23.272727-9.309091 32.581819 0l214.10909 214.109091L819.2 302.545455c9.309091-9.309091 23.272727-9.309091 32.581818 0 9.309091 9.309091 9.309091 23.272727 0 32.581818z" fill="#15BC9C;" p-id="705"></path></svg>
+													<input type="hidden" name="rankType" value="dmp" >官方排名
+												</a> -->
+											</div>
+										</div>
+									</div>
+									
+								 <div class="layui-form-item btnDiv">
+									<div class="layui-inline">
+										<a class="layui-btn btn"  data-type="reload"  @click="saveAddInfo">确定</a>
+									</div>
+									<div class="layui-inline">
+										<a class="layui-btn btn bgWhite"  @click='colseEdit()'>取消</a>
+									</div>
+								</div>
+							</form>
+						</div> 
+					</div>	
+				</div>
+			</div>
+			<div class="modle-wrap" v-if="rankStatus">
+				<div class="modle-container">
+					<div class="layerLqd" style="background:#fff;width:800px;">
+						<h1 class="h1Title fixed">排名<i class="layui-icon" @click='colseEdit()' >&#x1006;</i></h1>
+						<div class="tableBox" style="margin-top:50px">
+							<form action="" class="layui-form">
+								<div class="layui-form-item">
+									<div class="layui-inline" style="font-size:18px;color:#009688">{{matchName}}</div>
+									<div class="layui-inline" style="float:right">
+										<a class="layui-btn" v-if="rankTypeBoolean">合作方排名</a>
+										<a class="layui-btn" v-if="!rankTypeBoolean">官方排名</a>
+										<a class="layui-btn" v-if="!rankTypeBoolean" @click="refreshRank">刷新排名</a>
+									</div>
+								</div>
+								<table class="layui-table">
+									<thead>
+										<tr>
+											<th>比赛项目</th>
+											<th>排名</th>
+											<th>昵称</th>
+											<th>参赛成绩</th>
+											<th>参赛时间</th>
+										</tr>
+									</thead>
+									<tbody>
+										<tr v-for="rank in rankDataArr">
+											<th>{{rank.eventName}}</th>
+											<th>{{rank.ranking}}</th>
+											<th>{{rank.playerName}}</th>
+											<th>{{rank.score}}{{rank.scoreUnit}}</th>
+											<th>{{rank.partTimeStr}}</th>
+										</tr>
+									</tbody>
+								</table>
+								<div id="pageRank"></div>
+							</form>
+							
+						</div>
+					</div>
+				</div>
+			</div>
+			<div id="pageWrap"></div>
+		</div>
+		<script type="text/javascript">
+			var realPath = "${ctx}";
+			var lqd=document.getElementsByClassName("layerLqd")[0]
+			if(document.body.clientWidth<1500){
+				lqd.style.maxHeight='450px';
+				lqd.style.top='50px';
+			}else{
+				lqd.style.maxHeight='650px';
+				lqd.style.top='70px';
+			}
+		</script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+		
+		<script type="text/javascript">
+			layui.use(['table','form','layer','laypage','laydate'],function(){
+			var table = layui.table,
+				laypage = layui.laypage,
+				laydate=layui.laydate,
+				form = layui.form,
+				layer =layui.layer,
+				$ = layui.jquery;
+			
+				
+					//vue
+					 var vm = new Vue({
+						el: '#app',
+						data: {
+							page:1,
+							limit:10,
+							allRow:0,
+							listArr:[],
+							selectInput:false,//控制赛事的显示
+							editStatus:false,//添加，编辑状态
+							editType:1,
+							detailMatch:{},
+							groupsSelectArr:[],
+							sitesSelectArr:[],
+							eventsSelectArr:[],
+							matchSelect:[],
+							groupsArr:[],
+							sitesArr:[],
+							eventsArr:[],
+							name:'',
+							matchNameSelect:'',//选择赛事名称
+							matchCodeSelect:'',//选择赛事code
+							optionSelectShow:false,//展示需要选的赛事
+							optionSelectShowLayer:false,//弹层展示需要选的赛事
+							matchNameSelectLayer:'',
+							matchCodeSelectLayer:'',
+							matchSelectLayer:[],
+							matchCode:'',
+							competitionCode:'',
+							macthLayerCheckbox:true,//选择赛事之后才显示
+							rankStatus:false,
+							pageRank:1,
+							rankDataArr:[],
+							allRowRank:1,
+							radioselect:'',
+							isShow:0,
+							rankTypeBoolean:false,
+							eventsCode:[],
+							groupsCode:[],
+							areasCode:[],
+							isShowRow:0,//点击排名㤇传的isShow
+							matchName:'',
+						},
+						mounted:function(){
+							form.render();
+						},
+						created: function() {
+							this.getData('');
+							this.matchSelectData();
+							form.render('checkbox');
+						},
+						updated:function(){
+							 var that=this;
+							 
+							 form.on('radio(rankType)', function(data){
+									console.log(data,"data1");
+									if(data.value=='unit'){
+										that.radioselect='unit'
+									}
+									if(data.value=='dmp'){
+										that.radioselect='dmp'
+									}
+							    	 console.log(that.radioselect,"that.radioselect")
+								}); 
+							   laypage.render({
+								   elem: 'pageWrap'
+								   ,count: this.allRow //数据总数，从服务端得到
+								   ,curr:this.page
+								   ,limit:this.limit
+								   ,jump: function(obj, first){
+								     //首次不执行
+								     if(!first){
+									     that.page=obj.curr
+									     that.getData(that.matchCodeSelect)		     
+								     }
+								   }
+								 });
+								 laypage.render({
+									   elem: 'pageRank'
+									   ,count: this.allRowRank //数据总数，从服务端得到
+									   ,curr:this.pageRank
+									   ,limit:this.limit
+									   ,jump: function(obj, first){
+									     //首次不执行
+									     if(!first){
+										     that.pageRank=obj.curr;
+										     var data={
+										    		pageNumber:that.pageRank,
+													pageSize:that.limit,
+													matchCode:that.matchCode,
+													competitionCode:that.competitionCode,
+													events:that.eventsCode.join(","),
+													groups:that.groupsCode.join(","),
+													areas:that.areasCode.join(",")
+										     }
+										     that.rankDataFun(data);	     
+									     }
+									   }
+									 });
+							  form.on('switch(isShow)', function(data){
+									console.log(data,"data1");
+									console.log(data.elem.dataset.value,"aa")
+									if(data.elem.checked==false){
+										that.isShow=0;
+										that.isShowRow=0;
+									}else{
+										that.isShow=1;
+										that.isShowRow=1;
+									}
+									console.log(data.value,that.isShow,"code")
+									layer.confirm('确定修改吗？',{icon:3, title:'提示信息'},function(index){
+								  		var index = layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+								  		console.log(that.isShow);
+								  		   $.ajax({
+											type:'get',
+											url:realPath+"/dmp/api/competition/lock",
+											cache: false,
+											data:{competitionCode:data.elem.dataset.value,isShow :that.isShow,fresh:Math.random()},
+											success:function(obj){
+												layer.close(index);
+												if(obj.code==0){
+													//判断页面显示
+													layer.msg("修改成功");
+												}else{
+													layer.msg(obj.errorMsg)
+												}
+											},
+											error:function(obj){
+												layer.close(index);
+											}
+								  		})  
+									console.log(that.isShow,"that.isShow")
+								});  
+							  })
+							   form.render()
+							
+						},
+						methods:{
+							mouseleaveSelect:function(){
+								var that=this;
+								that.optionSelectShow=false;
+								that.optionSelectShowLayer=false;
+							},
+							optionSelectInput:function(){
+								//debugger;
+								var that=this;
+								that.optionSelectShow=true;
+							},
+							optionSelect:function(match){
+								 var that=this;
+								 that.matchNameSelect=match.matchName;
+								 that.matchCodeSelect=match.matchCode;
+								 that.matchCode=match.matchCode;
+								 that.optionSelectShow=false;
+								 that.page=1;
+								 
+								 that.getData(that.matchCodeSelect);
+								 form.render();
+							},
+							optionSelectInputLayer:function(){
+								var that=this;
+								that.optionSelectShowLayer=true;
+							},
+							optionSelectLayer:function(match){
+								 var that=this;
+								 that.matchNameSelectLayer=match.matchName;
+								 that.matchCodeSelectLayer=match.matchCode;
+								 that.matchCode=match.matchCode;
+								 that.optionSelectShowLayer=false;
+								var that=this;
+								var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+								$.ajax({
+									url:'/dmp/api/competition/match/detail',
+									type:'get',
+									data:{matchCode:match.matchCode},
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+											//that.matchSelect=obj.data;
+											that.groupsArr=obj.data.groups,
+											that.sitesArr=obj.data.sites,
+											that.eventsArr=obj.data.events,
+											that.macthLayerCheckbox=true;
+											
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+										form.render();
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+								
+							},
+							matchSelectData:function(){
+								var that=this;
+								var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+								$.ajax({
+									url:'/dmp/api/match/enable/matchs',
+									type:'get',
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+											that.matchSelect=obj.data;
+											that.matchSelectLayer=obj.data;
+											console.log(that.matchSelect);
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+										form.render();
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+							},
+							getData:function(item){
+								var that=this;
+								
+								var index = layer.load(2, {shade: 0.1}); //0代表加载的风格，支持0-2 //0代表加载的风格，支持0-2
+								$.ajax({
+									url:'/dmp/api/competition/list',
+									type:'get',
+									data:{matchCode:item,page:that.page,limit:that.limit},
+									timeout : 10000,
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+					  						//that.page=obj.data.currentPage;
+											that.allRow=obj.data.allRow
+											that.listArr=obj.data.list;
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+										form.render();
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+							},
+							getDataDetail:function(item){
+								var that=this;
+								
+								var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+								that.matchCode=item.matchCode;
+								that.competitionCode=item.competitionCode;
+								
+								$.ajax({
+									url:'/dmp/api/competition/detail',
+									type:'get',
+									data:{competitionCode:item},
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+										
+											that.name=obj.data.name;
+											that.matchCode=obj.data.matchCode;
+											that.competitionCode=obj.data.competitionCode;
+											//that.detailMatch=obj.data;
+											that.eventsArr=obj.data.events;
+											that.groupsArr=obj.data.groups;
+											that.sitesArr=obj.data.sites; 
+											that.radioselect=obj.data.rankType?obj.data.rankType:'unit';
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+							},
+							eventsSelect:function(item){
+								var that=this;
+								item.isChoose=!item.isChoose
+								form.render()
+							},
+							groupsSelect:function(item){
+								var that=this;
+								item.isChoose=!item.isChoose
+								form.render()
+							},
+							sitesSelect:function(item){
+								var that=this;
+								item.isChoose=!item.isChoose
+								form.render()
+							},
+							creatMacth:function(){
+								this.selectInput=true;// 赛事影藏
+								this.editStatus=true;
+								this.name='';
+								this.matchNameSelectLayer='';
+								this.competitionCode='';
+								this.macthLayerCheckbox=false;
+								this.editType=1;
+							},
+							updateInfo:function(item){ //修改分赛场
+								var that=this;
+								this.selectInput=false;// 赛事影藏
+								this.editStatus=true;
+								this.macthLayerCheckbox=true;
+								this.editType=2;
+								this.getDataDetail(item.competitionCode);
+							},
+							saveAddInfo:function(){//提交
+								var that=this;
+								that.groupsSelectArr=[];
+								that.sitesSelectArr=[];
+								that.eventsSelectArr=[];
+								$("#events").children("a").each(function(index,element){
+										if($(this).children("input").data("code")==true){
+											that.eventsSelectArr.push($(this).children("input").val())
+										}
+									})
+									$("#groups").children("a").each(function(index,element){
+										if($(this).children("input").data("code")==true){
+											that.groupsSelectArr.push($(this).children("input").val())
+										}
+									})
+									$("#sites").children("a").each(function(index,element){
+										if($(this).children("input").data("code")==true){
+											that.sitesSelectArr.push($(this).children("input").val())
+										}
+									})
+								if(that.selectInput){
+									 if(that.matchNameSelectLayer==''){
+										 layer.msg("请选择赛事");
+											return;
+									 }
+								}
+								if(that.name==''){
+									layer.msg("比赛名称不能为空");
+									return;
+								}
+									if(that.eventsSelectArr.length==0 && that.groupsSelectArr.length==0 && that.sitesSelectArr.length==0){
+										layer.msg("比赛项目,比赛分组,赛场至少勾选其中一项");
+										return;
+									}
+									 var _index=layer.msg('数据提交中', {
+										  icon: 16
+										  ,shade: 0.1
+										  ,time:0
+										});
+									 $.ajax({
+						  				url:'/dmp/api/competition/edit',
+						  				type:'post',
+						  				data:{
+						  					name:that.name,
+						  					matchCode:that.matchCode,
+						  					competitionCode:that.competitionCode,
+						  					sites:JSON.stringify(that.sitesSelectArr),
+						  					events:JSON.stringify(that.eventsSelectArr),
+						  					groups:JSON.stringify(that.groupsSelectArr), 
+						  					rankType:that.radioselect
+						  				},
+						  				success:function(res){
+						  					layer.close(_index);
+						  					if(res.code==0){
+						  						that.editStatus=false;
+						  						layer.msg('提交成功');
+						  						that.page=1;
+						  						setTimeout(()=>{
+						  							that.getData(that.matchCodeSelect);
+						  						},1500)
+						  						that.name='';
+						  						that.matchNameSelectLayer==''
+						  						
+						  					}else{
+						  						layer.msg(res.errorMsg);
+						  					}
+						  				}
+						  			});
+								//}
+							},
+							colseEdit:function(){
+								this.editStatus=false;
+								this.rankStatus=false;
+							},
+							dellInfo:function(item){
+								var that=this;
+								layer.confirm('确定要删除该信息!', {
+							 		  btn: ['确定','取消'] //按钮
+						 		}, function(){//按钮一
+						 			$.post("/dmp/api/competition/del",{competitionCode:item.competitionCode},function(result){
+										if(result.code ==0){
+											layer.msg('请求成功');
+											 console.log(that.allRow,that.limit)
+											if(that.allRow%that.limit==1){
+												that.page=that.page-1;
+												console.log(that.page,"page")
+											} 
+											that.getData(that.matchCodeSelect);
+							             } else {
+						            		layer.msg(result.errorMsg);
+							             }
+									});
+						 		}, function(){//按钮er
+						 			//return false 
+						 		});
+								
+							},
+							rankDataFun:function(dataJson){
+								var that=this;
+								var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+								 $.ajax({
+									url:'/dmp/api/competition/scoreRank/list',
+									type:'get',
+									data:dataJson,
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+											that.rankDataArr=obj.data.list;
+											that.allRowRank=obj.data.allRow;
+											that.pageRank=obj.data.currentPage;
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+							},
+							rank:function(item){
+								var that = this;
+								that.isShowRow=item.isShow;
+								that.rankStatus= true;
+								that.matchName=item.matchName;
+								that.matchCode=item.matchCode;
+								that.rankTypeBoolean=item.rankType=='unit'?true:false;
+								that.eventsCode=[];
+								that.groupsCode=[];
+								that.areasCode=[];
+								console.log(item,"item")
+								that.competitionCode=item.competitionCode;
+								if(item.events){
+									for(var i=0;i<item.events.length;i++){
+										if(item.events[i].isChoose){
+											that.eventsCode.push(item.events[i].code);
+										}
+									}
+								}
+								if(item.groups){
+									for(var i=0;i<item.groups.length;i++){
+										if(item.groups[i].isChoose){
+											that.groupsCode.push(item.groups[i].code);
+										}
+									}
+								}
+								if(item.sites){
+									for(var i=0;i<item.sites.length;i++){
+										if(item.sites[i].isChoose){
+											that.areasCode.push(item.sites[i].code);
+										}
+									}
+								}
+								console.log(that.eventsCode,"eventsCode");
+								var data={
+									pageNumber:that.pageRank,
+									pageSize:that.limit,
+									matchCode:that.matchCode,
+									competitionCode:that.competitionCode,
+									/* events:toString(that.eventsCode),
+									groups:toString(that.groupsCode),
+									areas:toString(that.areasCode) */
+									events:that.eventsCode.join(","),
+									groups:that.groupsCode.join(","),
+									areas:that.areasCode.join(",")
+								}
+								that.rankDataFun(data);
+							},
+							refreshRank:function(){
+								var that=this;
+								var index = layer.load(2, {shade: 0.01}); //0代表加载的风格，支持0-2
+								 $.ajax({
+									url:'/dmp/api/competition/rank/refresh',
+									type:'get',
+									data:{
+										isShow :that.isShowRow,
+										competitionCode:that.competitionCode
+									},
+									success:function(obj){
+										console.log(obj)
+										layer.close(index);
+										if(obj.code==0){
+											layer.msg("刷新成功")
+										}else{
+											layer.msg(obj.errorMsg);
+										}
+									},
+									error:function(){
+										layer.close(index);
+										layer.msg("请求出错");
+									}
+								})
+							}
+							
+						}
+					}) //vue
+				});
+		</script>
+	</body>
+
+</html>

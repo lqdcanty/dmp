@@ -1,0 +1,275 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+			.valueWidth3{
+				width: 500px!important;
+			}
+		
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='addIframIndex'>
+			<input type='hidden' id='callLogId'>
+			<input type='hidden' id='importPage'>
+			<div class="tableBox">
+				<table class="tableWidth">
+					<tr>
+						<td class='infoItem'>运动员编号</td>
+						<td class='valueWidth'>{{calllogInfo.playerCode}}</td>
+					
+						<td class='infoItem'>运动员名称</td>
+						<td class='valueWidth'>{{calllogInfo.playerName}}</td>
+					</tr>
+					
+					<tr >
+						<td class='infoItem'>项目编号</td>
+						<td class='valueWidth'>{{calllogInfo.gameCode}}</td>
+						<td class='infoItem'>项目名称</td>
+						<td class='valueWidth'>{{calllogInfo.gameName}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>赛事编号</td>
+						<td class='valueWidth'>{{calllogInfo.matchCode}}</td>
+						<td class='infoItem'>赛事名称</td>
+						<td class='valueWidth'>{{calllogInfo.matchName}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>赛事分组编号</td>
+						<td class='valueWidth'>{{calllogInfo.matchGroupCode}}</td>
+						<td class='infoItem'>赛事分组名称</td>
+						<td class='valueWidth'>{{calllogInfo.matchGroupName}}</td>
+						
+					</tr>
+					<tr >
+						<td class='infoItem'>比赛项（细类）编号</td>
+						<td class='valueWidth'>{{calllogInfo.eventCode}}</td>
+						<td class='infoItem'>比赛项（细类）编名称</td>
+						<td class='valueWidth'>{{calllogInfo.eventName}}</td>
+						
+					</tr>
+					<tr >
+						<td class='infoItem'>项目开始时间</td>
+						<td class='valueWidth'>{{calllogInfo.eventStartTime}}</td>
+						<td class='infoItem'>项目结束时间</td>
+						<td class='valueWidth'>{{calllogInfo.eventEndTimeStr}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>渠道编号</td>
+						<td class='valueWidth'>{{calllogInfo.channelCode}}</td>
+						<td class='infoItem'>承办方唯一编号</td>
+						<td class='valueWidth'>{{calllogInfo.unitCode}}</td>
+					</tr>
+					
+					<tr>
+						<td class='infoItem'>报名信息唯一编号</td>
+						<td class='valueWidth'>{{calllogInfo.applyCode}}</td>
+						<td class='infoItem'>报名状态</td>
+						<td class='valueWidth'>{{calllogInfo.applyStatus}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>报名费</td>
+						<td class='valueWidth'>{{calllogInfo.applyAmount}}元</td>
+						<td class='infoItem'>报名类型</td>
+						<td class='valueWidth'>
+							<span v-if="calllogInfo.eventType=='personal'">个人</span>
+							<span v-if="calllogInfo.eventType=='group'">团体</span>
+						</td>
+					</tr>
+					<tr v-if="calllogInfo.eventType=='group'">
+						<td class='infoItem'>团队名称</td>
+						<td class='valueWidth'>{{calllogInfo.teamName}}</td>
+						<td class='infoItem'>团队人数</td>
+						<td class='valueWidth'>{{calllogInfo.registrationNum}}</td>
+					</tr>
+					<tr v-if="calllogInfo.eventType=='group'">
+						<td class='infoItem'>领队名称</td>
+						<td class='valueWidth'>{{calllogInfo.leaderName}}</td>
+						<td class='infoItem'>领队电话</td>
+						<td class='valueWidth'>{{calllogInfo.leaderPhone}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>报名时间</td>
+						<td class='valueWidth'>{{calllogInfo.applyTimeStr}}</td>
+						<td class='infoItem'>创建时间</td>
+						<td class='valueWidth'>{{calllogInfo.gmtCreateStr}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>渠道编号</td>
+						<td class='valueWidth'>{{calllogInfo.channelCode}}</td>
+						<td class='infoItem'>三方平台openId</td>
+						<td class='valueWidth'>{{calllogInfo.openId}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>用户唯一编号</td>
+						<td class='valueWidth'>{{calllogInfo.registerCode}}</td>
+						<td class='infoItem'>用户类型</td>
+						<td class='valueWidth'>
+							<span v-if="calllogInfo.playerCategory=='common'">普通用户</span>
+							<span v-else-if="calllogInfo.playerCategory=='student'">学生用户</span>
+							<span v-else-if="calllogInfo.playerCategory=='square'">广场用户</span>
+						</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>证件类型 </td>
+						<td class='valueWidth'>
+							<span v-if="calllogInfo.playerCerType=='1'">身份证</span>
+							<span v-else-if="calllogInfo.playerCerType=='2'">护照</span>
+							<span v-else-if="calllogInfo.playerCerType=='3'">驾驶证</span>
+							<span v-else></span>
+						</td>
+						<td class='infoItem'>证件号码</td>
+						<td class='valueWidth'>{{calllogInfo.playerCerNo}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>运动员电话号码</td>
+						<td class='valueWidth'>{{calllogInfo.playerPhone}}</td>
+						<td class='infoItem'>性别</td>
+						<td class='valueWidth'>
+							<span v-if="calllogInfo.sex=='m'">男</span>
+							<span v-else-if="calllogInfo.sex=='f'">女</span>
+							<span v-else-if="calllogInfo.sex==''"></span>
+							<span v-else>其他</span>
+						</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>国籍</td>
+						<td class='valueWidth'>{{calllogInfo.playerNationality}}</td>
+						<td class='infoItem'>民族</td>
+						<td class='valueWidth'>{{calllogInfo.playerNation}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>生日</td>
+						<td class='valueWidth'>{{calllogInfo.playerBirthStr}}</td>
+						<td class='infoItem'>血型</td>
+						<td class='valueWidth'>{{calllogInfo.playerBloodType}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>地址</td>
+						<td class='valueWidth'>{{calllogInfo.playerAddress}}</td>
+						<td class='infoItem'>附件地址</td>
+						<td class='valueWidth'>{{calllogInfo.attUrl}}</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>头像地址</td>
+						<td class='valueWidth'>{{calllogInfo.imgUrl}}</td>
+						<td class='infoItem'>邮箱</td>
+						<td class='valueWidth'>{{calllogInfo.email}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>身高</td>
+						<td class='valueWidth'>{{calllogInfo.playerHeight}}</td>
+						<td class='infoItem'>体重</td>
+						<td class='valueWidth'>{{calllogInfo.playerWeight}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>衣服尺码</td>
+						<td class='valueWidth'>{{calllogInfo.playerClothSize}}</td>
+						<td class='infoItem'>工作单位</td>
+						<td class='valueWidth'>{{calllogInfo.playerWorkUnit}}</td>
+						
+					</tr>
+					<tr >
+						<td class='infoItem'>紧急联系人</td>
+						<td class='valueWidth'>{{calllogInfo.playerEmergencyName}}</td>
+					
+						<td class='infoItem'>紧急电话</td>
+						<td class='valueWidth'>{{calllogInfo.playerEmergencyPhone}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>三方平台openId</td>
+						<td class='valueWidth'>{{calllogInfo.openId}}</td>
+					
+						<td class='infoItem'>广场用户</td>
+						<td class='valueWidth' >
+							<span v-if="calllogInfo.sync=='weixin'">微信</span>
+							<span v-if="calllogInfo.sync=='weibo'">微博</span>
+							<span v-if="calllogInfo.sync=='qq'">QQ</span>
+						</td>
+					</tr>
+					<tr>
+						<td class='infoItem'>拓展数据</td>
+						<td class='valueWidth' :class="{valueWidth3:!importPageShow,valueWidth:importPageShow}" :colspan="!importPageShow?3:1">{{calllogInfo.extProp}}</td>
+						<td class='infoItem' v-if="importPageShow">批次号</td>
+						<td class='valueWidth' v-if="importPageShow">{{calllogInfo.batchNumber}}</td>
+					</tr>
+					<tr >
+						<td class='infoItem'>来源</td>
+						<td class='valueWidth'>
+							 <span v-if="calllogInfo.source=='1'">来自接口</span>
+							 <span v-else>来自官网</span>
+						</td>
+						<td class='infoItem'>同步标志位</td>
+						<td class='valueWidth' >
+							<span v-if="calllogInfo.openPlatType=='1'">已经同步</span>
+							<span v-if="calllogInfo.openPlatType=='0'">未同步</span>
+						</td>
+					</tr>
+					<tr>
+				        <td class="infoItem">导入数据</td>
+						<td class="valueWidth">{{calllogInfo.batchNumber==null?'否':'是'}}</td>
+						<td class="infoItem">导入批次号</td>
+						<td class="valueWidth">{{calllogInfo.batchNumber}}</td>
+				</tr>
+				</table>
+			</div>
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form;
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							calllogInfo: {},
+							status: true,
+							importPageShow:$("#importPage").val()=='true'?true:false
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#callLogId").val();
+							if(unitModel != undefined && unitModel != null &&
+									unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.calllogInfo = JSON.parse(unitModel);
+								
+							}
+						}
+					})
+				});
+			}
+		</script>
+	</body>
+</html>

@@ -1,0 +1,220 @@
+# 默认的profile为dev，其他环境通过指定启动参数使用不同的profile，比如：  
+#   测试环境：java -jar xxx.jar --server.port=18080 --spring.profiles.active=test  
+#   生产环境：java -jar xxx.jar --server.port=18080 --spring.profiles.active=product
+#   开发环境  
+spring:  
+  profiles:  
+    active: dev
+  aop:
+    auto: true
+  jpa:
+    show-sql: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 8000 
+  datasource:
+  #智能体育
+    znty:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://122.115.40.84:23306/sports-dmp?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: deploy_admin
+      password: WECBrsggz175sR1
+  #智能定向
+    #smartrun:
+      #driver-class-name: com.mysql.jdbc.Driver
+      #url: jdbc:mysql://58bfcf684e863.gz.cdb.myqcloud.com:16119/run_admin_test
+      #username: match_reader
+      #password: hrj@123@reader
+    smartrun:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://58bfcf684e863.gz.cdb.myqcloud.com:16119/run_admin?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: match_reader
+      password: hrj@123@reader
+ #九镖数据库
+    jiubiao:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://60.205.222.39:3306/shot?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: dbreader
+      password: Devuserdata_2018
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://127.0.0.1:2181
+        port: 21804
+      base-package: com.efida.sports.dmp,cn.evake.auth.service.dubbo
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+openApi: zntydmp.efida.com.cn
+# 测试环境配置
+---
+spring:  
+  profiles:  test
+  aop:
+    auto: true
+  jpa:
+    show-sql: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 8000 
+  datasource:
+  #智能体育
+    znty:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://122.115.40.84:23306/sports-dmp?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: deploy_admin
+      password: WECBrsggz175sR1
+  #智能定向
+    #smartrun:
+      #driver-class-name: com.mysql.jdbc.Driver
+      #url: jdbc:mysql://58bfcf684e863.gz.cdb.myqcloud.com:16119/run_admin_test
+      #username: match_reader
+      #password: hrj@123@reader
+    smartrun:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://58bfcf684e863.gz.cdb.myqcloud.com:16119/run_admin?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: match_reader
+      password: hrj@123@reader
+ #九镖数据库
+    jiubiao:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://60.205.222.39:3306/shot?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: dbreader
+      password: Devuserdata_2018
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://127.0.0.1:2181
+        port: 21804
+      base-package: com.efida.sports.dmp,cn.evake.auth.service.dubbo
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+openApi: zntydmp.efida.com.cn
+---
+# 正式环境配置
+spring:
+  profiles: product
+  aop:
+    auto: true
+  jpa:
+    show-sql: true
+  redis:
+    password: ZNTY5lqUdYE7oA6C18 
+    timeout: 8000 
+    cluster:
+      nodes: redis1.zntyydh.com:7000,redis2.zntyydh.com:7000,redis3.zntyydh.com:7000,redis4.zntyydh.com:7000,redis5.zntyydh.com:7000,redis6.zntyydh.com:7000
+      maxRedirects: 6
+  datasource:
+  #智能体育
+    znty:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://sportsdmp.mysql.zntyydh.com:3308/sports-dmp?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: sports-dmp
+      password: WF5MgxFTjxg67SGQr4HB
+  #智能定向
+    smartrun:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://58bfcf684e863.gz.cdb.myqcloud.com:16119/run_admin?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: match_reader
+      password: hrj@123@reader
+ #九镖数据库
+    jiubiao:
+      max-idle: 10
+      max-wait: 50
+      min-idle: 2
+      initial-size: 2
+      test-on-borrow: true
+      test-while-idle: true
+      time-between-eviction-runs-millis: 18800
+      driver-class-name: com.mysql.jdbc.Driver
+      url: jdbc:mysql://60.205.222.39:3306/shot?useUnicode=true&characterEncoding=utf8&useSSL=false
+      username: dbreader
+      password: Devuserdata_2018
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://zookeeper.zntyydh.com:9075
+        port: 21804
+      base-package: com.efida.sports.dmp,cn.evake.auth.service.dubbo
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+openApi: api.zntyydh.com

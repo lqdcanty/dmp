@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style type="text/css">
+		
+			 .valueWidth{
+				width:185px!important;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='unitModel'>
+			<div class="tableBox">
+				<table class="tableWidth">
+				<tbody>
+					
+						<tr>
+								<td class="infoItem">承办编号</td>
+								<td class="valueWidth">{{openUnit.unitCode}}</td>
+								<td class="infoItem">承办方名称</td>
+								<td class="valueWidth">{{openUnit.unitName}}</td>
+						</tr>
+						<tr>
+								<td class="infoItem">联系人</td>
+								<td class="valueWidth">{{openUnit.contact}}</td>
+								<td class="infoItem">电话</td>
+								<td class="valueWidth">{{openUnit.phone}}</td>
+						</tr>
+						<tr>
+								<td class="infoItem">Email</td>
+								<td class="valueWidth">{{openUnit.email}}</td>
+								<td class="infoItem">地址</td>
+								<td class="valueWidth">{{openUnit.address}}</td>
+						</tr>
+						<tr>
+								<td class="infoItem">客户端私钥</td>
+								<td class="valueWidth">{{openUnit.clientSecrect}}</td>
+								<td class="infoItem">频率/分钟</td>
+								<td class="valueWidth">{{openUnit.maxPerMinute}}</td>
+						</tr>
+						<tr>
+								<td class="infoItem">创建时间</td>
+								<td class="valueWidth">{{openUnit.gmtCreateStr}}</td>
+								<td class="infoItem">是否锁定</td>
+								<td class="valueWidth">{{openUnit.isLock==0?'正常':'锁定'}}</td>
+						</tr>
+						<tr>
+								<td class="infoItem">白名单</td>
+								<td class="valueWidth">{{openUnit.whiteIp}}</td>
+								<td class="infoItem">备注</td>
+								<td class="valueWidth">{{openUnit.remark}}</td>
+						</tr>
+					</div>
+				</tbody>
+			</table>
+		</div>
+		<span id='btn' onclick='btnClick()'></span>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+						form = layui.form;
+					
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							openUnit: {},
+							status: true
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#unitModel").val();
+							console.log(unitModel,"unitModel")
+							if(unitModel != undefined && unitModel != null &&
+								unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.openUnit = JSON.parse(unitModel);
+							}
+						}
+					})
+				});
+			}
+		</script>
+	</body>
+
+</html>

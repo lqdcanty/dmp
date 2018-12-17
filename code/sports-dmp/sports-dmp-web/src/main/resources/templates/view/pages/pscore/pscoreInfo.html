@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>成绩详情</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+			
+			 .valueWidth{
+				width:190px!important;
+			}
+			table{
+				width:100%!important;
+			}
+			
+		</style>
+	</head>
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='pscoreId'>
+			<div class="tableBox">
+				<table class="tableWidth">
+				<tbody>
+				<tr>
+					
+						<td class="infoItem">渠道标识</td>
+						<td class="valueWidth">{{calllogInfo.channelCode}}</td>
+					
+					    <td class="infoItem">成绩编号</td>
+						<td class="valueWidth">{{calllogInfo.scoreCode}}</td>
+				</tr>
+				<tr >
+					
+						<td class="infoItem">赛事编号</td>
+						<td class="valueWidth">{{calllogInfo.matchCode}}</td>
+					
+					
+						<td class="infoItem">赛事名称</td>
+						<td class="valueWidth">{{calllogInfo.matchName}}</td>
+					
+				</tr>
+				<tr >
+					
+						<td class="infoItem">赛场编号 </td>
+						<td class="valueWidth">{{calllogInfo.fieldCode}}</td>
+					
+					
+						<td class="infoItem">赛场名称</td>
+						<td class="valueWidth">{{calllogInfo.fieldName}}</td>
+					
+				</tr>
+				
+			   <tr >
+						<td class="infoItem">分组编号</td>
+						<td class="valueWidth">{{calllogInfo.matchGroupCode}}</td>
+					
+					    <td class="infoItem">分组名称</td>
+						<td class="valueWidth">{{calllogInfo.matchGroupName}}</td>
+				</tr>
+				
+				<tr >
+				        <td class="infoItem">项(细类)编号</td>
+						<td class="valueWidth">{{calllogInfo.eventCode}}</td>
+						
+				        <td class="infoItem">项(细类)名称</td>
+						<td class="valueWidth">{{calllogInfo.eventName}}</td>
+					
+				</tr>
+				
+					<tr >
+					
+						<td class="infoItem">参赛时间</td>
+						<td class="valueWidth">{{calllogInfo.partTimeStr}}</td>
+					
+					
+						<td class="infoItem">运动员编号</td>
+						<td class="valueWidth">{{calllogInfo.playerCode}}</td>
+					
+				</tr>
+	
+				
+				<tr >
+						<td class="infoItem">运动员名称</td>
+						<td class="valueWidth">{{calllogInfo.playerName}}</td>
+					
+						<td class="infoItem">运动员电话</td>
+						<td class="valueWidth">{{calllogInfo.playerPhone}}</td>
+						
+						<td class="infoItem">性别</td>
+						<td class="valueWidth" v-if="calllogInfo.sex=='m'">男</td>
+						<td class="valueWidth" v-else-if="calllogInfo.sex=='f'">女</td>
+						<td class="valueWidth" v-else="calllogInfo.sex=='o'">其他</td>
+				</tr>
+				
+				<tr >
+				        <td class="infoItem">成绩</td>
+						<td class="valueWidth">{{calllogInfo.score}}</td>
+						
+						<td class="infoItem">成绩单位</td>
+						<td class="valueWidth">{{calllogInfo.scoreUnit}}</td>
+				</tr>
+				<tr>
+				        <td class="infoItem">有效性</td>
+						<td class="valueWidth">{{calllogInfo.isValid=='1'?'有效':'无效'}}</td>
+					
+						<td class="infoItem">类型</td>
+						<td class="valueWidth">{{calllogInfo.scoreType}}</td>
+				</tr>
+				
+				<tr>
+						<td class="infoItem">成绩描述</td>
+						<td class="valueWidth">{{calllogInfo.scoreDesc}}</td>
+					
+						<td class="infoItem">承办单位编号</td>
+						<td class="valueWidth">{{calllogInfo.unitCode}}</td>
+				</tr>
+				
+				<tr>
+				        <td class="infoItem">导入数据</td>
+						<td class="valueWidth">{{calllogInfo.batchNumber==null?'否':'是'}}</td>
+						
+						<td class="infoItem">导入批次号</td>
+						<td class="valueWidth">{{calllogInfo.batchNumber}}</td>
+				</tr>
+				
+				<tr >
+					<td class="infoItem">运动员相关属性(JSON数据)</td>
+					<td colspan="3" class="valueWidth3">{{calllogInfo.playerProp}}</td>
+				</tr>
+				<tr>
+					<td class="infoItem">成绩相关属性(JSON数据)</td>
+					<td colspan="3" class="valueWidth3">{{calllogInfo.scoreProp}}</td>
+				</tr>
+				
+				</tbody>
+				
+				</table>
+			</div>
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form;
+					//vue
+					
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							calllogInfo: {},
+							status: true
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#pscoreId").val();
+							if(unitModel != undefined && unitModel != null &&
+									unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.calllogInfo = JSON.parse(unitModel);
+							}
+						}
+					})
+				});
+			}
+		</script>
+	</body>
+
+</html>

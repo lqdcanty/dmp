@@ -1,0 +1,469 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+			.layui-form-label{
+				width:100px;
+				background:#eee;
+				border-top-left-radius: 4px!important;
+    			border-bottom-left-radius: 4px!important;
+			}
+			.formBox{
+				padding:20px 20px;
+			}
+			.layui-inline{
+				border: 1px solid #ccc;
+	    		border-radius: 4px;
+			}
+			.layui-input{
+				border:0;
+			}
+			.layui-input-inline{
+				margin-right:0!important;
+				width:250px!important;
+			}
+			.width240{
+				width:245px!important;
+			}
+			.borderbox{
+				/* border:1px solid #1AA094; */
+				/* padding:10px; */
+			}
+			.width60{
+				width:30px!important;
+			}
+			.width190{
+				width:185px!important;
+			}
+			.textareaBox{
+				width:648px!important;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.layui-input-inline textarea{
+				width:628px;
+				line-height:22px;
+				height:78px;
+				border:0;
+				padding:5px 10px;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.selectBox{
+				width:100%;
+				height:200px;
+				overflow-y:scroll;
+				position:absolute;
+				left:0;
+				bottom:24px;
+				background:#fff;
+				z-index:100000000;
+				box-shadow: 1px -1px 3px rgba(0,0,0,0.2);
+				padding:5px 0;
+				border-radius: 4px;
+			}
+			.selectBox span{
+				line-height:36px;
+				display:block;
+				padding:0 8px;
+				cursor: pointer;
+			}
+			.matchCode{
+				position:relative;
+				height:38px;
+			}
+			.matchCode input {
+				width:100%;
+				display:block;
+				height:38px;
+				border:1px solid #ccc;
+				border-radius:4px;
+				background:#fff;
+				padding:0 10px;
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			}
+			.matchCode1{
+				width: 99%;
+			    border: none;
+			    height: 38px;
+			    padding-left: 10px;
+			    box-sizing: border-box;
+			}
+			.selectUl{
+				width: 250px;
+			    position: absolute;
+			    left: 0;
+			    top: 38px;
+			    background: #fff;
+			    z-index: 100;
+			    
+			    border: 1px solid #e2e2e2;
+			    box-sizing: border-box;
+			}
+			.selectUl li{
+				line-height:36px;
+				padding: 0 10px;
+				cursor: pointer;
+			}
+			.selectUl li.on{
+				background:#1AA094;
+				color:#fff;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app' v-cloak>
+			<input type='hidden' id='appCode'>
+			<form class="layui-form formBox">
+				<div class="layui-form-item">
+				    <div class="layui-inline">
+				       <label class="layui-form-label">系统编号</label>
+				       <div class="layui-input-inline">
+				         <input type="tel" name="appCode" autocomplete="off" class="layui-input" v-model="getDataObj.appCode" @blur="blurClick">
+				       </div>
+				    </div>
+				    <div class="layui-inline">
+				       <label class="layui-form-label">系统名称</label>
+				       <div class="layui-input-inline">
+				         <input type="text" name="appName" autocomplete="off" class="layui-input" v-model="getDataObj.appName">
+				       </div>
+				    </div>
+				 </div>
+				 <div class="layui-form-item">
+				    <div class="layui-inline">
+				       <label class="layui-form-label">代码类型</label>
+				       <div class="layui-input-inline" style="position:relative">
+				      	 <input type="text" style="cursor: pointer;" name="appName" autocomplete="off" readonly class="layui-input" v-model="getDataObj.codeType" @click="selectCodeTypeFun">
+				         <ul class="selectUl" v-show="selectCodeType"  @mouseleave="mouseleaveSelect">
+				         	<li :class="{ on: isActive=='git'||defaultShow }" @click="selctFun('git')">git</li>
+				         	<li :class="{ on: isActive=='svn' }" @click="selctFun('svn')">svn</li>
+				         </ul>
+				         
+				       </div>
+				    </div>
+				    <div class="layui-inline">
+				       <label class="layui-form-label">代码地址</label>
+				       <div class="layui-input-inline">
+				         <input type="text" name="codeUrl" autocomplete="off" class="layui-input" v-model="getDataObj.codeUrl">
+				       </div>
+				    </div>
+				 </div>
+				 <div class="layui-form-item">
+				    
+				    <div class="layui-inline">
+				       <label class="layui-form-label">系统版本</label>
+				       <div class="layui-input-inline">
+				         <input type="text" name="appVersion" autocomplete="off" class="layui-input" v-model="getDataObj.appVersion">
+				       </div>
+				    </div>
+				 </div>
+				 <div class="layui-form-item">
+				    <div class="layui-inline" style="margin-bottom:0;">
+				       <label class="layui-form-label" style="height:73px;">系统简介</label>
+				       <div class="layui-input-inline textareaBox">
+				         <textarea rows="" cols="" name="appIntro" v-model="getDataObj.appIntro"></textarea>
+				       </div>
+				    </div>
+				 </div>
+				 <div class="borderbox">
+				 	<div class="layui-form-item">
+				 		<div class="layui-inline">
+					       <label class="layui-form-label">值班人员账号</label>
+					       <div class="layui-input-inline width240">
+					         	<div name="select-main matchCode"  lay-filter='matchSel' >
+									<input type="text" placeholder="请选择系统负责人账号" readonly class="matchCode1"  v-model="getDataObj.dutyUserName" :data-code="getDataObj.dutyUserName" @click="optionSelectInputLayer1">	
+									 <div class="layui-form-item selectBox"  v-if="optionSelectShowLayer1" @mouseleave="mouseleaveSelect">
+										<span v-for="user in getUserAllArr" :key="user.userName" :data-code="user.uuid" @click="optionSelectLayer1(user)">{{user.userName}}</span> 
+									</div> 
+								</div>
+					       </div>
+				    	</div>
+					    <div class="layui-inline" style="margin-right:0;">
+					       <label class="layui-form-label">系统负责人账号</label>
+					       <div class="layui-input-inline width240">
+					         <div name="select-main matchCode"  lay-filter='matchSel' >
+								 <input type="text" placeholder="请选择系统负责人账号" readonly class="matchCode1"  v-model="getDataObj.managerName" :data-code="getDataObj.managerName" @click="optionSelectInputLayer2">	
+								 <div class="layui-form-item selectBox"  v-if="optionSelectShowLayer2" @mouseleave="mouseleaveSelect">
+									<span v-for="user in getUserAllArr" :key="user.userName" :data-code="user.userName" @click="optionSelectLayer2(user)">{{user.userName}}</span> 
+								</div>
+							</div>
+					       </div>
+					    </div>
+					 </div>
+					 <div class="layui-form-item">
+					 	<div class="layui-inline">
+					       <label class="layui-form-label width60">名称</label>
+					       <div class="layui-input-inline width190">
+					         <input type="text" name="managerRealname " autocomplete="off" class="layui-input" v-model="getDataObj.managerRealname">
+					       </div>
+					    </div>
+					    <div class="layui-inline">
+					       <label class="layui-form-label width60">电话</label>
+					       <div class="layui-input-inline width190">
+					         <input type="tel" name="managerPhone" autocomplete="off" class="layui-input" v-model="getDataObj.managerPhone">
+					       </div>
+					    </div>
+					    <div class="layui-inline" style="margin-right:0;">
+					       <label class="layui-form-label width60">邮箱</label>
+					       <div class="layui-input-inline width190" >
+					         <input type="text" name="managerEmail" autocomplete="off" class="layui-input" v-model="getDataObj.managerEmail">
+					       </div>
+					    </div>
+					 </div>
+				 </div>
+				 <div class="layui-form-item" style="text-align:center;padding-top:20px">
+				    <div class="layui-inline">
+				    	<input id="submitId" type="hidden" value="">
+				       <a class="layui-btn" @click="submitFun" >保存</a>
+				    </div>
+				    <div class="layui-inline">
+				       <button class="layui-btn" @click="cancel">取消</button>
+				    </div>
+				 </div>
+			</form>
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form,
+			         $ = layui.jquery;
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							appCode:'',
+							getDataObj:{},
+							optionSelectShowLayer1:false,
+							optionSelectShowLayer2:false,
+							getUserAllArr:[],
+							defaultShow:true,
+							isActive:'',
+							selectCodeType:false,
+						},
+						created: function() {
+							var that = this;
+							that.appCode = $("#appCode").val();
+							that.getDataObjFun(that.appCode);
+							that.getUserAll();
+						},
+						methods:{
+							getResultMethods:getResultMethods,
+							getDataObjFun:getDataObjFun,
+							cancel:cancel,
+							getUserAll:getUserAll,
+							optionSelectInputLayer1:optionSelectInputLayer1,
+							optionSelectInputLayer2:optionSelectInputLayer2,
+							mouseleaveSelect:mouseleaveSelect,
+							optionSelectLayer1:optionSelectLayer1,
+							optionSelectLayer2:optionSelectLayer2,
+							submitFun:submitFun,
+							postAjax:postAjax,
+							blurClick:blurClick,
+							selctFun:selctFun,
+							selectCodeTypeFun:selectCodeTypeFun,
+						}
+					})
+					function selectCodeTypeFun(){
+						vm.selectCodeType=true;
+					}
+					function selctFun(type){
+						vm.getDataObj.codeType=type;
+						vm.isActive=type;
+						vm.defaultShow=false;
+						vm.selectCodeType=false;
+					}
+					function submitFun(){
+						if(vm.getDataObj.appCode==''||vm.getDataObj.appCode==null){
+							layer.msg("系统编号不能为空");
+							return;
+						}
+						if(vm.getDataObj.appName==''||vm.getDataObj.appName==null){
+							layer.msg("系统名字不能为空");
+							return;
+						}
+						if(vm.getDataObj.appVersion==''||vm.getDataObj.appVersion==null){
+							layer.msg("系统版本不能为空");
+							return;
+						}
+						if(vm.getDataObj.appIntro==''||vm.getDataObj.appIntro==null){
+							layer.msg("系统简介不能为空");
+							return;
+						}
+						if(vm.getDataObj.dutyUserName ==''||vm.getDataObj.dutyUserName ==null){
+							layer.msg("值班人员账号不能为空");
+							return;
+						}
+						if(vm.getDataObj.managerName==''||vm.getDataObj.managerName==null){
+							layer.msg("系统负责人账号不能为空");
+							return;
+						}
+						if(vm.getDataObj.managerRealname==''||vm.getDataObj.managerRealname==null){
+							layer.msg("系统负责人名称不能为空");
+							return;
+						}
+						var phone=/^(0|86|17951)?(13[0-9]|15[012356789]|17[678]|18[0-9]|14[57])[0-9]{8}$/;
+						if(vm.getDataObj.managerPhone==''||vm.getDataObj.managerPhone==null){
+							
+						}else{
+							if(!phone.test(vm.getDataObj.managerPhone)){
+								layer.msg("手机格式不正确");
+								return;
+							}
+						}
+						var szReg=/^[a-z0-9]+([._\\-]*[a-z0-9])*@([a-z0-9]+[-a-z0-9]*[a-z0-9]+.){1,63}[a-z0-9]+$/;
+						if(vm.getDataObj.managerEmail==''||vm.getDataObj.managerEmail==null){
+							
+						}else{
+							if(!szReg.test(vm.getDataObj.managerEmail)){
+								layer.msg("邮箱格式不正确");
+								return;
+							}
+						}
+						if($("#submitId").val()=='edit'){
+							postAjax('/api/eapp/up',vm.getDataObj,function(data){
+								layer.msg("修改成功")
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+							}.bind(this)); 
+						}else if($("#submitId").val()=='add'){
+							postAjax('/api/eapp/add',vm.getDataObj,function(data){
+								layer.msg("添加成功")
+								var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+								parent.layer.close(index); //再执行关闭
+							}.bind(this)); 
+						}
+					}
+					function blurClick(){
+						if(vm.getDataObj.appCode==''||vm.getDataObj.appCode==null) {
+							layer.msg("系统编号不能为空");
+							return;
+						}
+						getResultMethods('/api/eapp/check/appCode',{appCode:vm.getDataObj.appCode},function(data){
+							if(data.data){
+								layer.msg(data.errorMsg);
+							}
+						}.bind(this))
+					}
+					function optionSelectLayer2(user){
+						vm.getDataObj.managerName=user.userName;
+						vm.getDataObj.managerRealname=user.realName;
+						vm.getDataObj.managerPhone=user.phone;
+						vm.getDataObj.managerEmail=user.email;
+						vm.optionSelectShowLayer2=false;
+					}
+					function optionSelectLayer1(user){
+						vm.getDataObj.dutyUserName=user.userName;
+						vm.optionSelectShowLayer1=false;
+					}
+					function mouseleaveSelect(){
+						vm.optionSelectShowLayer2=false;
+						vm.optionSelectShowLayer1=false;
+						vm.selectCodeType=false;
+					}
+					function optionSelectInputLayer2(){	
+						//vm.getUserAll();
+						vm.optionSelectShowLayer2=true;
+					}
+					function optionSelectInputLayer1(){
+						//vm.getUserAll();
+						vm.optionSelectShowLayer1=true;
+					}
+					function getUserAll(){
+						getResultMethods('/api/user/list',{pageNumber:1,size:999},function(data){
+							vm.getUserAllArr=data.data.list;
+						}.bind(this))
+					}
+					function cancel(){
+						var index = parent.layer.getFrameIndex(window.name); //先得到当前iframe层的索引
+						parent.layer.close(index); //再执行关闭 
+					}
+					function getDataObjFun(appCode){
+						if($("#submitId").val()=='edit'){
+							getResultMethods('/api/eapp/get',{appCode:appCode},function(data){
+								vm.getDataObj=data.data;
+								vm.isActive=data.data.codeType;
+							}.bind(this))
+						}
+					}
+					function getResultMethods(url, prams, sufn) {
+						var index = layer.load(2, {shade: 0.01});
+					    $.ajax({
+					        url:  realPath+url,
+					        data: prams,
+					        type: 'get',
+					        dataType: 'json',
+					        cache:false,
+					        success: function(d) {
+					        	layer.close(index);
+					        	if(d.code==0) {
+					        		if('function' === typeof sufn) sufn(d);
+					        	}else {
+					        		layer.msg(d.errorMsg);
+					        		return;
+					        	}
+					        },
+						    error:function(){
+								layer.msg("请求出错");
+							}
+					    });
+					};
+					function postAjax(url, prams, sufn){
+						var index = layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+						$.ajax({
+							type:'post',
+							url:realPath+url,
+							cache:false,
+							contentType:'application/json;charset=UTF-8',
+							data:JSON.stringify(prams),
+							success: function(d) {
+								layer.close(index);
+					        	if(d.code==0) {
+					        		if('function' === typeof sufn) sufn(d);
+					        	}else {
+					        		layer.msg(d.errorMsg);
+					        	}		
+							},
+							error:function(data){
+								layer.close(index);
+								layer.msg("请求出错");
+							}
+						})
+					}
+				});
+			}
+		</script>
+	</body>
+</html>

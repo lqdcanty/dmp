@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper
+	namespace="com.efida.sports.dmp.dao.mapper.CompetitionMapper">
+
+	<!-- 通用查询映射结果 -->
+	<resultMap id="BaseResultMap"
+		type="com.efida.sports.dmp.dao.entity.CompetitionEntity">
+		<id column="id" property="id" />
+		<result column="competition_code" property="competitionCode" />
+		<result column="name" property="name" />
+		<result column="match_code" property="matchCode" />
+		<result column="game_code" property="gameCode" />
+		<result column="events" property="events" />
+		<result column="groups" property="groups" />
+		<result column="areas" property="areas" />
+		<result column="is_delete" property="isDelete" />
+		<result column="is_show" property="isShow" />
+		<result column="creator_uid" property="creatorUid" />
+		<result column="creator_name" property="creatorName" />
+		<result column="modify_uid" property="modifyUid" />
+		<result column="modify_name" property="modifyName" />
+		<result column="sort_index" property="sortIndex" />
+		<result column="rank_type" property="rankType" />
+		<result column="gmt_create" property="gmtCreate" />
+		<result column="gmt_modified" property="gmtModified" />
+	</resultMap>
+
+	<!-- 通用查询结果列 -->
+	<sql id="Base_Column_List">
+		id, competition_code, name, match_code,game_code, events, groups, areas,
+		is_delete,is_show,creator_uid,creator_name,modify_uid,modify_name,
+		sort_index,rank_type,gmt_create, gmt_modified
+	</sql>
+
+	<select id="selectCompetitionByMatchCode"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from competition
+		<where>
+			<if test="matchCode != null and matchCode != '' ">
+				and match_code=#{matchCode}
+			</if>
+			and is_delete=0
+		</where>
+		order by id desc
+	</select>
+
+	<select id="queryMatchCodes" resultType="String">
+		select distinct match_code from competition
+		<where>
+			<if test="gameCode != null and gameCode !=''">
+				and game_code = #{gameCode,jdbcType=VARCHAR}
+			</if>
+			and is_delete=0 and is_show=1
+		</where>
+
+	</select>
+
+
+
+	<select id="queryRegisterMatchCodes" resultType="String">
+		select distinct match_code from competition
+		<where>
+			match_code in (
+			select match_code from open_score
+			<where>
+				<if test="gameCode != null and gameCode !=''">
+					and game_code = #{gameCode,jdbcType=VARCHAR}
+				</if>
+				<if test="playerPhone != null and playerPhone !='' ">
+					and player_phone = #{playerPhone,jdbcType=VARCHAR}
+				</if>
+			</where>
+			group by match_code
+			)
+			and is_delete=0
+			<if test="keyword != null and keyword !='' ">
+				and name like concat('%',#{keyword},'%')
+			</if>
+		</where>
+
+	</select>
+
+	<select id="queryNeedRankingCompetition"
+		resultMap="BaseResultMap">
+		select
+		<include refid="Base_Column_List" />
+		from competition
+		where  rank_type='dmp' and is_delete=0
+		
+ 	</select>
+ 	
+ 	<update id="updateLastRankingTime"
+		parameterType="java.lang.String">
+ 		update competition
+ 		  set last_rank_time = now()
+ 		where competition_code = #{competitionCode,jdbcType=VARCHAR}
+ 	</update>
+
+	<select id="selectNameByRankCode" parameterType="String" resultType="String">
+
+	  	select name
+	  	from competition
+		where competition_code =
+				(
+				select competition_code
+				from open_score_rank
+				where score_rank_code =  #{scoreRankCode,jdbcType=VARCHAR}
+				)
+	</select>
+ 	
+
+	<select id="selectNameByRankCode" parameterType="String" resultType="String">
+		select name
+		from competition
+		where competition_code =
+		(
+			select competition_code
+			from open_score_rank
+			where score_rank_code =  #{scoreRankCode,jdbcType=VARCHAR}
+		)
+	</select>
+
+</mapper>

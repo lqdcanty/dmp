@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<meta charset="utf-8">
+<title>商品列表</title>
+<meta name="renderer" content="webkit">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+<meta http-equiv="pragma" content="no-cache" />
+<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+<meta name="viewport"
+	content="width=device-width, initial-scale=1, maximum-scale=1">
+<link rel="stylesheet" href="/assets/common/layui/css/layui.css"
+	media="all" />
+<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+<style>
+.layui-form-item .layui-input-inline {
+	margin-right: 0
+}
+
+.layui-form-label {
+	padding: 9px 10px 0 0;
+}
+
+.layui-form-item {
+	margin-bottom: 10px
+}
+
+table {
+	width: 100% !important;
+}
+
+.width180 {
+	width: 180px !important;
+}
+
+.width180 input {
+	width: 180px !important;
+}
+
+.width80 {
+	width: 80px !important;
+}
+
+.width80 input {
+	width: 80px !important;
+}
+
+.laytable-cell-1-goodsPic{  
+       height: 100%;
+       max-width: 100%;
+   } 
+</style>
+</head>
+
+<body class="childrenBody">
+	<blockquote class="layui-elem-quote quoteBox">
+		<form class="layui-form">
+			<div class='layui-form-item'>
+
+				<div class="layui-inline">
+					<label class="layui-form-label">商品名称</label>
+					<div class="layui-inline width180">
+						<input class="layui-input" id="goodsName" placeholder="请输入商品名称"
+							autocomplete="off">
+					</div>
+				</div>
+				<div class="layui-inline">
+					<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+				</div>
+			</div>
+		</form>
+	</blockquote>
+
+	<table class="layui-hide" id="demo" lay-filter="demo"></table>
+
+</body>
+<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>编辑
+  			</button>
+		</div>
+	</script>
+<script id="createTime" type="text/html">
+		{{getDate(d.createTime)}}
+	</script>
+<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+		}
+</script>
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='780px';
+			height="600px";
+		}else{
+			width='880px';
+			height="750px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/dmp/api/shop/goods/list";
+		layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 10;
+			var page = 1;
+			var count=0;
+			//展示已知数据
+			indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?timestamp=" + (new Date()).valueOf(), //数据接口
+				cols: [
+					[ {
+							field: 'title',
+							title: '商品标题',
+							width:280
+						},
+						{
+							field:'goodsCode',
+							title:'商品编号',
+							width:200
+						}
+						,{
+							field: 'goodsPic',
+							title: '图片',
+							width:150,
+							style:'height:100px;',
+							templet:function(row){
+								var pic = row.goodsPic || '';
+								if(pic == '')
+									return "";
+								return "<img width='100px' height='100px' src=\""+pic+"\">"
+							}
+						}, {
+							field: 'productPrice',
+							title: '价格',
+							width:100,
+							templet:function(row){
+								var price = row.productPrice || 0;
+								return price/100;
+							}
+						},
+						{
+							field: 'extraMoney',
+							width: 100,
+							title: '邮费',
+							templet:function(row){
+								var extraMoney = row.extraMoney || 0;
+								return extraMoney/100;
+							}
+						},{
+							field: 'createTime',
+							width: 160,
+							title: '创建时间',
+							templet : '#createTime'
+						},
+						 {
+							title: '操作',  
+							templet:'#listBar',
+							width: 120
+						} 
+					]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [10, 20, 30, 50, 100],
+				limit: 10, //每页默认显示的数量
+				done: function(res, curr, count) {
+					if(res.code==0){
+						count=count;
+						$("#count").val(count);
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}else{
+						layer.close(indexclose);
+						setTimeout(function() {
+							layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 100)
+					}
+				}
+			});
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+
+				if(layEvent === 'edit') { //编辑
+					var index = layui.layer.open({
+						title: "编辑",
+						type: 2,
+						content: "goodsEdit.html",
+						id: 'goodsInfo',
+						area: [width, height],
+						zIndex: layer.zIndex,
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							if(data) {
+								//编辑
+								body.find('#goodsId').val(data.id);
+								//body.find(".addBtn").hide();
+								body.find('#btn').click();
+							}
+							setTimeout(function() {
+								layui.layer.tips('点击此处返回列表', '.layui-layer-setwin .layui-layer-close', {
+									tips: 3
+								});
+							}, 500)
+						}
+					})
+					
+					parent.layer.full(index); 
+					//改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+					$(window).on("resize", function() {
+								parent.layer.full(index);
+					})
+				}
+			});
+			//搜索
+			$('#search').on('click', function() {
+				var goodsName = $('#goodsName').val();
+				indexclose = layer.load(2, {shade: false});
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						goodsName: goodsName,
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						count=count;
+						$("#count").val(count);
+						layer.close(indexclose);
+						
+						form.render("select");
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}
+				});
+			});
+		});
+	</script>
+
+</html>

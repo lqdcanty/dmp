@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<meta name="description" content="">
+<meta name="author" content="">
+<title>登录|数据中心</title>
+<link rel="icon" href="/assets/system/common/img/favicon.ico">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+<link href="/assets/system/login/css/layout.css" rel="stylesheet">
+<style>
+	@media (max-width: 768px) {
+		html,body{width:100%;height:100%}
+		.login .login_from{
+			width:300px;
+			margin-left: -150px;
+		    height: 420px;
+	        margin-top: -210px;
+		}
+		.login_logo_box{
+			margin-top: 30px;
+    		margin-bottom: 30px;
+		}
+		.login_logo_1{
+			width:100%
+		}
+	}
+</style>
+</head>
+<body class="login_img">
+	<div class="login">
+		<div class="alert-danger"></div>
+		<div class="login_from controls">
+			<div class="login_content">
+				<p class="login_logo_box">
+					<img class="login_logo" alt="" src="/assets/system/login/img/img_logo.png">
+				</p>
+				<div class="left_from">
+					<p>
+						<input type="text" name="username" id="username"
+							placeholder="请输入用户名" autocomplete="off"> <br /> <span
+							class="alert"></span>
+					</p>
+					<p>
+						<input type="password" name="password" id="password"
+							placeholder="请输入密码" autocomplete="off"> <br /> <span
+							class="alert"></span>
+					</p>
+					<p>
+						<input type="text" name="authCode" id="authCode"
+							class="code pull-left" placeholder="请输入验证码">
+							 <img class="codeImg" id='codeImg' onclick='changeImg()' src="/sys/authcode/yzm.action">
+							<a class="pull-left resetCode"><img src="/assets/system/login/img/icon_shuaxin.png" onclick='changeImg()'></a><br />
+						<span class="alert"></span>
+					</p>
+					<!-- <p>
+						<input type="checkbox" name="password" id="password"
+							placeholder="请输入密码" autocomplete="off"> <br /> <span
+							class="alert"></span>
+					</p> -->
+					<p>
+						<a class="login_button" >登 录</a>
+					</p>
+					
+					<p class="error-text"></p>
+				</div>
+				<p class="">
+					<img class="login_logo_1" alt="" src="/assets/system/login/img/img_down.png">
+				</p>
+			</div>
+		</div>
+	</div>
+</body>
+<script src="/assets/system/common/jquery/jquery-3.0.0.min.js"></script>
+<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+<script>
+
+//修改验证码
+function changeImg() {
+	var url = "/sys/authcode/yzm.action";
+	var timestamp = (new Date()).valueOf();
+	url = url + "?timestamp=" + timestamp;
+	var imgSrc = $("#codeImg");
+	imgSrc.attr("src", url);
+}
+
+layui.use(['table', 'form', 'layer', 'laypage'], function() {
+	var ctx = "${ctx}/"
+
+	$('.login_button').click(function(){
+		loginAction()
+	})
+	
+	//登录方法
+	function loginAction() {
+		 layer.load(1);
+		var user = $("#username").val();
+		var pass = $("#password").val();
+		var authCode = $("#authCode").val();
+		$.ajax({
+			type : "GET",
+			url : ctx + "/api/user/login",
+			data : {
+				"username" : user,
+				"password" : pass,
+				"authCode" : authCode
+			},
+			success : function(result) {
+				//打印返回数据
+				layer.closeAll('loading');
+				if (result.code == 0) {
+					window.location = "/main/index"
+				} else {
+					//提示消息
+					layer.msg(result.errorMsg);
+					changeImg();
+				}
+			},
+			error : function() {
+				layer.closeAll('loading');
+				layer.msg('网络错误');
+			},
+			complete : function() {
+				/* layer.close(login_load); */
+			}
+		});
+	}
+	$(document).keydown(function(e) {
+		if(e.keyCode == 13) {
+			if($("#username").val()==''){
+				layer.msg('请输入用户名');
+				return;
+			};
+			if($("#password").val()==''){
+				layer.msg('请输入密码');
+				return;
+			};
+			if($("#authCode").val()==''){
+				layer.msg('请输入验证码');
+				return;
+			};
+			loginAction()
+		}
+	})
+	//如果再次刷新到登录页--刷新整个页面
+	if (self != top) { 
+	    top.location.href=top.location.href;//刷新顶级页面
+	}
+})
+</script>
+</html>

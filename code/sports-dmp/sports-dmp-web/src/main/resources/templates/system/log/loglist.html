@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>系统日志</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+				width:90px!important;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			table{
+				width:100%!important;
+			}
+			.layui-elem-quote{
+				margin-right:0px!impportant;
+			}
+			
+		</style>
+	</head>
+
+	<body class="childrenBody" style="margin-right:30px;">
+		<blockquote class="layui-elem-quote quoteBox" style="margin-right:0;">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+
+					<div class="layui-inline" id="unitCodeHide">
+						<label class="layui-form-label">关键字</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="keyword" placeholder="关键字" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		</div>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+		<div id='pageWrap'></div>
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>
+	<script type="text/html" id="liquidationSta">
+		{{# if(d.liquidationStatus == '已结算'){ }}
+		<span style="color: #5cb85c;">{{d.liquidationStatus}}</span> {{# } else if(d.liquidationStatus == '待结算'){ }}
+		<span style="color: #FF5722;">{{d.liquidationStatus}}</span> {{# } else { }} {{d.liquidationStatus}} {{# } }}
+	</script>
+	<script id="endDate" type="text/html">
+		{{getDate(d.endDate)}}
+	</script>
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='660px';
+			height="450px";
+		}else{
+			width='660px';
+			height="600px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/api/sys/log/list";
+		layui.use(['table', 'form', 'layedit', 'laydate','laypage'], function() {
+			var $=layui.jquery;
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var laypage=layui.laypage;
+			var size = 10;
+			var page = 1;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			var tableIns=table.render({
+				elem: '#demo',
+				id: 'demo',
+				cols: [
+					[ {
+						field: 'id',
+						title: 'ID',
+						width:160
+					},
+					 {
+						field: 'userName',
+						title: '用户名',
+						align:'center',
+						width:100
+					},
+					{
+						field: 'actionType',
+						title: '行为类型',
+						align:'center',
+						width:130
+					},{
+						field: 'action',
+						title: '日志记录',
+						width:300
+
+					},
+					{
+						field: 'viewUrl',
+						title: '访问URL',
+						width:150
+					},
+					{
+						field: 'ip',
+						title: '请求Ip',
+						align:'center',
+						width:200
+					},
+					
+					{
+						field: 'browser',
+						title: '浏览器信息',
+						width:400
+					},
+					{
+						field: 'gmtCreateStr',
+						title: '日志创建时间',
+						align:'center',
+						width:180
+					}
+					]
+				]
+			});
+			getData(page, size);
+			//获取数据
+			function getData(page, size) {
+				var keyword = $('#keyword').val();
+				
+				var index = parent.layer.load(2, {
+					shade: false
+				}); //0代表加载的风格，支持0-2
+				$.ajax({
+					type: 'get',
+					url: dataApi,
+					cache: false,
+					data: {
+						keyword:keyword,
+						pageNumber: page,
+						pageSize: size,
+						timestamp : (new Date()).valueOf()
+					},
+					success: function(obj) {
+						parent.layer.close(index);
+						if(obj.code != 0) {
+							layer.alert(obj.errorMsg, {
+								icon: 2
+							});
+							return;
+						}
+						tableIns.reload({
+							data: obj.data.list
+						});
+						laypage.render({
+							elem: 'pageWrap',
+							count: obj.data.allRow,
+							curr: obj.data.currentPage,
+							layout: ['count', 'prev', 'page', 'next', 'skip'],
+							jump: function(res, first) {
+								console.log(first);
+								console.log(res.curr);
+								if(!first) {
+									console.log(res.curr);
+									getData(res.curr, size);
+								}
+							}
+						});
+					}
+				 })
+			  }
+
+			$('#search').on('click', function() {
+				page=1;
+				getData(page, size)
+				
+			});
+
+		});
+	</script>
+
+</html>
+

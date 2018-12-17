@@ -1,0 +1,583 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>结算报表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			table{
+			width:100%!important;
+			}
+			.total_css{
+				display:flex;
+				align-items:center;
+				justify-content:left;
+				flex-direction:row;
+			}
+			.total_css label{
+				width: 12.5%;
+				padding-left:15px;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<input type="hidden" id="orderTime" />
+				<div class='layui-form-item'>
+					<div class="layui-inline">
+						<label class="layui-form-label">项目</label>
+						<div class="layui-input-block">
+							<div class="layui-form" lay-filter="projectForm">
+								<select id="projectId" name="projectList" lay-filter="project" >
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">赛事</label>
+						<div class="layui-input-block">
+							<div class="layui-form" lay-filter="matchForm">
+								<select id="matchId" name="matchList" lay-filter="match" >
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">承办方</label>
+						<div class="layui-input-block">
+							<div class="layui-form" lay-filter="unitForm">
+								<select id="unitId" name="unitList" lay-filter="unit" >
+								</select>
+							</div>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">开始时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="startTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">结束时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="endTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-btn" id="export" style='margin-left: 20px'>导出Excel</label>
+					</div>
+
+				</div>
+			</form>
+			<div class="total_css" id="total">
+				<label style="width: 9%;" id="total0"></label>
+				<label id="total1"></label>
+				<label id="total2"></label>
+				<label id="total3"></label>
+				<label id="total4"></label>
+				<label id="total5"></label>
+				<label id="total6"></label>
+				<label id="total7"></label>
+			</div>
+			<input type="hidden" id="count">
+			<!--<table class="layui-hide" id="total" lay-filter="total"></table>-->
+		</blockquote>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+	</body>
+<!--	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>-->
+
+	<!--<script type="text/html" id="sexTem">
+		{{# if(d.sex == 'm'){ }}
+		<span style="color: #5FB878;">男</span> {{# } else if(d.sex == 'f'){ }}
+		<span style="color: #FF5722;">女</span> {{# } else if(d.sex == '0'){ }}
+		<span style="color: #1E9FFF;">未知</span> {{# } }}
+	</script>
+
+	<script type="text/html" id="isValidTem">
+		{{# if(d.isValid == '1'){ }}
+		<span style="color: #5cb85c;">有效</span> {{# } else if(d.isValid == '0'){ }}
+		<span style="color: #FF5722;">无效</span> {{# } }}
+	</script>
+
+	<script id="scoreTem" type="text/html">
+		{{d.score}}{{d.scoreUnit}}
+	</script>
+
+	<script id="partTimeTem" type="text/html">
+		{{getDate(d.partTime)}}
+	</script>
+
+	<script id="gmtCreateTem" type="text/html">
+		{{getDate(d.gmtCreate)}}
+	</script>
+
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>-->
+	<script type="text/html" id="ordersTotalTpl">
+			<span style="color: #299fce;">{{d.ordersTotal}}</span>
+	</script>
+
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose,indexclose2;
+		if(document.body.clientWidth<1500){
+			width='560px';
+			height="450px";
+		}else{
+			width='560px';
+			height="750px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/dmp/api/settlementReport/list";
+		layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+			var orderTime = $('#orderTime').val();
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 20;
+			var page = 1;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?timestamp=" + (new Date()).valueOf(), //数据接口
+				height: 861,
+				cols: [
+					[{
+						field: 'serialNum',
+						title: '排序',
+						type: 'numbers',
+						width: 100
+					},{
+						field: 'orderDate',
+						title: '时间',
+						width: 130
+					},{
+						field: 'ordersTotal',
+						title: '订单总数',
+						width: 130,
+						event: 'ordersTotalEvent',
+						templet: '#ordersTotalTpl',
+						style: 'cursor: pointer;'
+					},{
+						field: 'moneyTotal',
+						title: '订单总金额(元)',
+						width: 130
+					},{
+						field: 'payOrdersTotal',
+						title: '支付总数',
+						width: 130
+					},{
+						field: 'payMoneyTotal',
+						title: '支付总金额(元)',
+						width: 130
+					},{
+						field: 'refundOrdersTotal',
+						title: '退单总数',
+						width: 130
+					},{
+						field: 'refundMoneyTotal',
+						title: '退单总金额(元)',
+						width: 130
+					}]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [20, 50, 100],
+				limit: 20, //每页默认显示的数量
+				done: function(res, curr, count) {
+                    $("#count").val(count);
+					if(res.code==0){
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+						if(res.unitCode != null) {
+							//设置承办编号
+							$('#unitCode').val(res.unitCode);
+							$('#unitCode').attr("readonly", "readonly");
+							$('#unitCode').attr("disabled", "disabled");
+						}
+					}else{
+						layer.close(indexclose);
+						setTimeout(function() {
+							layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 100)
+					}
+				}
+			});
+
+			$('#search').on('click', function() {
+				var projectCode = $('#projectId').val();
+				var matchCode = $('#matchId').val();
+				var unitCode = $('#unitId').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						gameCode: projectCode,
+						matchCode: matchCode,
+						unitCode: unitCode,
+						startTime: startTime,
+						endTime: endTime,
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}
+				});
+                $.ajax({
+                    type: 'GET',
+                    url: "/dmp/api/settlementReport/getTotal?unitCode="+unitCode+"&gameCode="+projectCode+"&matchCode="+matchCode+"&startTime="+startTime+"&endTime="+endTime+"&timestamp"+(new Date()).valueOf(),
+                    /*data:{status:1},*/
+                    success: function (obj) {
+                        var data = obj.data;
+                        console.log(data);
+                      /*  $("#total1").html('时间：'+data.orderDate);*/
+                        $("#total2").html('订单总数：'+(data.ordersTotal == null?"0":data.ordersTotal));
+                        $("#total3").html('订单总额：'+(data.moneyTotal == null?"0.00":data.moneyTotal));
+                        $("#total4").html('支付总数：'+(data.payOrdersTotal == null?"0":data.payOrdersTotal));
+                        $("#total5").html('支付总额：'+(data.payMoneyTotal == null?"0.00":data.payMoneyTotal));
+                        $("#total0").html('统计');
+                        $("#total6").html('退单总数：'+data.refundOrdersTotal);
+                        $("#total7").html('退单总额：'+data.refundMoneyTotal);
+                    }
+                })
+
+			});
+
+		
+            $("#export").click(function(){
+
+                var projectCode = $('#projectId').val();
+                var matchCode = $('#matchId').val();
+                var unitCode = $('#unitId').val();
+                var startTime = $('#startTime').val();
+                var endTime = $('#endTime').val();
+                var url=realPath+"/dmp/api/settlementReport/export?unitCode="+unitCode+"&gameCode="+projectCode+"&matchCode="+matchCode+"&startTime="+startTime+"&endTime="+endTime+"&timestamp"+(new Date()).valueOf();
+                if($("#count").val()>10000){
+                    layer.open({
+                        content: '是否确认导出为Excel,所有数据大于10000条，我们将只导出最近的10000条数据',
+                        yes: function(i, layero){
+                            //do something
+                            layer.close(i); //如果设定了yes回调，需进行手工关闭
+                            var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+                            XMLHttp(url,index);
+                        }
+                    });
+                }else{
+                    layer.open({
+                        content: '是否确认导出为Excel',
+                        yes: function(i, layero){
+                            //do something
+                            layer.close(i); //如果设定了yes回调，需进行手工关闭
+                            var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+                            XMLHttp(url,index);
+                        }
+                    });
+                }
+            })
+
+            function XMLHttp(url,index){
+                var xhr = new XMLHttpRequest();
+                xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
+                xhr.responseType = 'blob';
+
+                xhr.onload = function () {
+                    if (this.status === 200) {
+                        var blob = this.response;
+                        var reader = new FileReader();
+                        reader.readAsDataURL(blob);
+                        reader.onload = function (e) {
+                            layer.close(index);
+                            var headerName = xhr.getResponseHeader("Content-disposition");
+                            var fileName = decodeURIComponent(headerName).substring(20);
+                            // alert(fileName);
+                            if(xhr.getResponseHeader("Content-Type").search("excel")){
+                                layer.msg("下载成功");
+                            }else{
+                                layer.msg("下载失败");
+                            }
+                            var a = document.createElement('a');
+                            a.download = fileName;
+                            a.href = e.target.result;
+                            $("body").append(a);    // 修复firefox中无法触发click
+                            a.click();
+                            $(a).remove();
+                        }
+                    }
+                };
+                xhr.send()
+            }
+
+            table.on('tool(demo)', function(obj){
+				var data = obj.data;
+				if(obj.event === 'ordersTotalEvent'){
+					addProperty(data);
+				}
+			});
+
+			form.on('select(project)', function (data) {
+				console.log("触发了監控project!");
+				indexclose2 = layer.load(2, {shade: [0.5,'#fff']}); //0.1透明度的白色背景
+				if(data.value == ''){
+					$("#matchId").empty();
+					getMatchList();
+					layer.close(indexclose2);
+				}else {
+					$.ajax({
+						type: 'GET',
+						url: "/dmp/api/match/selectMatchByProject",
+						cache: false,
+						data: {projectCode: data.value},
+						success: function (obj) {
+							if (obj.resultCode == 200) {
+								layer.close(indexclose2);
+								$("#matchId").empty();
+								console.log("200");
+								var data = obj.data;
+								if(data.length>0){
+									var option = "<option value=''>全部</option>";
+									for (var i = 0; i < data.length; i++) {
+										option += "<option value='" + (data[i].matchCode) + "'>" + data[i].matchName + "</option>";
+									}
+								}else {
+									var option = "<option value=''>无</option>";
+									for (var i = 0; i < data.length; i++) {
+										option += "<option value='" + (data[i].matchCode) + "'>" + data[i].matchName + "</option>";
+									}
+								}
+
+								$('#matchId').append(option);
+								form.render('select','matchForm');
+							} else {
+								layer.alert(obj.errorMsg);
+							}
+						},
+						err: function () {
+							layer.alert("网络异常,请稍后再试");
+						}
+					})
+				}
+				return;
+			});
+			/*form.on('select(unit)', function(data) {
+				console.log("触发了监听select-unit!");
+				console.log("2"+data.value); //得到被选中的值
+				$.ajax({
+					type: 'GET',
+					url: "/dmp/api/unit/selectUnit",
+					cache: false,
+					data: {lock:0},
+					success: function(obj) {
+						if(obj.resultCode == 200) {
+							console.log("200");
+							var data = obj.data;
+							//layer.alert("添加成功");
+							//刷新父页面
+							/!*window.setTimeout(function() {
+								layer.closeAll("iframe");
+								parent.location.reload();
+							}, 800);*!/
+							var selectoption = "<option value='全部'></option>";
+							for(var i= 0; i< data.length;i++){
+								selectoption += "<option value='" + (data[i].unitCode) + "'>" + data[i].unitName + "</option>";
+							}
+							console.log("--selectOt--"+selectoption);
+							$('#unitId').append(selectoption);
+							form.render('select');
+						} else {
+							layer.alert(obj.errorMsg);
+						}
+					},
+					err: function() {
+						layer.alert("网络异常,请稍后再试");
+					}
+				})
+				return;
+			});*/
+
+			function addProperty(edit) {
+				var index = layui.layer.open({
+					title: !edit ? "支付订单详情" : "支付订单详情",
+					type: 2,
+					content: "settlementListDetail.html",
+					id: 'unitAdd',
+					area: [width, height],
+					maxmin: true,
+					scrollbar: true,
+					success: function(layero, index) {
+						var body = layui.layer.getChildFrame('body', index);
+						body.find('#orderTime').val(edit.orderDate);
+						body.find('#projectCode').val($('#projectId').val());
+						body.find('#matchCode').val($('#matchId').val());
+						body.find('#unitCode').val($('#unitId').val());
+						body.find('#btn').click();
+						setTimeout(function() {
+							layui.layer.tips('点击此处返回', '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 500)
+					}
+				})
+				/*   layui.layer.full(index);  */
+				//改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+				$(window).on("resize", function() {
+					layui.layer.full(index);
+				})
+			}
+
+			function getProjectList() {
+				$.ajax({
+					type: 'GET',
+					url: "/dmp/api/project/selectProject",
+					/*data:{status:1},*/
+					success: function (obj) {
+						var data = obj.data;
+						console.log(data);
+						var option = "<option value=''>全部</option>";
+						if(data.length>0){
+							for(var i= 0; i< data.length;i++){
+								option += "<option value='" + (data[i].projectCode) + "'>" + data[i].projectName + "</option>";
+							}
+							$('#projectId').append(option);
+							form.render('select','projectForm');
+						}
+					},
+					error: function (response) {
+						alert("ProjectError");
+					}
+				})
+			}
+			function getMatchList() {
+				$.ajax({
+					type: 'GET',
+					url: "/dmp/api/match/selectMatch",
+					success: function (obj) {
+						var data = obj.data;
+						var option = "<option value=''>全部</option>";
+						if(data.length>0){
+							for(var i= 0; i< data.length;i++){
+								option += "<option value='" + (data[i].matchCode) + "'>" + data[i].matchName + "</option>";
+							}
+							$('#matchId').append(option);
+							form.render('select','matchForm');
+						}
+					},
+					error: function (response) {
+						alert("MatchError");
+					}
+				})
+			}
+			function getUnitList() {
+				$.ajax({
+					type: 'GET',
+					url: "/dmp/api/unit/selectUnit",
+					success: function (obj) {
+						var data = obj.data;
+						var option = "<option value=''>全部</option>";
+						if(data.length>0){
+							for(var i= 0; i< data.length;i++){
+								option += "<option value='" + (data[i].unitCode) + "'>" + data[i].unitName + "</option>";
+							}
+							$('#unitId').append(option);
+							form.render('select','unitForm');
+						}
+					},
+					error: function (response) {
+						alert("UnitError");
+					}
+				})
+			}
+			$(document).ready(function () {
+				indexclose2 = layer.load(2, {shade: [0.5,'#fff']}); //0.1透明度的白色背景
+				getProjectList();
+				getMatchList();
+				getUnitList();
+				layer.close(indexclose2);
+			});
+		});
+        window.onload=function getTotal() {
+            $.ajax({
+                type: 'GET',
+                url: "/dmp/api/settlementReport/getTotal",
+                /*data:{status:1},*/
+                success: function (obj) {
+                    var data = obj.data;
+                    console.log(data);
+                    $("#total2").html('订单总数：'+(data.ordersTotal == null?"0":data.ordersTotal));
+                    $("#total3").html('订单总额：'+(data.moneyTotal == null?"0.00":data.moneyTotal));
+                    $("#total4").html('支付总数：'+(data.payOrdersTotal == null?"0":data.payOrdersTotal));
+                    $("#total5").html('支付总额：'+(data.payMoneyTotal == null?"0.00":data.payMoneyTotal));
+                    $("#total0").html('统计');
+                    $("#total6").html('退单总数：'+data.refundOrdersTotal);
+                    $("#total7").html('退单总额：'+data.refundMoneyTotal);
+                }
+            })
+        }
+
+	</script>
+
+</html>

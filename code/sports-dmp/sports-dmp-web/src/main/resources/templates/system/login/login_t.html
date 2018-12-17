@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>登录 | 系统</title>
+<link rel="icon" href="/assets/system/common/img/favicon.ico">
+<script src="https://cdn.bootcss.com/jquery/3.3.1/jquery.min.js"></script>
+<link href="https://cdn.bootcss.com/bootstrap/4.1.1/css/bootstrap.css"
+	rel="stylesheet">
+<script
+	src="https://cdn.bootcss.com/bootstrap/4.1.1/js/bootstrap.min.js"></script>
+<link href="/assets/system/login/css/nifty.css" rel="stylesheet">
+</head>
+<body>
+	<div id="container" class="cls-container">
+		<!-- BACKGROUND IMAGE -->
+		<!--===================================================-->
+		<div id="bg-overlay" class="bg-img"
+			style="background-image: url(/assets/common/img/bg-img/bg-img-oa.jpg)"></div>
+		<!-- LOGIN FORM -->
+		<!--===================================================-->
+		<div class="cls-content">
+			<div class="cls-content-sm panel">
+				<div class="panel-body">
+					<div class="mar-ver pad-btm">
+						<h3 class="h4 mar-no">登录首页</h3>
+						<p class="text-muted">使用您的帐号密码进行登录</p>
+					</div>
+					<div class="form-group">
+						<input type="text" name="username" id="username"
+							class="form-control" placeholder="用户名" autofocus>
+					</div>
+					<div class="form-group">
+						<input type="password" name="password" id="password"
+							class="form-control" placeholder="密码">
+					</div>
+					<div class="checkbox pad-btm text-left">
+						<input type="text" name="authCode" hidden="hidden" value="" id="authCode"
+							class="form-control" placeholder="验证码"
+							style="float: left; width: 162px; margin-right: 40px;">
+						<!-- <img
+							id='codeImg' alt="验证码出错啦~!" src="${ctx}/sys/authcode/yzm.action"/><a
+							href="javascript:void(0)" onclick='changeImg()'>看不清换一张</a> -->
+					</div>
+					<div class="checkbox pad-btm text-left">
+						<input id="demo-form-checkbox" class="magic-checkbox"
+							type="checkbox"> <label for="demo-form-checkbox">记住我</label>
+					</div>
+					<button class="btn btn-primary btn-lg btn-block"
+						onclick="loginAction()">登&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;录</button>
+				</div>
+
+			</div>
+		</div>
+
+	</div>
+	<!-- END OF CONTAINER -->
+	<script>
+		var ctx = "${ctx}/"
+		function changeImg() {
+			var url = "${ctx}/sys/authcode/yzm.action";
+			var timestamp = (new Date()).valueOf();
+			url = url + "?timestamp=" + timestamp;
+			var imgSrc = $("#codeImg");
+			imgSrc.attr("src", url);
+		}
+
+		function loginAction() {
+			/* 	var login_load = layer.load(1); */
+			var user = $("#username").val();
+			var pass = $("#password").val();
+			var authCode = $("#authCode").val();
+			$.ajax({
+				type : "GET",
+				url : ctx + "/api/user/login",
+				data : {
+					"username" : user,
+					"password" : pass,
+					"authCode" : authCode
+				},
+				success : function(result) {
+					//打印返回数据
+					if (result.code == 0) {
+						window.location = ctx + "main/index"
+					} else {
+						//提示消息
+						alert(result.errorMsg);
+					}
+				},
+				error : function() {
+					alert('网络错误');
+				},
+				complete : function() {
+					/* layer.close(login_load); */
+				}
+			});
+		}
+	</script>
+
+</body>
+</html>
+

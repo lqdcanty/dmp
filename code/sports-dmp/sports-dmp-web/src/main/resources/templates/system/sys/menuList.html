@@ -1,0 +1,74 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>配置</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/font-awesome.min.css" media="all" />
+	<style>
+		.layui-btn .layui-icon{margin:0 !important}
+		.childrenBody{background:#fff;padding-right:35px;}
+		.layui-tree li{line-height:26px}
+		.bg_graye{
+			background:#f0f0f0;
+			padding:10px;
+		}
+		.bg_blue{
+			background:#1AA094;
+			color:#fff;
+		}
+	</style>
+</head>
+<body class="childrenBody">
+	<input type="hidden" id="aaa">
+	<div class='layui-row layui-col-space15 bg_graye' >
+		<div class='layui-col-xs3 '>
+            <div class="layui-card">
+                <div class="layui-card-header bg_blue">系统</div>
+               	<div class="layui-card-body user-select">
+               		<div  id="demo-tree"></div>
+               	</div>
+           	 </div>
+		</div>
+		<div class='layui-col-xs9' style="padding:7.5px 0">
+		<div class="layui-card">
+              <div class="layui-card-header bg_blue">菜单/权限 <span class='p1'></span>
+              		<div class='fr'>
+	              		<a id="expand" class='layui-btn layui-btn-sm layui-btn-warm'>全部展开</a>
+	              		<a id="collapse" class='layui-btn layui-btn-sm layui-btn-danger'>全部收起</a>
+	            		<a id="add-btn" class='layui-btn layui-btn-sm  layui-btn-normal'>添加菜单</a>
+              		</div>
+              		
+              </div>
+               	<div class="layui-card-body user-select" >
+               		<div  id="menu-tree"></div>
+               	</div>
+           	 </div>
+		</div>
+	</div>	
+	<script type="text/html" id="tableListBar">
+		<div class="layui-btn-group">
+  			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe642;</i>
+  			</button>
+  			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del">
+    			<i class="layui-icon">&#xe640;</i>
+  			</button>
+		</div>
+	</script>
+	<script type="text/javascript">
+			var realPath = "${ctx}"	
+	</script>
+
+	<script type="text/javascript" src="/assets/system/common/layuiTree/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/system/sys/menuList.js"></script>
+</body>
+</html>

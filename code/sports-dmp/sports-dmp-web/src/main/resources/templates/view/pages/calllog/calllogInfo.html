@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='addIframIndex'>
+			<input type='hidden' id='callLogId'>
+			
+			<div class="tableBox">
+				<table  class="tableWidth">
+					
+					<tr>
+						<td class="infoItem">日志ID</td>
+						<td class="valueWidth">{{calllogInfo.id}}</td>
+						<td class="infoItem">请求时间</td>
+						<td class="valueWidth">{{calllogInfo.requestTime}}</td>
+					</tr>
+					<tr>
+						<td class="infoItem">响应数据量</td>
+						<td class="valueWidth">{{calllogInfo.total}}</td>
+						<td class="infoItem">是否成功</td>
+						<td class="valueWidth">{{calllogInfo.success==1?'成功':'失败'}}</td>
+					</tr>
+					<tr>
+						<td class="infoItem">请求IP</td>
+						<td class="valueWidth">{{calllogInfo.requestIp}}</td>
+						<td class="infoItem">请求时间</td>
+						<td class="valueWidth">{{calllogInfo.requestTime}}</td>
+					</tr>
+					<tr>
+						<td class="infoItem">接口标识</td>
+						<td class="valueWidth">{{calllogInfo.interfaceCode}}</td>
+						<td class="infoItem">序列号ID</td>
+						<td class="valueWidth">{{calllogInfo.seqNo}}</td>
+					</tr>
+					<tr>
+						<td class="infoItem">接口名称</td>
+						<td class="valueWidth">{{calllogInfo.interfaceName}}</td>
+						<td class="infoItem">耗费时间(ms)</td>
+						<td class="valueWidth">{{calllogInfo.spent}}</td>
+					</tr>
+					<tr>
+						<td class="infoItem">请求参数(概要)</td>
+						<td colspan="3" class="valueWidth3">{{calllogInfo.requestParam}}</td>
+						
+					</tr>
+					<tr>
+						<td class="infoItem">状态描述</td>
+						<td colspan="3"  class="valueWidth3">{{calllogInfo.status}}</td>
+					</tr>
+				</table>
+			</div>
+			
+			
+		
+			
+			
+			
+			
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				var vm = new Vue({
+					el: '#app',
+					data: {
+						calllogInfo: undefined,
+						callLogId: null
+					},
+					created: function() {
+						var that = this;
+						$.ajax({
+							url: '/dmp/api/call/log/detail?callLogId=' + $('#callLogId').val(),
+							type: 'GET',
+							dataType: 'JSON',
+							success: function(res) {
+								that.calllogInfo = res.data
+								that.callLogId = res.data.id
+								console.log(that.calllogInfo.id)
+							}
+						});
+					}
+				})
+			}
+		</script>
+	</body>
+
+</html>

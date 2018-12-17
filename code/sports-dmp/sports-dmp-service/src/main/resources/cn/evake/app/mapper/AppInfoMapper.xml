@@ -1,0 +1,402 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.evake.app.dao.mapper.AppInfoMapper" >
+  <resultMap id="BaseResultMap" type="cn.evake.app.dao.model.AppInfo" >
+    <id column="id" property="id" jdbcType="INTEGER" />
+    <result column="app_code" property="appCode" jdbcType="VARCHAR" />
+    <result column="app_name" property="appName" jdbcType="VARCHAR" />
+    <result column="app_version" property="appVersion" jdbcType="VARCHAR" />
+    <result column="app_intro" property="appIntro" jdbcType="VARCHAR" />
+    <result column="manager_name" property="managerName" jdbcType="VARCHAR" />
+    <result column="manager_realname" property="managerRealname" jdbcType="VARCHAR" />
+    <result column="manager_phone" property="managerPhone" jdbcType="VARCHAR" />
+    <result column="manager_email" property="managerEmail" jdbcType="VARCHAR" />
+    <result column="duty_user_name" property="dutyUserName" jdbcType="VARCHAR" />
+    <result column="code_type" property="codeType" jdbcType="VARCHAR" />
+    <result column="code_url" property="codeUrl" jdbcType="VARCHAR" />
+    <result column="create_user" property="createUser" jdbcType="VARCHAR" />
+    <result column="last_modify_user" property="lastModifyUser" jdbcType="VARCHAR" />
+    <result column="last_modify_time" property="lastModifyTime" jdbcType="TIMESTAMP" />
+    <result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+    <result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+  </resultMap>
+  <sql id="Example_Where_Clause" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    id, app_code, app_name, app_version, app_intro, manager_name, manager_realname, manager_phone, 
+    manager_email, duty_user_name, code_type, code_url, create_user, last_modify_user, 
+    last_modify_time, gmt_create, gmt_modified
+  </sql>
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="cn.evake.app.dao.model.AppInfoExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from app_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 'true' as QUERYID,
+    <include refid="Base_Column_List" />
+    from app_info
+    where id = #{id,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from app_info
+    where id = #{id,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="cn.evake.app.dao.model.AppInfoExample" >
+    delete from app_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="cn.evake.app.dao.model.AppInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_info (app_code, app_name, app_version, 
+      app_intro, manager_name, manager_realname, 
+      manager_phone, manager_email, duty_user_name, 
+      code_type, code_url, create_user, 
+      last_modify_user, last_modify_time, gmt_create, 
+      gmt_modified)
+    values (#{appCode,jdbcType=VARCHAR}, #{appName,jdbcType=VARCHAR}, #{appVersion,jdbcType=VARCHAR}, 
+      #{appIntro,jdbcType=VARCHAR}, #{managerName,jdbcType=VARCHAR}, #{managerRealname,jdbcType=VARCHAR}, 
+      #{managerPhone,jdbcType=VARCHAR}, #{managerEmail,jdbcType=VARCHAR}, #{dutyUserName,jdbcType=VARCHAR}, 
+      #{codeType,jdbcType=VARCHAR}, #{codeUrl,jdbcType=VARCHAR}, #{createUser,jdbcType=VARCHAR}, 
+      #{lastModifyUser,jdbcType=VARCHAR}, #{lastModifyTime,jdbcType=TIMESTAMP}, #{gmtCreate,jdbcType=TIMESTAMP}, 
+      #{gmtModified,jdbcType=TIMESTAMP})
+  </insert>
+  <insert id="insertSelective" parameterType="cn.evake.app.dao.model.AppInfo" >
+    <selectKey resultType="java.lang.Integer" keyProperty="id" order="AFTER" >
+      SELECT LAST_INSERT_ID()
+    </selectKey>
+    insert into app_info
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="appCode != null" >
+        app_code,
+      </if>
+      <if test="appName != null" >
+        app_name,
+      </if>
+      <if test="appVersion != null" >
+        app_version,
+      </if>
+      <if test="appIntro != null" >
+        app_intro,
+      </if>
+      <if test="managerName != null" >
+        manager_name,
+      </if>
+      <if test="managerRealname != null" >
+        manager_realname,
+      </if>
+      <if test="managerPhone != null" >
+        manager_phone,
+      </if>
+      <if test="managerEmail != null" >
+        manager_email,
+      </if>
+      <if test="dutyUserName != null" >
+        duty_user_name,
+      </if>
+      <if test="codeType != null" >
+        code_type,
+      </if>
+      <if test="codeUrl != null" >
+        code_url,
+      </if>
+      <if test="createUser != null" >
+        create_user,
+      </if>
+      <if test="lastModifyUser != null" >
+        last_modify_user,
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time,
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create,
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="appCode != null" >
+        #{appCode,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersion != null" >
+        #{appVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appIntro != null" >
+        #{appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="managerName != null" >
+        #{managerName,jdbcType=VARCHAR},
+      </if>
+      <if test="managerRealname != null" >
+        #{managerRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="managerPhone != null" >
+        #{managerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="managerEmail != null" >
+        #{managerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyUserName != null" >
+        #{dutyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeType != null" >
+        #{codeType,jdbcType=VARCHAR},
+      </if>
+      <if test="codeUrl != null" >
+        #{codeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyUser != null" >
+        #{lastModifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyTime != null" >
+        #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="cn.evake.app.dao.model.AppInfoExample" resultType="java.lang.Integer" >
+    select count(*) from app_info
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update app_info
+    <set >
+      <if test="record.id != null" >
+        id = #{record.id,jdbcType=INTEGER},
+      </if>
+      <if test="record.appCode != null" >
+        app_code = #{record.appCode,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appName != null" >
+        app_name = #{record.appName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appVersion != null" >
+        app_version = #{record.appVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="record.appIntro != null" >
+        app_intro = #{record.appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerName != null" >
+        manager_name = #{record.managerName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerRealname != null" >
+        manager_realname = #{record.managerRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerPhone != null" >
+        manager_phone = #{record.managerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="record.managerEmail != null" >
+        manager_email = #{record.managerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="record.dutyUserName != null" >
+        duty_user_name = #{record.dutyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="record.codeType != null" >
+        code_type = #{record.codeType,jdbcType=VARCHAR},
+      </if>
+      <if test="record.codeUrl != null" >
+        code_url = #{record.codeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="record.createUser != null" >
+        create_user = #{record.createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyUser != null" >
+        last_modify_user = #{record.lastModifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="record.lastModifyTime != null" >
+        last_modify_time = #{record.lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.gmtCreate != null" >
+        gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="record.gmtModified != null" >
+        gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update app_info
+    set id = #{record.id,jdbcType=INTEGER},
+      app_code = #{record.appCode,jdbcType=VARCHAR},
+      app_name = #{record.appName,jdbcType=VARCHAR},
+      app_version = #{record.appVersion,jdbcType=VARCHAR},
+      app_intro = #{record.appIntro,jdbcType=VARCHAR},
+      manager_name = #{record.managerName,jdbcType=VARCHAR},
+      manager_realname = #{record.managerRealname,jdbcType=VARCHAR},
+      manager_phone = #{record.managerPhone,jdbcType=VARCHAR},
+      manager_email = #{record.managerEmail,jdbcType=VARCHAR},
+      duty_user_name = #{record.dutyUserName,jdbcType=VARCHAR},
+      code_type = #{record.codeType,jdbcType=VARCHAR},
+      code_url = #{record.codeUrl,jdbcType=VARCHAR},
+      create_user = #{record.createUser,jdbcType=VARCHAR},
+      last_modify_user = #{record.lastModifyUser,jdbcType=VARCHAR},
+      last_modify_time = #{record.lastModifyTime,jdbcType=TIMESTAMP},
+      gmt_create = #{record.gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{record.gmtModified,jdbcType=TIMESTAMP}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="cn.evake.app.dao.model.AppInfo" >
+    update app_info
+    <set >
+      <if test="appCode != null" >
+        app_code = #{appCode,jdbcType=VARCHAR},
+      </if>
+      <if test="appName != null" >
+        app_name = #{appName,jdbcType=VARCHAR},
+      </if>
+      <if test="appVersion != null" >
+        app_version = #{appVersion,jdbcType=VARCHAR},
+      </if>
+      <if test="appIntro != null" >
+        app_intro = #{appIntro,jdbcType=VARCHAR},
+      </if>
+      <if test="managerName != null" >
+        manager_name = #{managerName,jdbcType=VARCHAR},
+      </if>
+      <if test="managerRealname != null" >
+        manager_realname = #{managerRealname,jdbcType=VARCHAR},
+      </if>
+      <if test="managerPhone != null" >
+        manager_phone = #{managerPhone,jdbcType=VARCHAR},
+      </if>
+      <if test="managerEmail != null" >
+        manager_email = #{managerEmail,jdbcType=VARCHAR},
+      </if>
+      <if test="dutyUserName != null" >
+        duty_user_name = #{dutyUserName,jdbcType=VARCHAR},
+      </if>
+      <if test="codeType != null" >
+        code_type = #{codeType,jdbcType=VARCHAR},
+      </if>
+      <if test="codeUrl != null" >
+        code_url = #{codeUrl,jdbcType=VARCHAR},
+      </if>
+      <if test="createUser != null" >
+        create_user = #{createUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyUser != null" >
+        last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+      </if>
+      <if test="lastModifyTime != null" >
+        last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      </if>
+      <if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+      </if>
+    </set>
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="cn.evake.app.dao.model.AppInfo" >
+    update app_info
+    set app_code = #{appCode,jdbcType=VARCHAR},
+      app_name = #{appName,jdbcType=VARCHAR},
+      app_version = #{appVersion,jdbcType=VARCHAR},
+      app_intro = #{appIntro,jdbcType=VARCHAR},
+      manager_name = #{managerName,jdbcType=VARCHAR},
+      manager_realname = #{managerRealname,jdbcType=VARCHAR},
+      manager_phone = #{managerPhone,jdbcType=VARCHAR},
+      manager_email = #{managerEmail,jdbcType=VARCHAR},
+      duty_user_name = #{dutyUserName,jdbcType=VARCHAR},
+      code_type = #{codeType,jdbcType=VARCHAR},
+      code_url = #{codeUrl,jdbcType=VARCHAR},
+      create_user = #{createUser,jdbcType=VARCHAR},
+      last_modify_user = #{lastModifyUser,jdbcType=VARCHAR},
+      last_modify_time = #{lastModifyTime,jdbcType=TIMESTAMP},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=INTEGER}
+  </update>
+</mapper>

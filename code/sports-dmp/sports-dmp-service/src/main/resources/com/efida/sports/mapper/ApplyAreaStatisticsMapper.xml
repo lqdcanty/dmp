@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.efida.sports.dmp.dao.mapper.ApplyAreaStatisticsMapper">
+
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.efida.sports.dmp.dao.entity.ApplyAreaStatistics">
+        <id column="id" property="id" />
+        <result column="field_code" property="fieldCode" />
+        <result column="field_name" property="fieldName" />
+        <result column="field_address" property="fieldAddress" />
+        <result column="apply_count" property="applyCount" />
+        <result column="status" property="status" />
+        <result column="longitude" property="longitude" />
+        <result column="latitude" property="latitude" />
+        <result column="province" property="province" />
+        <result column="city" property="city" />
+        <result column="area" property="area" />
+        <result column="gmt_create" property="gmtCreate" />
+        <result column="gmt_modified" property="gmtModified" />
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+        id, field_code, field_name, field_address,apply_count, status, longitude, latitude, province, city, area, gmt_create, gmt_modified
+    </sql>
+
+</mapper>

@@ -1,0 +1,148 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.evake.auth.dao.mapper.SysUserRoleMapper" >
+	<resultMap id="BaseResultMap" type="cn.evake.auth.dao.model.SysUserRole" >
+		<id column="Id" property="id" jdbcType="BIGINT" />
+		<result column="uuid" property="uuid" jdbcType="VARCHAR" />
+		<result column="role_id" property="roleId" jdbcType="BIGINT" />
+		<result column="role_name" property="roleName" jdbcType="VARCHAR" />
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP" />
+		<result column="gmt_modified" property="gmtModified" jdbcType="TIMESTAMP" />
+	</resultMap>
+	<sql id="Base_Column_List" >
+    Id, uuid, role_id, role_name, gmt_create, gmt_modified
+	</sql>
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long" >
+    select 'false' as QUERYID,
+		<include refid="Base_Column_List" />
+    from sys_user_role
+    where Id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long" >
+    delete from sys_user_role
+    where Id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="cn.evake.auth.dao.model.SysUserRole"  useGeneratedKeys="true" keyProperty="id">
+    insert into sys_user_role (Id, uuid, role_id, 
+      role_name, gmt_create, gmt_modified
+      )
+    values (#{id,jdbcType=BIGINT}, #{uuid,jdbcType=VARCHAR}, #{roleId,jdbcType=BIGINT}, 
+      #{roleName,jdbcType=VARCHAR}, #{gmtCreate,jdbcType=TIMESTAMP}, #{gmtModified,jdbcType=TIMESTAMP}
+      )
+	</insert>
+	<insert id="insertSelective" parameterType="cn.evake.auth.dao.model.SysUserRole"  useGeneratedKeys="true" keyProperty="id">
+    insert into sys_user_role
+		<trim prefix="(" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+        Id,
+			</if>
+			<if test="uuid != null" >
+        uuid,
+			</if>
+			<if test="roleId != null" >
+        role_id,
+			</if>
+			<if test="roleName != null" >
+        role_name,
+			</if>
+			<if test="gmtCreate != null" >
+        gmt_create,
+			</if>
+			<if test="gmtModified != null" >
+        gmt_modified,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides="," >
+			<if test="id != null" >
+        #{id,jdbcType=BIGINT},
+			</if>
+			<if test="uuid != null" >
+        #{uuid,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null" >
+        #{roleId,jdbcType=BIGINT},
+			</if>
+			<if test="roleName != null" >
+        #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+        #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null" >
+        #{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.evake.auth.dao.model.SysUserRole" >
+    update sys_user_role
+		<set >
+			<if test="uuid != null" >
+        uuid = #{uuid,jdbcType=VARCHAR},
+			</if>
+			<if test="roleId != null" >
+        role_id = #{roleId,jdbcType=BIGINT},
+			</if>
+			<if test="roleName != null" >
+        role_name = #{roleName,jdbcType=VARCHAR},
+			</if>
+			<if test="gmtCreate != null" >
+        gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+			<if test="gmtModified != null" >
+        gmt_modified = #{gmtModified,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+    where Id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.evake.auth.dao.model.SysUserRole" >
+    update sys_user_role
+    set uuid = #{uuid,jdbcType=VARCHAR},
+      role_id = #{roleId,jdbcType=BIGINT},
+      role_name = #{roleName,jdbcType=VARCHAR},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+      gmt_modified = #{gmtModified,jdbcType=TIMESTAMP}
+    where Id = #{id,jdbcType=BIGINT}
+	</update>
+	<!--以下为自定义-->
+	<select id="selectByUuidAndRoleId" resultMap="BaseResultMap">
+    select * from sys_user_role
+    where uuid = #{uuid,jdbcType=VARCHAR} and role_id= #{roleId,jdbcType=BIGINT}
+	</select>
+	
+	<select id="selectSysRoleByUuid" resultMap="BaseResultMap">
+       select * from sys_user_role left join sys_role ON sys_user_role.role_id=sys_role.id 
+       WHERE sys_user_role.uuid = #{uuid,jdbcType=VARCHAR}
+	</select>
+	
+	<delete id="deleteWithRoleIdAndUuid">
+       delete from sys_user_role
+       where role_id = #{roleId} and uuid = #{uuid,jdbcType=VARCHAR}
+	</delete>
+	
+	<delete id="deleteWithUuid">
+       delete from sys_user_role
+       where uuid = #{uuid,jdbcType=VARCHAR}
+	</delete>
+	
+	<select id="selectSysRoleByUuids" resultMap="BaseResultMap">
+       select * from sys_user_role left join sys_role on sys_user_role.role_id=sys_role.id 
+       where
+		<if test="uuids != null and uuids.size() > 0"> 
+			 sys_user_role.uuid  in 
+			<foreach collection="uuids" index="index" item="item" open="(" separator="," close=")">  
+             #{item}  
+			</foreach>
+		</if>
+		<if test="uuids == null"> 
+			 1!=1
+		</if>
+	</select>
+	
+	<select id="selectSysRoleByUuidWithStatus" resultMap="BaseResultMap">
+       select * from sys_user_role left join sys_role ON sys_user_role.role_id=sys_role.id 
+       WHERE sys_user_role.uuid = #{uuid,jdbcType=VARCHAR} and status=  #{status,jdbcType=VARCHAR}  
+	</select>
+	
+	
+	
+</mapper>

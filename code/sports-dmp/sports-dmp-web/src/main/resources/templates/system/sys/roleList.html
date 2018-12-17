@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>系统配置</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<style>
+		.layui-btn .layui-icon{margin:0 !important}
+				.childrenBody{background:#E6E6E6}
+				.layui-card-header{
+					    background: #1AA094!important;
+					    color:#fff;
+				}
+				.layui-card{
+					
+				}
+				.layui-btn-normal{
+					background: #1AA094!important;
+				}
+				table{
+					width:100%!important;
+				}
+				
+			.childrenBody{background:#fff;padding-right:35px;}
+			.layui-tree li{line-height:26px}
+			.bg_graye{
+				background:#f0f0f0;
+				padding:10px;
+			}
+			.bg_blue{
+				background:#1AA094;
+				color:#fff;
+			}
+	</style>
+</head>
+<body class="childrenBody" id="app">
+	<div class='layui-row layui-col-space15 bg_graye'>
+		<div class='layui-col-xs5'>
+	           <div class="layui-card">
+	               <div class="layui-card-header">角色</div>
+	              	<div class="layui-card-body user-select">
+	              		<blockquote class="layui-elem-quote quoteBox" style="margin-right:0">
+							<form class="layui-form"  onsubmit="return false;">
+								<div class="layui-inline">
+									<a class="layui-btn layui-btn-normal add_btn">添加角色</a>
+								</div>
+							</form>
+						</blockquote>
+	              		<table id="roleList" lay-filter="roleList"></table>
+	              	</div>
+	          	 </div>
+		</div>
+		<div class='layui-col-xs7' style='padding:7.5px 0;'>
+			<div class="layui-card">
+					<input type='hidden' class='roleIdVal'>
+					<input type='hidden' class='roleName'>
+		             <div class="layui-card-header">权限<span class='roleNameView'></span>
+		             <!-- 		<div class='fr'>
+		              		<a id="expand" class='layui-btn layui-btn-sm layui-btn-warm'>全部展开</a>
+		              		<a id="collapse" class='layui-btn layui-btn-sm layui-btn-danger'>全部收起</a>
+		            		<a id="add-btn" class='layui-btn layui-btn-sm  layui-btn-normal'>添加菜单</a>
+		             		</div>	 -->
+		             </div>
+	              	<div class="layui-card-body user-select" >
+	              		<div  id="menu-tree"></div>
+	              	</div>
+	       	 </div>
+		</div>
+	</div>
+	<script type="text/html" id="statusTpl">
+  {{#  if(d.status === 'normal'){ }}
+    <span style="color: #5FB878;">正常</span>
+  {{#  } else { }}
+    <span style="color: #FF5722;">锁定</span>
+  {{#  } }}
+	</script>
+	<script type="text/html" id="tableListBar">
+		<a class="layui-btn layui-btn-xs layui-btn-normal" lay-event="role">权限配置</a>
+		<a class="layui-btn layui-btn-xs layui-btn-warm" lay-event="edit">修改</a>
+	
+		<a class="layui-btn layui-btn-xs layui-btn-danger" lay-event="del">删除</a>
+	</script>
+	<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+	<script type="text/javascript" src="/assets/system/common/layuiTree/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/system/sys/roleList.js"></script>
+</body>
+</html>

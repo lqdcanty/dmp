@@ -1,0 +1,1022 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>配置</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" /> 
+	<!--  <link rel="stylesheet" href="/assets/system/common/layui2.3.0/css/layui.css" media="all" />  -->
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" /> 
+	<link rel="stylesheet" href="/assets/system/common/css/font-awesome.min.css" media="all" />  
+	<style>
+		.layui-btn .layui-icon{margin:0 !important}
+		.childrenBody{background:#fff;padding-right:35px;}
+		.layui-tree li{line-height:26px}
+		.bg_graye{
+			background:#f0f0f0;
+			padding:10px;
+		}
+		.bg_blue{
+			background:#1AA094;
+			color:#fff;
+		}
+		.icon-view .fa{    font-size: 34px;}
+		.layui-form-label{width:75px;padding:9px 5px;}
+		.menuHost{display:none}
+		/* .parentIdView{display:none} */
+		.color-red{
+			color:red;
+		}
+		
+		.button button{
+			margin-left:0!important;
+		}
+		.layui-input-block{
+			margin-left:80px;
+		}
+		.mb15{
+			margin-bottom:15px;
+		}
+		/* .menuUrlBox,.permissionDiv{
+			display:none;
+		} */
+		.formLayer{
+			background: #fff;
+		    width: 750px;
+		    position: absolute;
+		    left: 50%;
+		    margin-left: -375px;
+		    top: 200px;
+		    padding: 5px 20px 20px;
+		}
+		.title{
+			width:100%;
+			font-size:18px;
+			padding:10px 12px;
+			box-sizing:border-box;
+			border-bottom:1px solid #1AA094;
+			color:#1AA094;
+		}
+		.title i{
+			cursor: pointer;
+		}
+		.fr{
+			float:rigth;
+		}
+		#formLayerModle .layui-form-label {
+			margin-right:10px;
+		}
+		.selectxLayer{
+			width:500px;
+			background: #fff;
+		    position: absolute;
+		    left: 50%;
+		    margin-left: -250px;
+		    top: 200px;
+		    padding: 5px 20px 20px;
+		}
+		.li{
+		    padding: 5px 5px;
+    		cursor: pointer;
+   	 	}
+   	 	body .modle-wrap{
+		    position: fixed;top: 0;right: 0;bottom: 0;left: 0;z-index: 1040;width: 100%;height: 100%;
+		}
+		.value_col{
+			height:35px;
+			border:1px solid #ccc;
+			margin:0;
+			box-sizing:border-box;
+			line-height:25px;
+			vertical-align: middle;
+			padding:5px 5px;
+			font-size:14px;
+			margin-left:-1px;
+			margin-bottom:-1px;
+			/*  white-space:nowrap; */
+			word-wrap:break-word;
+			position:relative;
+			overflow-y:hidden;
+		}
+		.value_col.layer2{
+			padding-left:25px;
+		}
+		.value_col.layer3{
+			padding-left:45px;
+		}
+		.value_col.layer4{
+			padding-left:65px;
+		}
+		.col1{
+			width:7%;
+			text-align:center;
+		}
+		.col2{
+			width:19%;
+		}
+		.col3{
+			width:22%;
+		}
+		.col4{
+			width:19%;
+		}
+		.col5{
+			width:8%;
+			text-align:center;
+		}
+		.col6{
+			width:8%;
+			text-align:center;
+		}
+		.col7{
+			width:8%;
+			text-align:center;
+		}
+		.col8{
+			width:7%;
+			text-align:center;
+		}
+		.value_col .menuUrl{
+			position:fixed;
+			left:48%;
+			top:70px;
+			padding:5px;
+			line-height:24px;
+			background:#fff;
+		    height: auto;
+		    z-index: 1000;
+		    max-width:500px;
+		    border:1px solid #ccc;
+		   white-space:nowrap;
+		    color:red;
+		}
+		.marginLeft{
+			margin-left:20px;
+			font-size:18px;
+			line-height:24px;
+		}
+		
+		
+.flex{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
+.flex-v{-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}
+.flex-1{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
+
+
+/* 每一子元素的边缘延边的中间开始===垂直居中,取值有start=baseline end center */
+	.flex-align-center{-webkit-box-align:center;-webkit-align-items:center;-ms-flex-align:center;align-items:center;}
+/* 每一子元素的边缘延边的中间开始===水平居中,取值有start end center justify */
+	.flex-pack-center{-webkit-box-pack:center;-webkit-justify-content:center;-ms-flex-pack:center;justify-content:center;}
+/* 在每个子元素之间分割多余的空间（首个子元素前和最后一个子元素后没有多余的空间 */
+
+	.flex-pack-justify{-webkit-box-pack:justify;-webkit-justify-content:space-between;-ms-flex-pack:justify;justify-content:space-between;}
+	.value_col{
+		display:inline-block;
+	}
+	</style>
+</head>
+<body class="childrenBody">
+	<div id="app" v-cloak>
+		<div class='layui-row layui-col-space15 bg_graye' >
+			<div class='layui-col-xs3 '>
+	            <div class="layui-card">
+	                <div class="layui-card-header bg_blue">系统</div>
+	               	<div class="layui-card-body">
+	               		<ul>
+	               			<li class="layui-block li" v-for="item in sysList" @click="sysItem(item.id)">
+	               				<i class="fa" :class="item.icon"></i>
+	               				<span>{{item.name}}</span>
+	               			</li>
+	               		</ul>
+	               	</div>
+	           	 </div>
+			</div>
+			<div class='layui-col-xs9' style="padding:7.5px 0;overflow:hidden" >
+				<div class="layui-card">
+	              <div class="layui-card-header bg_blue">菜单/权限
+	              		<div class='fr'>
+		              		<a id="expand" class='layui-btn layui-btn-sm layui-btn-warm' @click="allOpen">全部展开</a>
+		              		<a id="collapse" class='layui-btn layui-btn-sm layui-btn-danger' @click="allClose">全部收起</a>
+		            		<a id="add-btn" class='layui-btn layui-btn-sm  layui-btn-normal' @click="addBtnFun">添加菜单</a>
+	              		</div>
+	              </div>
+	               	<div class="layui-card-body" style="width: 100%;overflow-x: scroll;">
+	               		
+               			<div class="layui-form" style="min-width:1200px;font-size:0;">
+               				<div class="">
+               					<div class="layui-block">
+            							<div class="value_col col1">id</div>
+            							<div class="value_col col2">菜单名称</div>
+            							<div class="value_col col3">菜单url</div>
+            							<div class="value_col col4">授权码</div>
+            							<div class="value_col col5">是否内部系统</div>
+            							<div class="value_col col6">新打开窗口</div>
+            							<div class="value_col col7">是否展开</div>
+            							<div class="value_col col8">操作</div>
+               					</div>
+               					<div v-for="(item,index) in rightRight">
+               						 <div class="value_col col1">{{item.id}}</div>
+	               					 <div class="value_col col2">
+	               						 <li>
+	               							<span style="width:13px;"><i  v-if="item.children" class="fa fa-folder-o"></i></span> 
+	               							<a href="javascript:;" @click="unopenTrFun(item)">{{item.menuName}}</a>
+	               						</li> 
+	               					</div>
+	               					<div class="value_col col3" @click.stop="mouseenterFun(item)" >
+	               						{{item.menuUrl}}
+	               						<div class='menuUrl' v-if="item.ismenuUrlShow&&item.menuUrl.length>40">{{item.menuUrl}}<i class="fa fa-times-circle marginLeft" @click.stop="closeMenuUrl(item)"></i></div>
+	               					</div>
+	               					<div class="value_col col4">{{item.permissionCode}}</div>
+	               					<div class="value_col col5"><span style="color:#5FB878" v-if="item.isSelfSys">是</span><span style="color:#FF5722" v-else>否</span></div>
+	               					<div class="value_col col6"><span style="color:#5FB878" v-if="item.newWindow">是</span><span style="color:#FF5722" v-else>否</span></div>
+	               					<div class="value_col col7"><span style="color:#5FB878" v-if="item.isOpen">是</span><span style="color:#FF5722" v-else>否</span></div>
+	               					<div class="value_col col8">
+	               						<div class="layui-btn-group">
+	               							<button class="layui-btn layui-btn-primary layui-btn-xs"  @click="edit(item)"><i class="layui-icon">&#xe642;</i></button>
+	               							<button class="layui-btn layui-btn-primary layui-btn-xs" @click="del(item)"><i class="layui-icon">&#xe640;</i></button>
+	               						</div>
+	               					</div>
+	               					<div v-show="!item.children||item.flage"  v-for="(item1,index1) in item.children">
+	               						 <div class="value_col col1">{{item1.id}}</div>
+		               					 <div class="value_col col2 layer2">
+		               						 <li>
+		               							<span style="width:13px;"><i v-if="item1.children" class="fa fa-folder-o"></i></span> 
+		               							<a href="javascript:;" @click="unopenTrFun(item1)">{{item1.menuName}}</a>
+		               						</li> 
+		               					</div>
+		               					<div class="value_col col3" @click.stop="mouseenterFun(item1)">
+		               						{{item1.menuUrl}}
+		               						<div class='menuUrl' v-if="item1.ismenuUrlShow&&item1.menuUrl.length>40">{{item1.menuUrl}}<i class="fa fa-times-circle marginLeft" @click.stop="closeMenuUrl(item1)"></i></div>
+		               					</div>
+		               					<div class="value_col col4">{{item1.permissionCode}}</div>
+		               					<div class="value_col col5"><span style="color:#5FB878" v-if="item1.isSelfSys">是</span><span style="color:#FF5722" v-else>否</span></div>
+		               					<div class="value_col col6"><span style="color:#5FB878" v-if="item1.newWindow">是</span><span style="color:#FF5722" v-else>否</span></div>
+		               					<div class="value_col col7"><span style="color:#5FB878" v-if="item1.isOpen">是</span><span style="color:#FF5722" v-else>否</span></div>
+		               					<div class="value_col col8">
+		               						<div class="layui-btn-group">
+		               							<button class="layui-btn layui-btn-primary layui-btn-xs"  @click="edit(item1)"><i class="layui-icon">&#xe642;</i></button>
+		               							<button class="layui-btn layui-btn-primary layui-btn-xs" @click="del(item1)"><i class="layui-icon">&#xe640;</i></button>
+		               						</div>
+		               					</div>
+		               					<div v-if="!item1.children||item1.flage"  v-for="(item2,index2) in item1.children">
+		               						 <div class="value_col col1">{{item2.id}}</div>
+			               					 <div class="value_col col2 layer3">
+			               						 <li>
+			               							<span style="width:13px;"><i v-if="item2.children" class="fa fa-folder-o"></i></span> 
+			               							<a href="javascript:;" @click="unopenTrFun(item2)">{{item2.menuName}}</a>
+			               						</li> 
+			               					</div>
+			               					<div class="value_col col3" @click.stop="mouseenterFun(item2)">
+			               						{{item2.menuUrl}}
+			               						<div class='menuUrl' v-if="item2.ismenuUrlShow&&item2.menuUrl.length>40">{{item2.menuUrl}}<i class="fa fa-times-circle marginLeft" @click.stop="closeMenuUrl(item2)"></i></div>
+			               					</div>
+			               					<div class="value_col col4">{{item2.permissionCode}}</div>
+			               					<div class="value_col col5"><span style="color:#5FB878" v-if="item2.isSelfSys">是</span><span style="color:#FF5722" v-else>否</span></div>
+			               					<div class="value_col col6"><span style="color:#5FB878" v-if="item2.newWindow">是</span><span style="color:#FF5722" v-else>否</span></div>
+			               					<div class="value_col col7"><span style="color:#5FB878" v-if="item2.isOpen">是</span><span style="color:#FF5722" v-else>否</span></div>
+			               					<div class="value_col col8">
+			               						<div class="layui-btn-group">
+			               							<button class="layui-btn layui-btn-primary layui-btn-xs"  @click="edit(item2)"><i class="layui-icon">&#xe642;</i></button>
+			               							<button class="layui-btn layui-btn-primary layui-btn-xs" @click="del(item2)"><i class="layui-icon">&#xe640;</i></button>
+			               						</div>
+			               					</div>
+			               					<div v-if="!item2.children&&item2.flage"  v-for="(item3,index3) in item2.children">
+			               						 <div class="value_col col1">{{item3.id}}</div>
+				               					 <div class="value_col col2 layer4" >
+				               						 <li>
+				               							<span style="width:13px;"><i v-if="item3.children" class="fa fa-folder-o"></i></span> 
+				               							<a href="javascript:;" @click="unopenTrFun(item3)">{{item3.menuName}}</a>
+				               						</li> 
+				               					</div>
+				               					<div class="value_col col3" @click.stop="mouseenterFun(item3)">
+				               						{{item3.menuUrl}}
+				               						<div class='menuUrl' v-if="item3.ismenuUrlShow&&item3.menuUrl.length>40">{{item3.menuUrl}}<i class="fa fa-times-circle marginLeft" @click.stop="closeMenuUrl(item3)"></i></div>
+				               					</div>
+				               					<div class="value_col col4" >{{item3.permissionCode}}</div>
+				               					<div class="value_col col5" ><span style="color:#5FB878" v-if="item3.isSelfSys">是</span><span style="color:#FF5722" v-else>否</span></div>
+				               					<div class="value_col col6" ><span style="color:#5FB878" v-if="item3.newWindow">是</span><span style="color:#FF5722" v-else>否</span></div>
+				               					<div class="value_col col7" ><span style="color:#5FB878" v-if="item3.isOpen">是</span><span style="color:#FF5722" v-else>否</span></div>
+				               					<div class="value_col col8">
+				               						<div class="layui-btn-group">
+				               							<button class="layui-btn layui-btn-primary layui-btn-xs"  @click="edit(item3)"><i class="layui-icon">&#xe642;</i></button>
+				               							<button class="layui-btn layui-btn-primary layui-btn-xs" @click="del(item3)"><i class="layui-icon">&#xe640;</i></button>
+				               						</div>
+				               					</div>
+			               					</div>
+		               					</div>
+	               					</div>
+               					</div>
+               				</div>
+						</div>
+	             	</div>
+	        	  </div> 
+			
+			</div>
+		</div>
+		
+		
+
+		
+		<div class="modle-wrap" id="formLayerModle" v-show="formLayerModle" >
+			<div class="modle-container">
+				<div class="formLayer">
+					<h1 class="title">
+						<span id="titleName">编辑</span>
+						<i class="layui-icon fr" id="" @click="closeLayer" style="font-size:26px;">&#x1006;</i>
+					</h1>
+					<form class="layui-form layui-row" id="munu">
+						<input type="hidden" class="layui-input sysMenuId" name='sysMenuId' >
+						<input type="hidden" id="parentId">
+						<div class="layui-col-xs12">
+							<div class="layui-row">
+								<div class="layui-col-md11 layui-col-xs12" style="padding-top:30px;">
+									<div class="layui-form-item">
+										
+										<div class="layui-col-xs6">
+											<label class="layui-form-label"><span class='color-red'>*</span>菜单名称</label>
+											<div class="layui-col-xs8">
+												<input type="text" class="layui-input menuName" v-model="layerEdit.menuName" lay-verify="required" name="menuName" placeholder="请输入菜单名称">
+											</div>
+										</div>
+										<div class="layui-col-xs6">
+											<label class="layui-form-label"><span class='color-red'>*</span>数据类型</label>
+											<div class="layui-col-xs8">
+												<select id='menuType' name="type"  lay-filter="menuType" lay-verify="required" v-model="layerEdit.type">			
+													  <option value="">请选择菜单类型</option>
+													  <option value="catalog">目录</option>
+													  <option value="url">菜单</option>
+													  <option value="permission">权限</option>
+													</select>  
+											</div>
+										</div>
+										
+									</div>
+									<div class="layui-form-item" style="margin-bottom:0;" >
+										<div class="layui-col-xs6 menuUrlBox mb15" v-if="menuUrlShow">
+											<label class="layui-form-label"><span class='color-red'>*</span>菜单URl</label>
+											<div class="layui-col-xs8">
+												<input type="text" class="layui-input menuUrl"  v-model="layerEdit.menuUrl" lay-verify="required"  name="menuUrl"  placeholder="请输入菜单URl">
+											</div>
+										</div>
+										<div class="layui-col-xs6 mb15" id="isRechangeDiv" v-show="isRechangeDiv">
+											<label class="layui-form-label">内置权限码</label>
+											<div class="layui-col-xs5">
+												<input type='hidden' class='layui-input isRechange' name='isRechange' > 
+												<input type="checkbox"  class='isRechangeBox' lay-filter="isRechangeBox" lay-skin="switch" lay-text="是|否" checked="true" >
+											</div>
+										</div>
+										<div class="layui-col-xs6 mb15 permissionDiv" v-show="!isRechangeDiv||addPermissionCode">
+											<label class="layui-form-label"><span class='color-red'>*</span>权限码</label>
+											<div class="layui-col-xs8">
+												<input type="text" class="layui-input permissionCode"  name="permissionCode" placeholder="请输入权限码" v-model="layerEdit.permissionCode">
+											</div>
+										</div>
+										<div class="layui-col-xs6 mb15">
+											<label class="layui-form-label">新窗口</label>
+											<div class="layui-col-xs5">
+												<input type='hidden' class='layui-input newWindow' name='newWindow' v-model="layerEdit.newWindow" > 
+												<input type="checkbox"  class='newWindowBox' lay-filter="newWindowBox" lay-skin="switch" lay-text="是|否" >
+											</div>
+										</div>
+									</div>
+									
+									<div class="layui-form-item">
+										<label class="layui-form-label">操作权限</label>
+										<div class="layui-input-block checkbox">
+											<input type="checkbox" name="like[write]" title="增加" lay-skin="primary">
+										      <input type="checkbox" name="like[read]" title="查询" lay-skin="primary" checked>
+										      <input type="checkbox" name="like[dai]" title="删除" lay-skin="primary">
+										</div>
+									</div>
+									
+									<div class="layui-form-item">
+										
+										<div class="layui-col-xs3">
+											<label class="layui-form-label">内部系统</label>
+											<div class="layui-col-xs5">
+												<input type='hidden' class='layui-input isSelfSys' name='isSelfSys'  v-model="layerEdit.isSelfSys" > 
+												<input type="checkbox"  class='isSelfSysBox' lay-filter="isSelfSysBox" name='isSelfSys' lay-skin="switch" lay-text="是|否" checked>
+											</div>
+										</div>
+										
+										<div class="layui-col-xs3">
+											<label class="layui-form-label">是否展开</label>
+											<div class="layui-col-xs5">
+												<input type='hidden' class='layui-input isOpen' name='isOpen' v-model="layerEdit.isOpen" > 
+												<input type="checkbox"  class='isOpenBox'   lay-filter="isOpenBox" lay-skin="switch" lay-text="是|否" >
+											</div>
+										</div>
+										<div class="layui-col-xs6">
+											<label class="layui-form-label"><span class='color-red'>*</span>上级菜单</label>
+											<div class="layui-col-xs4">
+												<input type='hidden' class='layui-input parentId' name='parentId' >
+												<input style="width: 95px!important;padding-left: 5px;" type='text' v-if="parentIdView" class='layui-input parentIdView' disabled v-model="parentMenuInfoName" >
+											</div>
+											<a  class="layui-btn selParentId layui-btn-normal layui-btn-md" style="padding:0 5px" @click="parentSelectLayer">选择父菜单</a>
+										</div>
+										
+									</div>
+								
+							
+									<div class="layui-form-item">	
+										<div class="layui-center button" style="margin-top:35px;">
+											<a class="layui-btn  addBtn"  v-if="addBtnShow" @click="addSubmit">立即添加</a>
+											<a class="layui-btn  updateBtn" v-if="updateBtnShow"  @click="updataSubmit">确认编辑</a>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</form>
+				</div>
+			</div>
+	
+		<div class="modle-wrap" id="selectxLayerModle" v-show="parentLayerShow">
+			<div class="modle-container">
+				<div class=selectxLayer>
+					<h1 class="title">
+						<span id="titleName">选择父级菜单</span>
+						<i class="layui-icon fr" id="closeParentLayer" @click="closeParentLayer" style="font-size:26px;">&#x1006;</i>
+					</h1>
+					<!-- <table id="menuPreTree" lay-filter="menuList"></table> -->
+					<div id="menuPreTree"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+ 	<script type="text/javascript">
+			var realPath = "${ctx}"
+			
+		</script> 
+
+<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+<script type="text/javascript" src="/assets/common/vue/vue.js"></script>	
+<script  type="text/javascript">
+
+	layui.use(['table', 'form', 'tree', 'layer','jquery'],function(){
+		form = layui.form,
+		table = layui.table,
+		laytpl=layui.laytpl,
+		layer=layui.layer,
+		$ = layui.jquery;
+		 
+		
+		form.on('select(menuType)', function(data){
+			Vue.set(vm.layerEdit, 'type',data.value);
+			console.log(vm.layerEdit)
+	    	  if(data.value=='url'){
+	    		  vm.menuUrlShow=true;
+	    		  form.render();
+	    	  }else{
+	    		  vm.menuUrlShow=false;
+	    		  form.render();
+	    	  }
+		}); 
+	 	form.on('switch(newWindowBox)', function(data){
+	    	  if(data.elem.checked){//开关是否开启，true或者false
+	    		  vm.layerEdit.newWindow=true;
+	    	  }else{
+	    		  vm.layerEdit.newWindow=false;
+	    	  }; 
+		});
+	    form.on('switch(isRechangeBox)', function(data){
+	  	  if(data.elem.checked){//开关是否开启，true或者false 
+	  		vm.addPermissionCode=false; 
+	  		form.render("checkbox");
+	  	  }else{
+	  		 vm.addPermissionCode=true; 
+	  		$(".permissionCode").attr("disabled",false);
+	  	  }; 
+		}); 
+	    form.on('switch(isOpenBox)', function(data){
+	    	if(data.elem.checked){//开关是否开启，true或者false
+	    		 vm.layerEdit.isOpen=true;
+	    	  }else{
+	    		  vm.layerEdit.isOpen=false;
+	    	  }; 
+		}); 
+	    
+	    form.on('switch(isSelfSysBox)', function(data){
+		  	if(data.elem.checked){//开关是否开启，true或者false
+	    		  vm.layerEdit.isSelfSys=true;
+	    	  }else{
+	    		  vm.layerEdit.isSelfSys=false;
+	    	  }; 
+		}); 
+		var vm=new Vue({
+			el:'#app',
+			data:{
+				sysId:0,
+				sysMenuId:-1,
+				sysList:[],
+				rightRight:[],
+				formLayerModle:false,
+				rightRightNew:[],
+				layerEdit:{},//点击编辑的每一条数据
+				isRechangeDiv:true,
+				menuUrlShow:false,
+				parentIdView:false,
+				parentLayerShow:false,
+				parentLayerData:[],
+				parentMenuInfoName:'',
+				layerEditCopy:{},//备份保留
+				addBtnShow:false,
+				updateBtnShow:true,
+				addPermissionCode:false,
+				menuUrlShowLong:false,
+				allOpenShow:false
+				
+			},
+			created:function(){
+				this.getLeftData();
+				$(".modle-wrap").show();
+			},
+			updated: function(){
+				
+				form.render();
+			},
+			methods:{
+				unopenTrcom:function(open){
+					
+				},
+				getLeftData:function(){
+					//debugger;
+					var that=this;
+					var index = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+					$.ajax({
+						type:'get',
+						url:realPath+"/api/sys/all",
+						cache: false,
+						data:{fresh:Math.random()},
+						success:function(obj){
+							console.log(obj,"obj")
+							layer.close(index);
+							if(obj.code==0){
+								//nowSysId=obj.data[0].id;
+								that.getMenuList(obj.data[0].id);
+								that.sysId=obj.data[0].id;
+								that.sysList=obj.data;
+								console.log(that.sysList)
+							}
+							form.render();
+						},
+						error:function(){
+							layer.close(index);
+							layer.msg("请求出错");
+						}
+					})
+				},
+				getMenuList:function(sysId){
+					var that=this;
+					that.sysId=sysId;
+					var index =layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+					$.ajax({
+						type:'get',
+						url:realPath+"/api/sys/menu/get",
+						data:{sysId:sysId,fresh:Math.random()},
+						success:function(obj){
+							layer.close(index);
+							if(obj.code==0){
+								that.rightRight=obj.data;
+								if(that.rightRight.length>0){
+									that.rightRight.forEach(function(item){
+										console.log(item,"item")
+										Vue.set(item, 'flage', false);
+										Vue.set(item, 'ismenuUrlShow', false);
+										if(item.children){
+											item.children.forEach(function(item1){
+												Vue.set(item1, 'flage', false);
+												Vue.set(item1, 'ismenuUrlShow', false);
+												if(item1.children){
+													item1.children.forEach(function(item2){
+														Vue.set(item2, 'flage', false);
+														Vue.set(item2, 'ismenuUrlShow', false);
+														if(item2.children){
+															item2.children.forEach(function(item3){
+																Vue.set(item3, 'flage', false);
+																Vue.set(item3, 'ismenuUrlShow', false);
+															})
+														}
+													})
+												}
+											})
+										}
+									}); 
+								} ///判断遍历结束
+								return that.rightRight;
+							//})
+							}
+						},
+						error:function(){
+							layer.close(index);
+							layer.msg("请求出错");
+						}
+					})
+				}, 
+				sysItem:function(id){
+					 var that=this;
+					that.getMenuList(id);
+				},
+				unopenTrFun:function(item){
+					item.flage=!item.flage;
+				},
+				edit:function(item){
+					console.log(item,"click")
+					var that=this;
+					that.parentIdView=true;
+					that.sysMenuId=item.id;
+					that.layerEditCopy=item;
+					that.updateBtnShow=true;
+					that.addBtnShow=false;
+					var index =layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+					$.ajax({
+						type:'get',
+						url:realPath+"/api/sys/menu/info",
+						cache: false,
+						data:{menuId:item.id,fresh:Math.random()},
+						success:function(obj){
+							console.log(obj,"obj")
+							layer.close(index);
+							if(obj.code==0){
+								/* debugger; */
+								that.formLayerModle=true;
+								that.layerEdit=obj.data;
+								//判断页面显示
+								if(that.layerEdit.newWindow==true){
+									$('.newWindowBox').attr('checked',true)
+								}else{
+									$('.newWindowBox').attr('checked',false)
+								}
+								if(that.layerEdit.isSelfSys==true){
+									$('.isSelfSysBox').attr('checked',true)
+								}else{
+									$('.isSelfSysBox').attr('checked',false)
+								}
+								if(that.layerEdit.isOpen==true){
+									$('.isOpenBox').attr('checked',true)
+								}else{
+									$('.isOpenBox').attr('checked',false)
+								}
+								if(that.layerEdit.permissionCode){
+									that.isRechangeDiv=false;
+								}
+								if(that.layerEdit.type=='url'){
+									that.menuUrlShow=true;
+								}
+								if(obj.data.parentMenuInfo){
+									that.parentMenuInfoName=obj.data.parentMenuInfo.menuName;
+								}else{
+									that.parentMenuInfoName=obj.data.menuName;
+								}
+								form.render("checkbox")
+							}
+							form.render();
+						},
+						error:function(){
+							layer.close(index);
+							layer.msg("请求出错");
+						}
+					})	
+				},
+				closeLayer:function(){
+					var that=this;
+					that.formLayerModle=false;
+				},
+				parentSelectLayer:function(){
+					var that=this;
+					var index =layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+					$.ajax({
+						type:'get',
+						url:realPath+"/api/sys/menu/sys",
+						cache: false,
+						data:{fresh:Math.random()},
+						success:function(obj){
+							console.log(obj,"obj")
+							layer.close(index);
+							if(obj.code==0){
+								that.parentLayerShow=true;
+								that.parentLayerData=obj.data;
+								console.log(that.parentLayerData,"that.parentLayerData");
+								$("#menuPreTree").html('');
+								layui.tree({
+									elem: '#menuPreTree',
+							        skin: 'as',                     //设定皮肤
+							        drag: true,                     //点击每一项时是否生成提示信息
+							        click: function(item){          //节点点击事件
+							    	   that.parentIdView=true;
+							    	   //that.layerEdit.parentMenuInfo.menuName=item.name;
+							    	   that.sysId=item.sysId;
+							    	   if(item.children){
+							    		   that.parentMenuInfoName=item.name
+							    	   }
+							    	   that.parentLayerShow=false;
+							    	   if(item.host){
+							    		   
+							    		   Vue.set(that.layerEdit,'parentId','');
+							    	   }else{
+							    		   that.layerEdit.parentId=item.id;
+							    	   }
+							    	   
+							        }, 
+							        nodes:obj.data
+							    }); 
+								//判断页面显示
+								
+							}
+						}
+					})
+				},
+				closeParentLayer:function(){
+					var that=this;
+					that.parentLayerShow=false;
+				},
+				updataSubmit:function(){
+					var that=this;
+					
+					if(!that.layerEdit.menuName){
+						layer.msg("菜单名称必填");
+						return;
+					}
+					if(!that.layerEdit.type){
+						layer.msg("数据类型必填");
+						return;
+					}
+					if(that.layerEdit.type=='url'&&!that.layerEdit.menuUrl){
+						layer.msg("菜单URl必填");
+						return;
+					} 
+					if(!that.layerEdit.permissionCode){
+						layer.msg("权限码必填");
+						return;
+					}
+					var index = layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+					 $.ajax({
+						type:'get',
+						url:realPath+"/api/sys/menu/update",
+						cache: false,
+						data:{
+							sysId:that.sysId,
+							sysMenuId:that.sysMenuId,
+							menuName:that.layerEdit.menuName,
+							type:that.layerEdit.type,
+							menuUrl:that.layerEdit.type=='url'?that.layerEdit.menuUrl:'',
+							permissionCode:that.layerEdit.permissionCode,
+							newWindow:that.layerEdit.newWindow?1:0,
+							isSelfSys:that.layerEdit.isSelfSys?1:0,
+							isOpen:that.layerEdit.isOpen?1:0,
+							parentId:that.layerEdit.parentId,
+							fresh:Math.random()
+						},
+						success:function(obj){
+							layer.close(index);
+							if(obj.code==0){
+								//判断页面显示
+								layer.msg("修改成功");
+								that.formLayerModle=false;
+								that.layerEditCopy.menuName=that.layerEdit.menuName;
+								that.layerEditCopy.type=that.layerEdit.type;
+								that.layerEditCopy.menuUrl=that.layerEdit.menuUrl;
+								that.layerEditCopy.permissionCode=that.layerEdit.permissionCode;
+								that.layerEditCopy.newWindow=that.layerEdit.newWindow;
+								that.layerEditCopy.isSelfSys=that.layerEdit.isSelfSys;
+								that.layerEditCopy.isOpen=that.layerEdit.isOpen;
+								that.layerEditCopy.parentId=that.layerEdit.parentId;
+							}
+						},
+						error:function(obj){
+							layer.close(index);
+						}
+					})
+				},
+				addBtnFun:function(){
+					var that=this;
+					//that.layerEdit={};
+					that.layerEdit={
+						"isSelfSys":true,
+						"isOpen":false,
+						"newWindow":false
+					}; 
+					that.updateBtnShow=false;
+					that.addBtnShow=true;
+					that.formLayerModle=true;
+					that.addPermissionCode=false; 
+					that.parentIdView=false;
+					that.isRechangeDiv=true;
+				},
+				addSubmit:function(){
+					var that=this;
+					data={
+						sysId:that.sysId,
+						menuName:that.layerEdit.menuName,
+						type:that.layerEdit.type,
+						menuUrl:that.layerEdit.type=='url'?that.layerEdit.menuUrl:'',
+						permissionCode:that.layerEdit.permissionCode,
+						newWindow:that.layerEdit.newWindow?1:0,
+						isSelfSys:that.layerEdit.isSelfSys?1:0,
+						isOpen:that.layerEdit.isOpen?1:0,
+						parentId:that.layerEdit.parentId,
+						fresh:Math.random()
+					}
+					console.log(data,"增加");
+					if(!that.layerEdit.menuName){
+						layer.msg("菜单名称必填");
+						return;
+					}
+					if(!that.layerEdit.type){
+						layer.msg("数据类型必填");
+						return;
+					}
+					if(that.layerEdit.type=='url'&&!that.layerEdit.menuUrl){
+						layer.msg("菜单URl必填");
+						return;
+					}
+					if(that.addPermissionCode&&!that.layerEdit.permissionCode){
+						layer.msg("权限码必填");
+						return;
+					}
+					if(!that.parentMenuInfoName){
+						layer.msg("上级菜单必填");
+						return;
+					}
+					var index = layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+					 $.ajax({
+						type:'get',
+						url:realPath+"/api/sys/menu/add",
+						cache: false,
+						data:data,
+						success:function(obj){
+							layer.close(index);
+							if(obj.code==0){
+								//判断页面显示
+								layer.msg("添加成功,请授权");
+								that.formLayerModle=false;
+								console.log(obj,"添加成功")
+								//that.rightRight
+							 	if(that.layerEdit.parentId){
+									that.rightRight.every(function(element){
+										element.children.every(function(element1){
+											if(element1.parentId==that.layerEdit.parentId){
+												element.children.push(obj.data)
+												return false;
+											}else if(element1.children){
+												element1.children.every(function(element2){
+													if(element2.parentId==that.layerEdit.parentId){
+														element1.children.push(obj.data)
+														return false;
+													}
+													if(element2.children){
+														element2.children.every(function(element3){
+															if(element3.parentId==that.layerEdit.parentId){
+																element2.children.push(obj.data)
+																return false;
+															}
+														})
+													}
+												})
+											}
+										})
+										console.log(that.rightRight,"添加有parentId")
+									})
+								}else{
+									that.rightRight.every(function(element){
+										if(element.sysId==that.sysId){
+											that.rightRight.push(obj.data);
+											console.log(that.rightRight,"添加没有parentId");
+											return false;
+										}
+										
+									})
+								} 
+								
+							}
+						},
+						error:function(obj){
+							layer.close(index);
+						}
+					})	
+				},
+				del:function(item){
+					var that=this;
+					console.log(item.id,"item.id")
+					layer.confirm('确定删除此菜单？',{icon:3, title:'提示信息'},function(index){
+				  		var index = layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+				  		 $.ajax({
+							type:'get',
+							url:realPath+"/api/sys/menu/delete",
+							cache: false,
+							data:{menuId:item.id,fresh:Math.random()},
+							success:function(obj){
+								layer.close(index);
+								if(obj.code==0){
+									//判断页面显示
+									//debugger;
+									for(var i=0;i<that.rightRight.length;i++){
+										if(that.rightRight[i].id==item.id){
+											console.log(that.rightRight[i].id)
+											that.rightRight.splice(i,1);
+											break;
+										}
+										if(that.rightRight[i].children){
+											for(var j=0;j<that.rightRight[i].children.length;j++){
+												if(that.rightRight[i].children[j].id==item.id){
+													that.rightRight[i].children.splice(j,1);
+													break;
+												}
+												if(that.rightRight[i].children[j].children){
+													var item2=that.rightRight[i].children[j].children
+													for(var k=0;k<item2.length;k++){
+														if(item2[k].id==item.id){
+															item2.splice(k,1);
+															break;
+														}
+														if(item2.children){
+															var item3=that.rightRight[i].children[j].children[k].children;
+															for(var m=0;m<item3.length;m++){
+																if(item3[m].id==item.id){
+																	item3.splice(m,1);
+																	break;
+																}
+															}
+														}
+													}
+												}
+											}
+										}
+									}
+								}
+							},
+							error:function(obj){
+								layer.close(index);
+							}
+						})	
+				            
+				    });
+				},
+				mouseenterFun:function(item){
+					var that=this;
+					item.ismenuUrlShow=true;
+					console.log(item.ismenuUrlShow)
+				},
+				closeMenuUrl:function(item){
+					console.log(item)
+					var that=this;
+					item.ismenuUrlShow=false;
+				},
+				allOpen:function(){
+					var that=this;
+					if(that.rightRight.length>0){
+						that.rightRight.forEach(function(item){
+							console.log(item,"item")
+							Vue.set(item, 'flage', true);
+							if(item.children){
+								item.children.forEach(function(item1){
+									Vue.set(item1, 'flage', true);
+									if(item1.children){
+										item1.children.forEach(function(item2){
+											Vue.set(item2, 'flage', true);
+											if(item2.children){
+												item2.children.forEach(function(item3){
+													Vue.set(item3, 'flage', true);
+												})
+											}
+										})
+									}
+								})
+							}
+						}); 
+					} ///判断遍历结束
+				},
+				allClose:function(){
+					var that=this;
+					if(that.rightRight.length>0){
+						that.rightRight.forEach(function(item){
+							console.log(item,"item")
+							Vue.set(item, 'flage', false);
+							if(item.children){
+								item.children.forEach(function(item1){
+									Vue.set(item1, 'flage', false);
+									if(item1.children){
+										item1.children.forEach(function(item2){
+											Vue.set(item2, 'flage', false);
+											if(item2.children){
+												item2.children.forEach(function(item3){
+													Vue.set(item3, 'flage', false);;
+												})
+											}
+										})
+									}
+								})
+							}
+						}); 
+					} ///判断遍历结束
+				}
+			}//方法结束
+		})
+	}) 
+</script>
+</body>
+</html>

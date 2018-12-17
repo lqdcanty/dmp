@@ -1,0 +1,142 @@
+<assembly>
+    <id>bin</id>
+    <!-- 最终打包成一个用于发布的zip文件 -->
+    <formats>
+        <format>tar.gz</format>
+    </formats>
+    <!-- Adds dependencies to zip package under lib directory -->
+    <dependencySets>
+        <dependencySet>
+            <!--
+               不使用项目的artifact，第三方jar不要解压，打包进zip文件的lib目录
+           -->
+            <useProjectArtifact>false</useProjectArtifact>
+            <outputDirectory>lib</outputDirectory>
+            <unpack>false</unpack>
+        </dependencySet>
+    </dependencySets>
+    <fileSets>
+        <!-- 把项目相关的说明文件，打包进zip文件的根目录 -->
+        <fileSet>
+            <directory>${project.basedir}</directory>
+            <outputDirectory>/</outputDirectory>
+            <includes>
+                <include>README*</include>
+                <include>LICENSE*</include>
+                <include>NOTICE*</include>
+            </includes>
+        </fileSet>
+        
+        <!-- 把项目的配置文件，打包进zip文件的resources目录 -->
+       <!--  <fileSet>
+            <directory>src/main/resources</directory>
+            <outputDirectory>resources</outputDirectory>
+            <includes>
+                <include>*.xml</include>
+                <include>*.properties</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+        </fileSet> -->
+          <fileSet>
+            <directory>/src/main/java</directory>
+            <outputDirectory>doc/source/main</outputDirectory>
+            <includes>
+                <include>**</include>
+                <include>*/**</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+        </fileSet>
+          <fileSet>
+            <directory>/src/test/java</directory>
+            <outputDirectory>doc/source/test</outputDirectory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+        </fileSet>
+         <fileSet>
+            <directory>${project.build.directory}/src/test/resources</directory>
+            <outputDirectory>doc/source/resources</outputDirectory>
+            <includes>
+                <include>*</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+         </fileSet>
+        
+          <fileSet>
+            <directory>src/main/doc</directory>
+            <outputDirectory>doc</outputDirectory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+        </fileSet>
+        
+       <fileSet>
+            <directory>src/main/bin</directory>
+            <outputDirectory>bin</outputDirectory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+       </fileSet>
+        
+        <fileSet>
+            <directory>config</directory>
+            <outputDirectory>config</outputDirectory>
+            <includes>
+                <include>*</include>
+                <include>*/*</include>
+            </includes>
+            <excludes>
+                <exclude>rebel.xml</exclude>
+            </excludes>
+        </fileSet>
+        <fileSet>
+            <directory>tempfile</directory>
+            <outputDirectory>tempfile</outputDirectory>
+        </fileSet>
+        
+        <!-- 把项目的脚本文件目录（ src/main/scripts ）中的启动脚本文件，打包进zip文件的跟目录 -->
+        <fileSet>
+            <directory>${project.build.scriptSourceDirectory}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>startup.*</include>
+            </includes>
+        </fileSet>
+
+        <!-- 把项目的脚本文件（除了启动脚本文件），打包进zip文件的script目录 -->
+        <fileSet>
+            <directory>${project.build.scriptSourceDirectory}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+               <!--  <exclude>startup.*</exclude> -->
+            </includes>
+        </fileSet>
+        
+        <!-- 把项目自己编译出来的jar文件，打包进zip文件的根目录 -->
+        <fileSet>
+            <directory>${project.build.directory}</directory>
+            <outputDirectory></outputDirectory>
+            <includes>
+                <include>*.jar</include>
+            </includes>
+        </fileSet>
+    </fileSets>
+</assembly>

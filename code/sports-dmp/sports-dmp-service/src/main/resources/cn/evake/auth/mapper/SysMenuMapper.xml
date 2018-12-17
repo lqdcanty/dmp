@@ -1,0 +1,263 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.evake.auth.dao.mapper.SysMenuMapper">
+	<resultMap id="BaseResultMap" type="cn.evake.auth.dao.model.SysMenu">
+		<id column="id" property="id" jdbcType="BIGINT"/>
+		<result column="sys_id" property="sysId" jdbcType="BIGINT"/>
+		<result column="menu_name" property="menuName" jdbcType="VARCHAR"/>
+		<result column="menu_url" property="menuUrl" jdbcType="VARCHAR"/>
+		<result column="type" property="type" jdbcType="VARCHAR"/>
+		<result column="permission_code" property="permissionCode" jdbcType="VARCHAR"/>
+		<result column="is_self_sys" property="isSelfSys" jdbcType="BIT"/>
+		<result column="new_window" property="newWindow" jdbcType="BIT"/>
+		<result column="is_open" property="isOpen" jdbcType="BIT"/>
+		<result column="status" property="status" jdbcType="BIT"/>
+		<result column="parent_id" property="parentId" jdbcType="BIGINT"/>
+		<result column="support_mobile" property="supportMobile" jdbcType="BIT"/>
+		<result column="gmt_create" property="gmtCreate" jdbcType="TIMESTAMP"/>
+	</resultMap>
+	
+	<sql id="Base_Column_List">
+    id, sys_id, menu_name, menu_url, type, permission_code, is_self_sys, new_window, 
+    is_open, status, parent_id,support_mobile,gmt_create
+	</sql>
+	
+	<sql id="Base_A_Column_List" >
+    sys_menu.id, sys_menu.sys_id, sys_menu.menu_name, sys_menu.menu_url, sys_menu.type, sys_menu.permission_code, sys_menu.is_self_sys, sys_menu.new_window, 
+    sys_menu.is_open, sys_menu.parent_id,sys_menu.support_mobile,sys_menu.gmt_create
+	</sql>
+	
+	<select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Long">
+        select 'false' as QUERYID,
+		<include refid="Base_Column_List"/>
+        from sys_menu
+        where id = #{id,jdbcType=BIGINT}
+	</select>
+	<delete id="deleteByPrimaryKey" parameterType="java.lang.Long">
+    delete from sys_menu
+    where id = #{id,jdbcType=BIGINT}
+	</delete>
+	<insert id="insert" parameterType="cn.evake.auth.dao.model.SysMenu" useGeneratedKeys="true"
+		keyProperty="id">
+    insert into sys_menu (id, sys_id, menu_name, 
+      menu_url, type, permission_code, 
+      is_self_sys, new_window, is_open, status,
+      parent_id,support_mobile,gmt_create)
+    values (#{id,jdbcType=BIGINT}, #{sysId,jdbcType=BIGINT}, #{menuName,jdbcType=VARCHAR}, 
+      #{menuUrl,jdbcType=VARCHAR}, #{type,jdbcType=VARCHAR}, #{permissionCode,jdbcType=VARCHAR}, 
+      #{isSelfSys,jdbcType=BIT}, #{newWindow,jdbcType=BIT}, #{isOpen,jdbcType=BIT}, #{status,jdbcType=BIT},
+      #{parentId,jdbcType=BIGINT}, #{supportMobile,jdbcType=BIT},
+      #{gmtCreate,jdbcType=TIMESTAMP})
+	</insert>
+	<insert id="insertSelective" parameterType="cn.evake.auth.dao.model.SysMenu" useGeneratedKeys="true"
+		keyProperty="id">
+        insert into sys_menu
+		<trim prefix="(" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+                id,
+			</if>
+			<if test="sysId != null">
+                sys_id,
+			</if>
+			<if test="menuName != null">
+                menu_name,
+			</if>
+			<if test="menuUrl != null">
+                menu_url,
+			</if>
+			<if test="type != null">
+                type,
+			</if>
+			<if test="permissionCode != null">
+                permission_code,
+			</if>
+			<if test="isSelfSys != null">
+                is_self_sys,
+			</if>
+			<if test="newWindow != null">
+                new_window,
+			</if>
+			<if test="isOpen != null">
+                is_open,
+			</if>
+			<if test="status != null">
+                status,
+			</if>
+			<if test="parentId != null">
+                parent_id,
+			</if>
+			<if test="supportMobile != null">
+                support_mobile,
+			</if>
+			<if test="gmtCreate != null">
+                gmt_create,
+			</if>
+		</trim>
+		<trim prefix="values (" suffix=")" suffixOverrides=",">
+			<if test="id != null">
+                #{id,jdbcType=BIGINT},
+			</if>
+			<if test="sysId != null">
+                #{sysId,jdbcType=BIGINT},
+			</if>
+			<if test="menuName != null">
+                #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuUrl != null">
+                #{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+                #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="permissionCode != null">
+                #{permissionCode,jdbcType=VARCHAR},
+			</if>
+			<if test="isSelfSys != null">
+                #{isSelfSys,jdbcType=BIT},
+			</if>
+			<if test="newWindow != null">
+                #{newWindow,jdbcType=BIT},
+			</if>
+			<if test="isOpen != null">
+                #{isOpen,jdbcType=BIT},
+			</if>
+			<if test="status != null">
+                #{status,jdbcType=BIT},
+			</if>
+			<if test="parentId != null">
+                #{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="supportMobile != null">
+                 #{supportMobile,jdbcType=BIT},
+			</if>
+			<if test="gmtCreate != null">
+                 #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+		</trim>
+	</insert>
+	<update id="updateByPrimaryKeySelective" parameterType="cn.evake.auth.dao.model.SysMenu">
+        update sys_menu
+		<set>
+			<if test="sysId != null">
+                sys_id = #{sysId,jdbcType=BIGINT},
+			</if>
+			<if test="menuName != null">
+                menu_name = #{menuName,jdbcType=VARCHAR},
+			</if>
+			<if test="menuUrl != null">
+                menu_url = #{menuUrl,jdbcType=VARCHAR},
+			</if>
+			<if test="type != null">
+                type = #{type,jdbcType=VARCHAR},
+			</if>
+			<if test="permissionCode != null">
+                permission_code = #{permissionCode,jdbcType=VARCHAR},
+			</if>
+			<if test="isSelfSys != null">
+                is_self_sys = #{isSelfSys,jdbcType=BIT},
+			</if>
+			<if test="newWindow != null">
+                new_window = #{newWindow,jdbcType=BIT},
+			</if>
+			<if test="isOpen != null">
+                is_open = #{isOpen,jdbcType=BIT},
+			</if>
+			<if test="status != null">
+                status = #{status,jdbcType=BIT},
+			</if>
+			<if test="parentId != null">
+                parent_id = #{parentId,jdbcType=BIGINT},
+			</if>
+			<if test="supportMobile != null">
+                 support_mobile = #{supportMobile,jdbcType=BIT},
+			</if>
+			<if test="gmtCreate != null">
+                 gmt_create = #{gmtCreate,jdbcType=TIMESTAMP},
+			</if>
+		</set>
+        where id = #{id,jdbcType=BIGINT}
+	</update>
+	<update id="updateByPrimaryKey" parameterType="cn.evake.auth.dao.model.SysMenu">
+    update sys_menu
+    set sys_id = #{sysId,jdbcType=BIGINT},
+      menu_name = #{menuName,jdbcType=VARCHAR},
+      menu_url = #{menuUrl,jdbcType=VARCHAR},
+      type = #{type,jdbcType=VARCHAR},
+      permission_code = #{permissionCode,jdbcType=VARCHAR},
+      is_self_sys = #{isSelfSys,jdbcType=BIT},
+      new_window = #{newWindow,jdbcType=BIT},
+      is_open = #{isOpen,jdbcType=BIT},
+      status = #{status,jdbcType=BIT},
+      parent_id = #{parentId,jdbcType=BIGINT},
+      support_mobile = #{supportMobile,jdbcType=BIT},
+      gmt_create = #{gmtCreate,jdbcType=TIMESTAMP}
+    where id = #{id,jdbcType=BIGINT}
+	</update>
+
+	<!--以下为自定义代码-->
+	<select id="selectByMenuNameAndSysId" resultMap="BaseResultMap">
+        select
+		<include refid="Base_Column_List"/>
+        from sys_menu
+        where sys_id = #{sysId} and menu_name= #{menuName}
+	</select>
+
+	<select id="selectByIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+		<include refid="Base_Column_List"/>
+        from sys_menu
+		<if test="list.size() > 0">
+            where id in
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+			</foreach>
+		</if>
+		<if test="list.size() == 0">
+            where id=0
+		</if>
+	</select>
+
+	<select id="selectAll" resultMap="BaseResultMap">
+    select * from sys_menu
+	</select>
+
+	<select id="selectBySysIds" resultMap="BaseResultMap" parameterType="java.util.List">
+        select
+		<include refid="Base_Column_List"/>
+        from sys_menu
+		<if test="list.size() > 0">
+            where sys_id in
+			<foreach collection="list" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+			</foreach>
+		</if>
+		<if test="list.size() == 0">
+            where sys_id=0
+		</if>
+	</select>
+
+	<select id="selectMenuByRoleId" resultMap="BaseResultMap">
+        select
+		<include refid="Base_A_Column_List"/>
+        from sys_role_permission right join sys_menu on sys_role_permission.menu_id=sys_menu.id
+        where sys_role_permission. role_id=#{roleId}
+	</select>
+	
+	<select id="selectByIdsWithStatus" resultMap="BaseResultMap">
+        select
+		<include refid="Base_Column_List"/>
+        from sys_menu where 1=1
+		<if test="menuIds.size() > 0">
+            and id in
+			<foreach collection="menuIds" index="index" item="item" open="(" separator="," close=")">
+                #{item}
+			</foreach>
+		</if>
+		<if test="menuIds.size() == 0">
+            and sys_id=0
+		</if>
+	    and status= #{status,jdbcType=BIT}
+	</select>
+
+
+</mapper>

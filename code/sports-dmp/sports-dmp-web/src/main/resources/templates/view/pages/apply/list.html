@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>提交记录</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="${ctx}/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+		</style>
+	</head>
+
+	<body>
+		<form class="layui-form">
+			<div class='layui-form-item'>
+				<div class="layui-col-xs3">
+					<label class="layui-form-label">编号</label>
+					<div class="layui-inline">
+						<input class="layui-input" id="liquidationOrderSeq" placeholder="运动员编号" autocomplete="off">
+					</div>
+				</div>
+
+				<!-- 	<div class="layui-col-xs3">
+				<label class="layui-form-label">消费类型</label>
+				<div class="layui-input-inline">
+					<select name="select-main" id="orderType" lay-verify="required">
+						<option value="">全部</option>
+						<option value="recharge">充值</option>
+						<option value="park">停车</option>
+						<option value="charge">充电</option>
+						<option value="initial_charge">初装费</option>
+						<option value="shop">购物</option>
+					</select>
+				</div>
+			</div> -->
+			</div>
+			<div class='layui-form-item'>
+
+				<div class="layui-col-xs3">
+					<label class="layui-form-label">清算状态</label>
+					<div class="layui-input-inline">
+						<select name="select-main" id="liquidationStatus" lay-verify="required">
+							<option value="">全部</option>
+							<option value="wait_settlement">待结算</option>
+							<option value="settlement">已结算</option>
+						</select>
+					</div>
+				</div>
+				<div class="layui-col-xs3">
+					<label class="layui-form-label">开始时间</label>
+					<div class="layui-input-inline">
+						<input type="text" id="liquidationStart" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-col-xs3">
+					<label class="layui-form-label">结束时间</label>
+					<div class="layui-input-inline">
+						<input type="text" id="liquidationEnd" autocomplete="off" class="layui-input">
+					</div>
+				</div>
+				<div class="layui-col-xs3">
+					<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+				</div>
+			</div>
+		</form>
+
+		</div>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>
+	<script type="text/html" id="liquidationSta">
+		{{# if(d.liquidationStatus == '已结算'){ }}
+		<span style="color: #5cb85c;">{{d.liquidationStatus}}</span> {{# } else if(d.liquidationStatus == '待结算'){ }}
+		<span style="color: #FF5722;">{{d.liquidationStatus}}</span> {{# } else { }} {{d.liquidationStatus}} {{# } }}
+	</script>
+	<script id="endDate" type="text/html">
+		{{getDate(d.endDate)}}
+	</script>
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="${ctx}/common/layui/layui.js"></script>
+	<script>
+		var realPath = "${ctx}";
+		var dataApi = realPath + "dmp/api/player/list";
+		layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 10;
+			var page = 1;
+			//日期
+			laydate.render({
+				elem: '#liquidationStart'
+			});
+			laydate.render({
+				elem: '#liquidationEnd'
+			});
+			//展示已知数据
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?timestamp=" + (new Date()).valueOf(), //数据接口
+				cols: [
+					[{
+						field: 'liquidationOrderSeq',
+						title: '运动员编号',
+					}, {
+						field: 'payOrderSeq',
+						title: '消费单号'
+					}, {
+						field: 'merchantName',
+						title: '小区名称', //width : '30%'
+						//minWidth：局部定义当前单元格的最小宽度，layui 2.2.1 新增
+					}, {
+						field: 'proportion',
+						title: '分成比例',
+					}, {
+						field: 'orderAmount',
+						title: '订单金额',
+					}, {
+						field: 'orderType',
+						title: '订单类型',
+					}, {
+						field: 'shareOtherAmount',
+						title: '物业/小区所得',
+					}, {
+						field: 'liquidationStatus',
+						title: '结算状态',
+						templet: "#liquidationSta"
+					}, {
+						field: 'liquidationTimeStr',
+						title: '清算时间',
+					}, {
+						title: '操作',
+						templet: '#listBar',
+						fixed: "right",
+						align: "center"
+					}]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [10, 20, 30, 50, 100],
+				limit: 10, //每页默认显示的数量
+				height: 'full-90',
+				done: function(res, curr, count) {
+					if(res.data != null) {
+						limit = res.data.length;
+						page = curr
+					}
+				}
+			});
+
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+
+				if(layEvent === 'edit') { //编辑
+					var index = layui.layer.open({
+						title: "详情",
+						type: 2,
+						content: "applyInfo.html",
+						id: 'applyInfo',
+						area: ['550px', '550px'],
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							setTimeout(function() {
+								layui.layer.tips('点击此处返回列表', '.layui-layer-setwin .layui-layer-close', {
+									tips: 3
+								});
+							}, 500)
+						}
+					})
+				}
+			});
+			$('#search').on('click', function() {
+				var liquidationOrderSeq = $('#liquidationOrderSeq').val();
+				var house = $('#house').val();
+				var orderType = $('#orderType').val();
+				var liquidationStatus = $('#liquidationStatus').val();
+				var liquidationStart = $('#liquidationStart').val();
+				var liquidationEnd = $('#liquidationEnd').val();
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						liquidationOrderSeq: liquidationOrderSeq,
+						house: house,
+						orderType: orderType,
+						liquidationStatus: liquidationStatus,
+						liquidationStart: liquidationStart,
+						liquidationEnd: liquidationEnd,
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}
+				});
+			});
+
+			//导出报表
+			$('#export').on(
+				'click',
+				function() {
+					//获取搜索框的内容
+					var keyValue = $('#demoInputValue').val();
+					//下拉框
+					var house = $('#select-main').val();
+					//开始时间
+					var startDate = $('#startDate').val();
+					//获取时间
+					var endDate = $('#endDate').val();
+					//导出数据
+					window.open(realPath + "/api/partner/tcar/report?keyword=" +
+						keyValue + "&houseCode=" + house + "&startTime=" +
+						startDate + "&endTime=" + endDate + "&page=" +
+						page + "&limit=" + limit);
+				});
+		});
+	</script>
+
+</html>

@@ -1,0 +1,129 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>查看详情</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+		<style type="text/css">
+			
+		
+			.valueWidth .img{
+			width: 100px;
+		    height: 100px;
+		    border-radius: 100%;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='userData'>
+			<div class="tableBox">
+				<table class="tableWidth">
+				
+					<tr >
+							<td class="infoItem">ID</td>
+							<td class="valueWidth">{{openUnit.id}}</td>
+					
+							<td class="infoItem">用户名</td>
+							<td class="valueWidth">{{openUnit.userName}}</td>
+					</tr>
+					<tr>
+							<td class="infoItem">头像</td>
+							<td class="valueWidth"><img class="img" :src="openUnit.avatar"/></td>
+					
+							
+					</tr>
+					<tr>
+							<td class="infoItem">性别</td>
+							<td class="valueWidth" v-if="openUnit.gender=='m'">男</td>
+							<td class="valueWidth" v-else-if="openUnit.gender=='f'">女</td>
+							<td class="valueWidth" v-else>其他</td>
+							<td class="infoItem">邮箱</td>
+							<td class="valueWidth">{{openUnit.email}}</td>
+					</tr>
+					<tr>
+							<td class="infoItem">身份</td>
+							<td class="valueWidth">{{openUnit.identity}}</td>
+					
+							<td class="infoItem">最后登录时间</td>
+							<td class="valueWidth">{{openUnit.lastLoginTime}}</td>
+					</tr>
+					
+					<tr>
+							<td class="infoItem">昵称</td>
+							<td class="valueWidth">{{openUnit.nickName}}</td>
+					
+							<td class="infoItem">备注</td>
+							<td class="valueWidth">{{openUnit.remark}}</td>
+					</tr>
+					
+					<tr>
+							<td class="infoItem">角色</td>
+							<td class="valueWidth">{{roles}}</td>
+					
+							<td class="infoItem">状态</td>
+							<td class="valueWidth">{{openUnit.status=='1'?'可使用':'不可使用'}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		
+		
+		<span id='btn' onclick='btnClick()'></span>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+						form = layui.form;
+					
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							openUnit: {},
+							status: true,
+							roles:''
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#userData").val();
+							if(unitModel != undefined && unitModel != null &&
+								unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.openUnit = JSON.parse(unitModel);
+								var unitModelNow=[];
+								var str='';
+								unitModelNow=JSON.parse(unitModel).roles;
+								if(unitModelNow.length>0){
+									for(var i=0;i<unitModelNow.length;i++){
+										str+=unitModelNow[i].roleName+',';
+									}
+									that.roles=str.substring(0, str.length - 1);
+								}
+							}
+						}
+					})
+				})
+					
+			}
+		</script>
+	</body>
+
+</html>

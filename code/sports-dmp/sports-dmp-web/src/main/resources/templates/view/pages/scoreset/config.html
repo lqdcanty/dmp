@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>模板设置</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			.tableBox {
+			    width: 100%;
+			    box-sizing: border-box;
+			    -webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+			    overflow-x: hidden;
+			    padding:0;
+			  }
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+			.tableWidth{
+				width:100%;
+			}
+			.infoItemP{
+				width:33.3%!important;
+				box-sizing:border-box;
+				-webkit-box-sizing:-webkit-border-box;
+				-moz-box-sizing:-moz-border-box;
+				-ms-box-sizing:-ms-border-box;
+				display:inline-block;
+				text-align:center;
+				padding:12px 5px;
+			}
+			.title .infoItemP{
+				background:#EFEFEF;
+				padding:8px 5px;
+				color:#1AA094;
+			}
+			.infoItemP input{
+				border:0;
+				text-align:center;
+			}
+			.btnDiv{
+				text-align:center;
+				padding:20px 0;
+			}
+			.btnDiv .btn{
+				width:140px;
+				border:1px solid #009688;
+			}
+			.btnDiv .btn.bgWhite{
+				background:#fff;
+				color:#009688;
+			}
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='addIframIndex'>
+			<input type='hidden' id='callLogId'>
+			<div class="tableBox">
+				<form class="layui-form" onsubmit="return false;">
+					<table class="tableWidth">
+						<tr class="title">
+							<th class='infoItemP'>属性</th>
+							<th class='infoItemP'>字段</th>
+							<th class='infoItemP'>是否显示</th>
+						</tr>
+						<tr >
+							<td class='infoItemP'>头像</td>
+							<td class='infoItemP'>header</td>
+							<td class='infoItemP'>
+								<div><input type="checkbox" name="zzz" lay-filter="sysDispaly" lay-skin="switch" checked></div>
+							</td>
+						</tr>	
+						<tr >
+							<td class='infoItemP'>昵称</td>
+							<td class='infoItemP'>nickname</td>
+							<td class='infoItemP'>
+								<div><input type="checkbox" name="zzz" lay-filter="sysDispaly" lay-skin="switch" checked></div>
+							</td>
+						</tr>
+						<tr >
+							<td class='infoItemP'>
+								<input type="text" name="zzz" placeholder="请输入属性名称" />
+							</td>
+							<td class='infoItemP'>
+								<input type="text" name="zzz" placeholder="请输入字段名称" />
+							</td>
+							<td class='infoItemP'>
+								<input type="checkbox" name="zzz" lay-skin="switch" />
+							</td>
+						</tr>
+					</table>
+					<div class="layui-form-item btnDiv">
+						<div class="layui-inline">
+							<a class="layui-btn btn" id="creatMacth" data-type="reload">确定</a>
+						</div>
+						<div class="layui-inline">
+							<a class="layui-btn btn bgWhite" id="creatMacth" data-type="reload">取消</a>
+						</div>
+					</div>
+				</form>
+			</div>
+		</div>
+		<!-- <a><span id='btn' onclick='btnClick()'></span></a> -->
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		
+
+		<script src="/assets/system/common/js/jquery-3.0.0.min.js"></script>
+		<script type="text/javascript" src="/assets/common/layui/layui.all.js"></script>
+		<!-- <script type="text/javascript" src="/assets/system/common/layui/layui.all.js"></script> -->
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		
+		<!-- <script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form;
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							calllogInfo: {},
+							status: true
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#callLogId").val();
+							if(unitModel != undefined && unitModel != null &&
+									unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.calllogInfo = JSON.parse(unitModel);
+								
+							}
+						}
+					})
+				});
+			}
+		</script> -->
+	</body>
+
+</html>

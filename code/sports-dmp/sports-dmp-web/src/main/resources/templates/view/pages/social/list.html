@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>用户管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+    <style>
+        .layui-form-item .layui-input-inline {
+            margin-right: 0
+        }
+
+        .layui-form-label {
+            padding: 9px 10px 0 0;
+        }
+
+        .layui-form-item {
+            margin-bottom: 10px
+        }
+        .width180{
+            width:180px!important;
+        }
+        .width180 input{
+            width:180px!important;
+        }
+        table{
+            width:100%!important;
+        }
+    </style>
+</head>
+
+<body class="childrenBody">
+<blockquote class="layui-elem-quote quoteBox">
+    <form class="layui-form">
+        <div class='layui-form-item'>
+            <div class="layui-inline">
+                <label class="layui-form-label">搜索</label>
+                <div class="layui-inline width180">
+                    <input class="layui-input" id="keyword" placeholder="用户名/手机号" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+            </div>
+        </div>
+    </form>
+</blockquote>
+<table class="layui-hide" id="demo" lay-filter="demo"></table>
+</body>
+
+<script type="text/html" id="btnBar">
+
+    {{#
+    if(d.bannedstatuslong == 0){}}
+    <img style="margin-right: 5px;" src="/assets/common/img/icon_jinyan.png"/><span style="color: #333333;" name="bannedstatus" onclick="updatebannedstatuslong('{{d.id}}','{{d.bannedstatuslong}}')">禁言</span> {{# } else if(d.bannedstatuslong == 1){ }}
+    <img style="margin-right: 5px;" src="/assets/common/img/icon_jinyan_a.png"/><span style="color: #333333;" name="bannedstatus" onclick="updatebannedstatuslong('{{d.id}}','{{d.bannedstatuslong}}')">解禁</span> {{# } }}
+</script>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+<script>
+    var width,height,indexclose,indexclose2;
+    var realPath = "${ctx}";
+    var dataApi = realPath + "/dmp/api/moRegisterManage/list";
+    layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+        var table = layui.table;
+        var form = layui.form;
+        var layedit = layui.layedit;
+        var laydate = layui.laydate;
+        var limit = 10;
+        var page = 1;
+        //展示已知数据
+        indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+        table.render({
+            elem: '#demo',
+            id: 'tableDemo',
+            url: dataApi + "?timestamp=" + (new Date()).valueOf(), //数据接口
+            cols: [
+                [{
+                    field: 'registerNickName',
+                    title: '用户名',
+                    width: 200
+                },{
+                    field: 'registerPhone',
+                    title: '手机号',
+                    width: 200
+                },{
+                    title: '操作',
+                    width: 200,
+                    templet: '#btnBar'
+                }]
+            ],
+            skin: 'line', //表格风格
+            even: true,
+            page: true, //是否显示分页
+            limits: [10, 20, 50, 100],
+            limit: 10, //每页默认显示的数量
+            done: function(res, curr, count) {
+                if(res.code==0){
+                    layer.close(indexclose);
+                    if(res.data != null) {
+                        limit = res.data.length;
+                        page = curr
+                    }
+                }else{
+                    layer.close(indexclose);
+                    setTimeout(function() {
+                        layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    }, 100)
+                }
+            }
+        });
+
+        $('#search').on('click', function() {
+            var keyword = $('#keyword').val();
+            table.reload('tableDemo', {
+                page: {
+                    curr: 1
+                },
+                where: {
+                    keyword: keyword,
+                    timestamp: (new Date()).valueOf()
+                },
+                url: dataApi,
+                done: function(res, curr, count) {
+                    if(res.data != null) {
+                        limit = res.data.length;
+                        page = curr
+                    }
+                }
+            });
+        });
+
+        if(document.body.clientWidth<1500){
+            width='560px';
+            height="520px";
+        }else{
+            width='560px';
+            height="520px";
+        }
+
+    });
+
+    function updatebannedstatuslong(id,status) {
+       /* var bannedstatusId = $("span[name='bannedstatusId']").html();
+        var bannedstatus = $("span[name='bannedstatus']").html();*/
+      /*  alert(id)
+        alert(status)*/
+      if(status == "0"){
+          layer.confirm('禁言后用户将不能发表动态、文章和评论,确定要禁言吗？', {
+              btn: ['确定','取消'] //按钮
+          }, function(){
+              updateStatus(id,status);
+          });
+      }else {
+        updateStatus(id,status);
+      }
+
+    }
+    function updateStatus(id,status) {
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moRegisterManage/update",
+            cache: false,
+            data: {
+                id:id,
+                bannedstatuslong:status
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    //刷新父页面
+                    $(".layui-laypage-btn").click();
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+</script>
+
+</html>

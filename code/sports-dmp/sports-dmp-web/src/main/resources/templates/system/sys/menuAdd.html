@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>添加系统</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<style>
+	.icon-view .fa{    font-size: 34px;}
+	.layui-form-label{width:75px;padding:9px 5px;}
+	.menuHost{display:none}
+	.parentIdView{display:none}
+	.color-red{
+		color:red;
+	}
+	
+	.button button{
+		margin-left:0!important;
+	}
+	.layui-input-block{
+		margin-left:80px;
+	}
+	.mb15{
+		margin-bottom:15px;
+	}
+	.menuUrlBox,.permissionDiv{
+		display:none;
+	}
+	</style>
+</head>
+<body class="childrenBody" style="overflow-x:hidden;">
+<input type='hidden' id='addIframIndex'>
+<input type='hidden' id='parentIframIndex'>
+<input type='hidden' id='isRechange'>
+<form class="layui-form layui-row">
+	<input type="hidden" class="layui-input sysId" name='sysId' >
+	<input type="hidden" class="layui-input sysMenuId" name='sysMenuId' >
+	<input type="hidden" id="parentId">
+	<div class="layui-col-xs12">
+		<div class="layui-row">
+			<div class="layui-col-md11 layui-col-xs12" style="padding-top:30px;">
+				<div class="layui-form-item">
+					
+					<div class="layui-col-xs6">
+						<label class="layui-form-label"><span class='color-red'>*</span>菜单名称</label>
+						<div class="layui-col-xs8">
+							<input type="text" class="layui-input menuName" lay-verify="required" name="menuName" placeholder="请输入菜单名称">
+						</div>
+					</div>
+					<div class="layui-col-xs6">
+						<label class="layui-form-label"><span class='color-red'>*</span>数据类型</label>
+						<div class="layui-col-xs8">
+							<select id='menuType' name="type"  lay-search lay-filter="menuType" lay-verify="required" >			
+								  <option value="">请选择菜单类型</option>
+								  <option value="catalog">目录</option>
+								  <option value="url">菜单</option>
+								  <option value="permission">权限</option>
+								</select>  
+						</div>
+					</div>
+					
+				</div>
+				<div class="layui-form-item" style="margin-bottom:0;">
+					<div class="layui-col-xs6 menuUrlBox mb15">
+						<label class="layui-form-label"><span class='color-red'>*</span>菜单URl</label>
+						<div class="layui-col-xs8">
+							<input type="text" class="layui-input menuUrl"  name="menuUrl" placeholder="请输入菜单URl"  disabled="true">
+						</div>
+					</div>
+					<div class="layui-col-xs6 mb15" id="isRechangeDiv">
+						<label class="layui-form-label">内置权限码</label>
+						<div class="layui-col-xs5">
+							<input type='hidden' class='layui-input isRechange' name='isRechange' value='1'>
+							<input type="checkbox"  class='isRechangeBox' lay-filter="isRechangeBox" lay-skin="switch" lay-text="是|否" checked="true">
+						</div>
+					</div>
+					<div class="layui-col-xs6 mb15 permissionDiv">
+						<label class="layui-form-label"><span class='color-red'>*</span>权限码</label>
+						<div class="layui-col-xs8">
+							<input type="text" class="layui-input permissionCode"  name="permissionCode" placeholder="请输入权限码" disabled="true">
+						</div>
+					</div>
+					<div class="layui-col-xs6 mb15">
+						<label class="layui-form-label">新窗口</label>
+						<div class="layui-col-xs5">
+							<input type='hidden' class='layui-input newWindow' name='newWindow' value='0'>
+							<input type="checkbox"  class='newWindowBox' lay-filter="newWindowBox" lay-skin="switch" lay-text="是|否">
+						</div>
+					</div>
+				</div>
+				
+
+				
+				<div class="layui-form-item">
+					<label class="layui-form-label">操作权限</label>
+					<div class="layui-input-block checkbox">
+						<input type="checkbox" name="like[write]" title="增加">
+					      <input type="checkbox" name="like[read]" title="查询" checked>
+					      <input type="checkbox" name="like[dai]" title="删除">
+					</div>
+				</div>
+				
+				<div class="layui-form-item">
+					
+					<div class="layui-col-xs3">
+						<label class="layui-form-label">内部系统</label>
+						<div class="layui-col-xs5">
+							<input type='hidden' class='layui-input isSelfSys' name='isSelfSys' value='1'>
+							<input type="checkbox"  class='isSelfSysBox' lay-filter="isSelfSysBox" lay-skin="switch" lay-text="是|否"  checked="true" >
+						</div>
+					</div>
+					
+					<div class="layui-col-xs3">
+						<label class="layui-form-label">是否展开</label>
+						<div class="layui-col-xs5">
+							<input type='hidden' class='layui-input isOpen' name='isOpen' value='0'>
+							<input type="checkbox"  class='isOpenBox' lay-filter="isOpenBox" lay-skin="switch" lay-text="是|否">
+						</div>
+					</div>
+					<div class="layui-col-xs6">
+						<label class="layui-form-label"><span class='color-red'>*</span>上级菜单</label>
+						<div class="layui-col-xs4">
+							<input type='hidden' class='layui-input parentId' name='parentId'>
+							<input style="width: 95px!important;padding-left: 5px;" type='text' class='layui-input parentIdView' disabled >
+						</div>
+						<a  class="layui-btn selParentId layui-btn-normal layui-btn-md" data-type="reload" style="padding:0 5px">选择父菜单</a>
+					</div>
+					
+				</div>
+			
+		
+				<div class="layui-form-item">
+					
+					<div class="layui-center button">
+						<button class="layui-btn  addBtn" lay-submit="addBtn" lay-filter="addBtn">立即添加</button>
+						<button class="layui-btn  updateBtn" lay-submit="updateBtn" lay-filter="updateBtn">确认编辑</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+<a><span id='btn' onclick='btnClick()'></span></a>
+	<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+	<script type="text/javascript" src="/assets/system/common/js/jquery-3.0.0.min.js"></script>
+	<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/system/sys/menuAdd.js"></script>
+
+</body>
+</html>

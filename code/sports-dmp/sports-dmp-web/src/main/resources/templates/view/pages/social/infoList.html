@@ -1,0 +1,1412 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>内容管理</title>
+    <meta name="renderer" content="webkit">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+    <meta http-equiv="pragma" content="no-cache" />
+    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+    <link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+    <style>
+        .layui-form-item .layui-input-inline {
+            margin-right: 0
+        }
+
+        .layui-form-label {
+            padding: 9px 10px 0 0;
+        }
+
+        .layui-form-item {
+            margin-bottom: 10px
+        }
+        .width180{
+            width:180px!important;
+        }
+        .width180 input{
+            width:180px!important;
+        }
+        table{
+            width:100%!important;
+        }
+        #total label{
+            width: 100px;
+            font-size: 14px;
+            color: #333333;
+            height: 42px;
+            line-height: 42px;
+            display: inline-block;
+            padding-left: 30px;
+            position: relative;
+        }
+        #total label img{
+            margin-right: 10px;
+        }
+        #total label::before{
+            position: absolute;
+            content: '';
+            display: inline-block;
+            width: 12px;
+            height: 20px;
+            left: 8px;
+            top: 10px;
+            background: url("/assets/common/img/icon_xq_hqa.png") no-repeat;
+        }
+        #total .choose{
+            color: #45A094 !important;
+        }
+        #total .choose::before{
+            background: url("/assets/common/img/icon_xq_hq.png") no-repeat;
+        }
+        .layui-btn-group button{
+            margin-right: 10px;
+        }
+        .layui-btn-group button:last-of-type{
+            margin-right: 0;
+        }
+        .layui-btn-container .layui-btn{
+            margin-bottom: 0 !important;
+        }
+        .object_btn button,.object_btn input{
+            margin-left: 0 !important;
+            margin-right: 12px !important;
+        }
+        /*新的样式*/
+        .contentDetail{
+            display: block;
+        }
+        .detail{
+            display:none;
+        }
+        .detail .layui-breadcrumb{
+            visibility: visible;
+            margin-left: 88px;
+            width: 1000px;
+            margin-top: 10px;
+            margin-bottom: 10px;
+        }
+        .detail .detail_content{
+            width: 1000px;
+            margin: 10px 88px;
+            height: auto;
+            background: #FFFFFF;
+            border: 1px solid #ECECEC;
+            border-top: 2px solid #45A094;
+            box-shadow: 0 0 10px 0 rgba(0,0,0,0.10);
+        }
+        .detail .detail_content .detail_content_child{
+            margin: 30px 20px 30px 20px;
+        }
+        .buttonDetail{
+            width: 100%;
+            text-align: center;
+            margin: 20px auto;
+            display:none;
+        }
+        .buttonDetail button:first-child{
+            background: #029688;
+            border-radius: 4px;
+            width: 100px;
+            height: 40px;
+            font-family: MicrosoftYaHei-Bold;
+            font-size: 12px;
+            color: #FFFFFF;
+            line-height: 40px;
+            border: none;
+            outline: none;
+        }
+        .buttonDetail button:last-child{
+            background: #FFFFFF;
+            border: 1px solid #029688;
+            border-radius: 4px;
+            width: 136px;
+            height: 40px;
+            font-family: MicrosoftYaHei-Bold;
+            font-size: 12px;
+            color: #029688;
+            margin-left:30px;
+            outline: none;
+        }
+        .tips_avatar img:first-child{
+            width: 60px;
+            height:60px;
+        }
+        .tips_avatar img:first-child{
+            width: 60px;
+            height:60px;
+            border-radius: 50%;
+            position: relative;
+            margin-right: 10px;
+            float: left;
+        }
+        .tips_avatar img:last-child{
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            border: 2px solid white;
+            position: relative;
+            left: -37px;
+            top: 34px;
+        }
+        .tips_intro{
+            width: 714px;
+            display: inline-block;
+            margin-top: -16px;
+        }
+        .tips_intro_more{
+            margin-top:10px;
+            margin-bottom: 20px;
+        }
+        .tips_intro_more span:first-child{
+            margin-right:10px;
+        }
+        .tips_intro_name{
+            font-family: MicrosoftYaHei;
+            font-size: 14px;
+            color: #333333;
+        }
+        .dianzan{
+            display: inline-block;
+            float: right;
+        }
+        .dianzan>span:last-child{
+            margin-right:30px;
+            margin-left:30px;
+        }
+        .dianzan span:last-child img{
+            margin-top:-4px;
+        }
+        .peopleDetail{
+            border-bottom: 1px solid #ECECEC;
+        }
+        .middleTitle{
+            min-height: 20px;
+            word-wrap: break-word;
+            word-break: break-all;
+            line-height: 24px;
+            margin: 0 30px;
+        }
+        .middleTitle img{
+            max-width: 940px;
+            display: block;
+        }
+        .pictureDetail{
+            margin: 0 30px;
+        }
+        .pictureDetail img{
+            width: 288px;
+            height: 288px;
+        }
+        .pictureDetail img:nth-child(3n+2){
+            width: 288px;
+            height: 288px;
+            margin: 0 18px;
+        }
+        /*----------------------------------*/
+        .find_commentAndlike_bar{
+            height: 19px;
+            border-bottom: 1px solid #FF8F00;
+            box-sizing: content-box;
+            clear: both;
+            color: #FF8F00;
+            width: 100px;
+            margin-left: 30px;
+            text-align: center;
+            margin-top: 12px;
+            padding-bottom: 12px;
+        }
+        .find_commentAndlike_bar p{
+            box-sizing: content-box;
+            width: 100px;
+            height: 19px;
+            text-align: center;
+        }
+        .find_comment_list{
+            margin: 0 30px;
+        }
+        .find_comment_list img{
+            margin-top: -95px;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            vertical-align: middle;
+        }
+        .find_comment_info{
+            padding-top: 28px;
+            display: inline-block;
+        }
+        .find_comment_info>p:last-child{
+            width: 865px;
+            font-family: MicrosoftYaHei-Bold;
+            font-size: 14px;
+            color: #333333;
+            text-align: left;
+            line-height: 24px;
+            margin-top: 10px;
+        }
+        .find_comment_info>p:first-child{
+            font-family: MicrosoftYaHei-Bold;
+            font-size: 14px;
+            color: #333333;
+            text-align: left;
+            line-height: 24px;
+            width: 865px;
+        }
+        .comment_avatar_img{
+            margin-top: -110px;
+            margin-right: 10px;
+        }
+        .find_comment_name{
+            display:flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        table img{
+            display: none !important;
+        }
+        .list_defocus{
+            height: 100px;
+            text-align: center;
+            line-height: 100px;
+            font-size: 30px;
+            color: #FF8F00;
+        }
+        #nav_tips_a a{
+            cursor:pointer !important;
+        }
+    </style>
+</head>
+
+<body class="childrenBody">
+<div class="contentDetail">
+<blockquote class="layui-elem-quote quoteBox">
+    <form class="layui-form">
+        <div class='layui-form-item'>
+            <div class="layui-inline">
+                <label class="layui-form-label">搜索</label>
+                <div class="layui-inline width180">
+                    <input class="layui-input" id="keyword" placeholder="关键词/用户名" autocomplete="off">
+                </div>
+            </div>
+
+            <div class="layui-inline">
+                <label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+            </div>
+        </div>
+        <input id="inputTheType" type="hidden">
+    </form>
+</blockquote>
+<div id="total">
+    <label id="total1" data-type="auth" class="clicktypeAuth" >待审核（0）</label>
+    <label id="total2" data-type="stick" class="clicktype" >置顶（0）</label>
+    <label id="total3" data-type="splendid" class="clicktype" >加精（0）</label>
+    <label id="total4" data-type="all" class="clicktype choose" >全部（0）</label>
+</div>
+
+<table class="layui-hide" id="demo" lay-filter="demo"></table>
+</div>
+<div class="detail">
+    <span id="nav_tips_a" class="layui-breadcrumb" lay-separator=">">
+        <a href="">内容管理</a>
+        <a class="testTop">置顶</a>
+        <a><cite class="testSecond">文章详情</cite></a>
+    </span>
+    <div class="detail_content">
+        <div class="detail_content_child">
+            <h1 style="display:none"></h1>
+            <div class="peopleDetail">
+                <div class="tips_avatar">
+                    <img class="tips_avatar_img" src="/assets/images/icon_user_1@2x.png">
+                    <img class="tips_avatar_icon" src="/assets/images/icon_gr_rzh@2x.png">
+                </div>
+                <div class="tips_intro">
+                    <p class="tips_intro_name"></p>
+                    <div class="tips_intro_more">
+                        <span class="tips_intro_more_time"></span>
+                        <span class="tips_intro_more_jobs"></span>
+                    </div>
+                </div>
+                <div class="dianzan">
+                    <span>
+                        <img src="/assets/images/icon_fenxiang.png"/>
+                        <span class="D_fenxiang"></span>
+                    </span>
+                    <span>
+                        <img src="/assets/images/icon_zan.png"/>
+                        <span class="D_zan"></span>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="middleTitle">
+        </div>
+        <div class="pictureDetail">
+            <!--<img src="/assets/images/icon_user_1@2x.png" />-->
+
+        </div>
+        <div class="find_commentAndlike_bar">
+            <p data-index="1" class="find_comment_btn clicked">评论<span style="margin-left: 0.1rem;" class="commentsNumber">--</span></p>
+        </div>
+        <ul class="find_comment_list">
+            <!--<li data-content="'+item.content+'" class="find_comment_tips clearfix" data-id="'+item.id+'" data-registerId="'+item.registerId+'">-->
+                <!--&lt;!&ndash;<div class="find_comment_avator">&ndash;&gt;-->
+                <!--<img class="comment_avatar_img" src="/assets/images/icon_user_1@2x.png">-->
+                <!--<img class="comment_avatar_icon" style="display:none" src="/assets/images/icon_gr_rzh@2x.png">-->
+                <!--&lt;!&ndash;</div>&ndash;&gt;-->
+                <!--<div class="find_comment_txt" style="width: 865px;display:inline-block;">-->
+                    <!--<div class="find_comment_info">-->
+                        <!--<p class="find_comment_name">-->
+                            <!--<span>'+item.registerNickName+'</span>-->
+                            <!--<span class="find_comment_content" style="display: inline-block;">'+item.content+'</span>-->
+                        <!--</p>-->
+                        <!--<p class="find_comment_time">'+createTime+'</p>-->
+                    <!--</div>-->
+                <!--</div>-->
+            <!--</li>-->
+        </ul>
+        <div class="buttonDetail">
+            <button onclick="go_success()">审核通过</button>
+            <button onclick="go_fail()">审核不通过并删除</button>
+        </div>
+    </div>
+</div>
+</body>
+<script type="text/html" id="theContentType">
+    {{# if(d.content.length == 0){}}
+    <span>去详情查看照片</span>
+    {{# } else if(d.type == "dynamic"){ }}
+    <span>{{=d.content}}</span>
+    {{# } else if(d.type == "article"){ }}
+    <span>{{=d.title}}</span>
+    {{# } }}
+</script>
+<script type="text/html" id="theType">
+
+    {{# if(d.type == "dynamic"){}}
+    <span style="color: #5FB878;" name="bannedstatus" >动态</span> {{# } }}
+
+    {{# if(d.type == "article"){}}
+    <span style="color: #5FB878;" name="bannedstatus" >文章</span>  {{# } }}
+
+</script>
+<script type="text/html" id="authStatusBar">
+
+    {{# if(d.authStatus == 1){}}
+    <span style="color: #333333;" name="bannedstatus" ><img style="margin-right: 3px;margin-bottom: 2px;" src="/assets/common/img/icon_d_shenhe.png"/>待审核</span> {{# } }}
+
+
+</script>
+<script type="text/html" id="authBtnBar">
+    <div class="layui-btn-container">
+        <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="authEdit" onclick="updateDetail('{{d.id}}','{{d.stickId}}')">
+            <i class="layui-icon">&#xe642</i>审核
+        </button>
+        <button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="del" onclick="delAuthInfo('{{d.id}}')">
+            <i class="layui-icon">&#xe640</i>删除
+        </button>
+
+    </div>
+
+</script>
+
+<script type="text/html" id="statusBar">
+
+    {{# if(d.splendidStatic == 1){}}
+    <span class="addToDigest" style="color: #5FB878;" name="bannedstatus" >精</span> {{# } }}
+
+    {{# if(d.stickStatic == 1){}}
+    <span class="setToTop" style="color: #5FB878;" name="bannedstatus" >置顶</span>  {{# } }}
+
+</script>
+<script type="text/html" id="btnBar">
+    <div class="object_btn">
+        {{# if(d.splendidStatic == 0){}}
+        <button class="layui-btn layui-btn-primary layui-btn-xs addToDigest" name="splendidCheck" onclick="updateSplendid('{{d.id}}','{{d.splendidStatic}}')" >
+            <i class="layui-icon">&#xe67a</i>加精
+        </button>
+        {{# } else if(d.splendidStatic == 1){ }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs addToDigest" name="splendidCheck" onclick="updateSplendid('{{d.id}}','{{d.splendidStatic}}')" >
+            <i class="layui-icon">&#xe67b</i>取消加精
+        </button> {{# } }}
+
+        {{# if(d.stickStatic == 0){}}
+        <button class="layui-btn layui-btn-primary layui-btn-xs setToTop" name="stickCheck" onclick="updateStick('{{d.id}}','{{d.stickStatic}}')" >
+            <i class="layui-icon">&#xe604</i>置顶
+        </button>
+        {{# } else if(d.stickStatic == 1){ }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs setToTop" name="stickCheck" onclick="updateStick('{{d.id}}','{{d.stickStatic}}')">
+            <i class="layui-icon">&#xe604</i>取消置顶
+        </button>  {{# } }}
+        <button class="layui-btn layui-btn-primary layui-btn-xs goToDetail" onclick="updateDetail('{{d.id}}','{{d.stickId}}')">
+            <i class="layui-icon">&#xe60a</i>详情
+        </button>
+
+        <input type="number" min="0" max="100" style="width:50px;height:22px;border: 1px solid #C9C9C9;text-align: center;display: none;" onblur="updateSort('{{d.stickId}}',event)" class="goToSort" placeholder="{{d.stickSort}}" class="layui-input"><span style="display: none;" class="goToSort">排序</span>
+
+        <!--<button class="layui-btn layui-btn-primary layui-btn-xs goToSort" style="display: none" onblur="updateSort('{{d.stickId}}','{{d.stickSort}}')">-->
+            <!--<img src="/assets/common/img/icon_paixu.png"/>排序-->
+        <!--</button>-->
+    </div>
+</script>
+<script id="createTime" type="text/html">
+    {{getDate(d.createTime)}}
+</script>
+<script type="text/javascript">
+    function getDate(tm) {
+        var date = new Date(tm);
+        return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+            date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+    }
+</script>
+
+<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+<script>
+    Date.prototype.format = function(format){
+        var original = {
+            "M+" : this.getMonth() + 1, // 月份
+            "d+": this.getDate(),
+            "h+": this.getHours(),
+            "m+": this.getMinutes(),
+            "s+": this.getSeconds(),
+            "q+": Math.floor((this.getMonth()+3)/3), // 季度
+            "S":this.getMilliseconds() // 毫秒
+        };
+        if(/(y+)/.test(format)){
+            format = format.replace(RegExp.$1,(this.getFullYear()+"").substr(4-RegExp.$1.length));
+            for(var k in original){
+                if(new RegExp("(" +k+ ")").test(format)){
+                    format = format.replace(RegExp.$1,(RegExp.$1.length == 1)?(original[k]):(("00"+original[k]).substr((""+original[k]).length)));
+                }
+            }
+            return format;
+        }
+
+    }
+    // 时间函数 判断是否是今天还是昨天，返回今天或者昨天或者正常时间
+    function judgeTimeOrDate(oldDate){
+        // 昨天的时间
+        var day1 = new Date();
+        day1.setDate(day1.getDate()-1);
+        var yesterday = day1.format("yyyy-MM-dd");
+        // 今天的时间
+        var day2 = new Date();
+        day2.setTime(day2.getTime());
+        var today = day2.format("yyyy-MM-dd");
+        if(oldDate.split(" ")[0] == today){
+            return "今天" + oldDate.split(" ")[1];
+        }else if(oldDate.split(" ")[0] == yesterday){
+            return "昨天" + oldDate.split(" ")[1];
+        }else{
+            return oldDate;
+        }
+    }
+    // 时间戳转换成时间
+    function getTimeFormat(timestamp){
+        if(timestamp){
+            var date = new Date(timestamp);
+        }else{
+            var date = new Date();
+        }
+        var year = date.getFullYear(),
+            month = date.getMonth()+1,
+            day = date.getDate(),
+            hour = date.getHours(),
+            minutes = date.getMinutes(),
+            second = date.getSeconds();
+        if(month<10){
+            month = '0' + month;
+        }
+        if(day<10){
+            day = '0' + day;
+        }
+        if(hour<10){
+            hour = '0' + hour;
+        }
+        if(minutes<10){
+            minutes = '0' + minutes;
+        }
+        if(second<10){
+            second = '0' + second;
+        }
+        //var totalTime = month + '-' + day + ' ' + hour + ':' + minutes + ':' + second;
+        var totalTime = month + '-' + day + ' ' + hour + ':' + minutes;
+        return totalTime;
+    }
+
+    // 调用的简化时间函数
+    function timeToSimple(newDate){
+        // this.newDate = newDate
+        this.showTime = function(newDate){
+            return judgeTimeOrDate(getTimeFormat(newDate));
+        }
+    }
+
+</script>
+<script>
+
+    var width,height,indexclose,indexclose2;
+    var realPath = "${ctx}";
+    var table = '';
+    var infoId = '';
+    var dataApi = realPath + "/dmp/api/moSocialInfo/info/list";
+    layui.use(['table', 'form', 'layedit', 'laydate','element','code'], function() {
+        table = layui.table;
+        var form = layui.form;
+        var layedit = layui.layedit;
+        var laydate = layui.laydate;
+        var element = layui.element;
+        var limit = 10;
+        var page = 1;
+        //展示已知数据
+        layui.code({
+            encode: true //是否转义html标签。默认不开启
+        });
+        indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+        table.render({
+            elem: '#demo',
+            id: 'tableDemo',
+            url: dataApi + "?type=all&timestamp=" + (new Date()).valueOf(), //数据接口
+            cols: [
+                [{
+                    field: 'createTime',
+                    title: '发布时间',
+                    width: 200,
+                    templet: '#createTime',
+                    align:'center'
+                },{
+                    field: 'registerName',
+                    title: '用户名',
+                    width: 120,
+                    align:'center'
+                },{
+                    field: 'content',
+                    title: '内容',
+                    //templet: '#theContentType',
+                    minWidth: 200,
+                    align:'center'
+                },{
+                    field: 'type',
+                    title: '类型',
+                    width: 100,
+                    templet: '#theType',
+                    align:'center'
+                },{
+                    field: 'status',
+                    title: '状态',
+                    width: 200,
+                    templet: '#statusBar',
+                    align:'center'
+                },{
+                    title: '操作',
+                    width: 300,
+                    templet: '#btnBar',
+                    align:'center'
+                }]
+            ],
+            skin: 'line', //表格风格
+            even: true,
+            page: true, //是否显示分页
+            limits: [10, 20, 50, 100],
+            limit: 10, //每页默认显示的数量
+            done: function(res, curr, count) {
+                if(res.code==0){
+                    layer.close(indexclose);
+                    if(res.data != null) {
+                        limit = res.data.length;
+                        page = curr
+                    }
+                    $("[data-field='content']").children().each(function(){
+                        if($(this).text().length==0){
+                            $(this).text("去详情查看照片")
+                        }
+                    })
+                    //分类显示中文名称
+                    // $("[data-field='content']").children().each(function(){
+                    //     if($(this).text().length==0){
+                    //         $(this).text("去详情查看照片")
+                    //     }else{
+                    //         //$(this).append($(this).text())
+                    //         // $(this).replace(/<(?!div).*?>/ig,"");
+                    //         // $(this).replace(/<[^>]+>/g,"");
+                    //         // $(this).text($(this).text().replace(/[^\u4e00-\u9fa5]/g,""))
+                    //     }
+                    // })
+                }else{
+                    layer.close(indexclose);
+                    setTimeout(function() {
+                        layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+                            tips: 3
+                        });
+                    }, 100)
+                }
+            }
+        });
+        function tableReload(keyword,type) {
+            table.reload('tableDemo', {
+                page: {
+                    curr: 1
+                },
+                cols: [
+                    [{
+                        field: 'createTime',
+                        title: '发布时间',
+                        width: 200,
+                        templet: '#createTime',
+                        align:'center'
+                    },{
+                        field: 'registerName',
+                        title: '用户名',
+                        width: 120,
+                        align:'center'
+                    },{
+                        field: 'content',
+                        title: '内容',
+                        //templet: '#theContentType',
+                        minWidth: 200,
+                        align:'center'
+                    },{
+                        field: 'type',
+                        title: '类型',
+                        width: 100,
+                        templet: '#theType',
+                        align:'center'
+                    },{
+                        field: 'status',
+                        title: '状态',
+                        width: 200,
+                        templet: '#statusBar',
+                        align:'center'
+                    },{
+                        title: '操作',
+                        width: 300,
+                        templet: '#btnBar',
+                        align:'center'
+                    }]
+                ],
+                where: {
+                    keyword: keyword,
+                    type: type,
+                    timestamp: (new Date()).valueOf()
+                },
+                url: dataApi,
+                done: function(res, curr, count) {
+                    if(res.data != null) {
+                        limit = res.data.length;
+                        page = curr
+                    }
+                    // //分类显示中文名称
+                    // $("[data-field='content']").children().each(function(){
+                    //     if($(this).text().length==0){
+                    //         $(this).text("去详情查看照片")
+                    //     }else{
+                    //         // $(this).text($(this).text().replace(/[^\u4e00-\u9fa5]/g,""))
+                    //     }
+                    // })
+                    $("[data-field='content']").children().each(function(){
+                        if($(this).text().length==0){
+                            $(this).text("去详情查看照片")
+                        }
+                    })
+                    if(type == 'stick'){
+                        $('.addToDigest').hide()
+                        $('.goToSort').show()
+                    }else if(type == 'splendid'){
+                        $('.setToTop').hide()
+                        $('.goToSort').hide()
+                    }else{
+                        $('.addToDigest').show()
+                        $('.setToTop').show()
+                        $('.goToSort').hide()
+                    }
+                }
+            });
+
+        }
+        function authTableReload(keyword,type) {
+            table.reload('tableDemo', {
+                page: {
+                    curr: 1
+                },
+                cols: [
+                    [{
+                        field: 'createTime',
+                        title: '发布时间',
+                        width: 200,
+                        templet: '#createTime',
+                        align:'center'
+                    },{
+                        field: 'registerName',
+                        title: '用户名',
+                        width: 120,
+                        align:'center'
+                    },{
+                        field: 'content',
+                        title: '内容',
+                        //templet: '#theContentType',
+                        minWidth: 200,
+                        align:'center'
+                    },{
+                        field: 'type',
+                        title: '类型',
+                        width: 100,
+                        templet: '#theType',
+                        align:'center'
+                    },{
+                        field: 'authStatus',
+                        title: '认证状态',
+                        width: 200,
+                        templet: '#authStatusBar',
+                        align:'center'
+                    },{
+                        title: '操作',
+                        width: 300,
+                        templet: '#authBtnBar',
+                        align:'center'
+                    }]
+                ],
+                where: {
+                    keyword: keyword,
+                    type: type,
+                    timestamp: (new Date()).valueOf()
+                },
+                url: dataApi,
+                done: function (res, curr, count) {
+                    if (res.data != null) {
+                        limit = res.data.length;
+                        page = curr
+                    }
+                    $("[data-field='content']").children().each(function(){
+                        if($(this).text().length==0){
+                            $(this).text("去详情查看照片")
+                        }
+                    })
+                    //分类显示中文名称
+                    // $("[data-field='content']").children().each(function(){
+                    //     if($(this).text().length==0){
+                    //         $(this).text("去详情查看照片")
+                    //     }else{
+                    //        // $(this).append($(this).text())
+                    //         // $(this).parent().replace(/\*{[\s\S\w]*}/gi,"");
+                    //         // $(this).text($(this).text().replace(/[^\u4e00-\u9fa5]/g,""))
+                    //     }
+                    // })
+
+                }
+            });
+        }
+        $('#search').on('click', function() {
+            var keyword = $('#keyword').val();
+            var type = $('#inputTheType').val();
+            getInfoCountByKeyword(keyword);
+            if(type == "auth"){
+                authTableReload(keyword,type);
+            }else {
+                tableReload(keyword,type);
+            }
+
+        });
+
+        $(".clicktype").click(function (e) {
+            $('#total label').removeClass('choose')
+            $(this).addClass('choose')
+            var keyword = $('#keyword').val();
+            var type = $(this).attr('data-type');
+            $('#inputTheType').val(type);
+            tableReload(keyword,type);
+            console.log(type)
+
+
+        })
+
+        $(".clicktypeAuth").click(function (e) {
+            $('#total label').removeClass('choose')
+            $(this).addClass('choose')
+            var keyword = $('#keyword').val();
+            var type = $(this).attr('data-type');
+            $('#inputTheType').val(type);
+            authTableReload(keyword,type);
+        })
+        /* // 这是控制点击
+        $('.testTop').click(function(e){
+            if(totalType == 'auth'){
+                $('.buttonDetail').css({
+                    'display':'block'
+                })
+                var keyword = $('#keyword').val();
+                authTableReload(keyword,totalType);
+            }else if(totalType == 'stick'){
+                $('.buttonDetail').css({
+                    'display':'none'
+                })
+                var keyword = $('#keyword').val();
+                tableReload(keyword,totalType);
+            }else if(totalType == 'splendid'){
+                $('.buttonDetail').css({
+                    'display':'none'
+                })
+                var keyword = $('#keyword').val();
+                tableReload(keyword,totalType);
+            }else if(totalType == 'all'){
+                $('.buttonDetail').css({
+                    'display':'none'
+                })
+                var keyword = $('#keyword').val();
+                tableReload(keyword,totalType);
+            }
+        })
+        */
+        if (document.body.clientWidth < 1500) {
+                width = '560px';
+                height = "520px";
+        } else {
+                width = '560px';
+                height = "520px";
+        }
+
+    });
+
+    function updateSort(id,e) {
+        console.log('排序======')
+        var stickSort = e.target.value;
+        console.log(typeof stickSort)
+        var re = /^[0-9]+$/ ;
+        if(!re.test(stickSort)){
+            layer.alert('请输入数字');
+            return false
+        }
+
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/sort",
+            cache: false,
+            data: {
+                id:id,
+                sort:stickSort
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    //刷新父页面
+                    window.setTimeout(function() {
+                        var keyword = $('#keyword').val();
+                        table.reload('tableDemo', {
+                            page: {
+                                curr: 1
+                            },
+                            cols: [
+                                [{
+                                    field: 'createTime',
+                                    title: '发布时间',
+                                    width: 200,
+                                    templet: '#createTime',
+                                    align:'center'
+                                },{
+                                    field: 'registerName',
+                                    title: '用户名',
+                                    width: 120,
+                                    align:'center'
+                                },{
+                                    field: 'content',
+                                    title: '内容',
+                                    //templet: '#theContentType',
+                                    minWidth: 200,
+                                    align:'center'
+                                },{
+                                    field: 'type',
+                                    title: '类型',
+                                    width: 100,
+                                    templet: '#theType',
+                                    align:'center'
+                                },{
+                                    field: 'authStatus',
+                                    title: '认证状态',
+                                    width: 200,
+                                    templet: '#authStatusBar',
+                                    align:'center'
+                                },{
+                                    title: '操作',
+                                    width: 300,
+                                    templet: '#authBtnBar',
+                                    align:'center'
+                                }]
+                            ],
+                            where: {
+                                keyword: keyword,
+                                type: 'stick',
+                                timestamp: (new Date()).valueOf()
+                            },
+                            url: dataApi,
+                            done: function (res, curr, count) {
+                                if (res.data != null) {
+                                    limit = res.data.length;
+                                    page = curr
+                                }
+                                $('#total2').click()
+                                $("[data-field='content']").children().each(function(){
+                                    if($(this).text().length==0){
+                                        $(this).text("去详情查看照片")
+                                    }
+                                })
+                            }
+                        });
+                    }, 800);
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+
+    function updateStick(id,status) {
+        /* var bannedstatusId = $("span[name='bannedstatusId']").html();
+         var bannedstatus = $("span[name='bannedstatus']").html();*/
+        /*  alert(id)
+          alert(status)*/
+        if(status == "1"){
+            layer.confirm('是否确定取消置顶？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                updateStickStatus(id,status);
+            }/*, function(){
+            layer.msg('也可以这样', {
+                time: 20000, //20s后自动关闭
+                btn: ['明白了', '知道了']
+            });
+        }*/);
+        }else {
+            updateStickStatus(id,status);
+        }
+
+    }
+    function updateStickStatus(id,status) {
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/updateStick",
+            cache: false,
+            data: {
+                id:id,
+                status:status
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    //刷新父页面
+                    $(".layui-laypage-btn").click();
+                    getTotalCount();
+                    //刷新父页面
+                    /*
+                     window.setTimeout(function() {
+                         layer.closeAll("iframe");
+                         location.reload();
+                     }, 800);
+                   */
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+    function updateSplendid(id,status) {
+        /* var bannedstatusId = $("span[name='bannedstatusId']").html();
+         var bannedstatus = $("span[name='bannedstatus']").html();*/
+        /*  alert(id)
+          alert(status)*/
+        if(status == "1"){
+            layer.confirm('是否确定取消加精？', {
+                btn: ['确定','取消'] //按钮
+            }, function(){
+                updateSplendidStatus(id,status);
+            });
+        }else {
+            updateSplendidStatus(id,status);
+        }
+
+    }
+    function updateSplendidStatus(id,status) {
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/updateStatus",
+            cache: false,
+            data: {
+                id:id,
+                status:status
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    //刷新父页面
+                    $(".layui-laypage-btn").click();
+                    getTotalCount();
+                    //刷新父页面
+                    /*
+                     window.setTimeout(function() {
+                         layer.closeAll("iframe");
+                         location.reload();
+                     }, 800);
+                   */
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+    var totalType = 'all';
+    $("#total").on("click","label",function(){
+        totalType = $(this).attr('data-type');
+    });
+    $('.testTop').click(function(e){
+        $('.contentDetail').css({
+            'display':'block'
+        })
+        $('.detail').css({
+            'display':'none'
+        })
+        if(totalType == 'auth'){
+            $('.buttonDetail').css({
+                'display':'block'
+            })
+        }else if(totalType == 'stick'){
+            $('.buttonDetail').css({
+                'display':'none'
+            })
+        }else if(totalType == 'splendid'){
+            $('.buttonDetail').css({
+                'display':'none'
+            })
+        }else if(totalType == 'all'){
+            $('.buttonDetail').css({
+                'display':'none'
+            })
+        }
+    })
+    function updateDetail(id,stickId) {
+        infoId = id;
+        if(stickId != "" && stickId != null && stickId !='null'){
+            infoId = stickId;
+        }
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/info",
+            cache: false,
+            data: {
+                id:infoId,
+                type:totalType
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    $('.contentDetail').css({
+                        'display':'none'
+                    })
+                    $('.detail').css({
+                        'display':'block'
+                    })
+                    //刷新父页面
+                    // window.setTimeout(function() {
+                    //     layer.closeAll("iframe");
+                    //     location.reload();
+                    // }, 800);
+                    if(obj.data){
+                        if(obj.data.title != null && obj.data.title != 'null'){
+                            $('.detail_content_child h1').css({
+                                'display':'block'
+                            })
+                            $('.detail_content_child h1').html(obj.data.title)
+                        }else {
+                            $('.detail_content_child h1').css({
+                                'display': 'none'
+                            })
+                        }
+                        $('.middleTitle').html(obj.data.content);
+                        var aaa = judgeTimeOrDate(getTimeFormat(obj.data.createTime));
+                        $('.tips_intro_more_time').html(aaa);
+                        $('.tips_intro_more_jobs').html(obj.data.registerOrganize);
+                        $('.tips_intro_name').html(obj.data.registerName);
+                        $('.D_fenxiang').html(obj.data.shareCount);
+                        $('.D_zan').html(obj.data.likesCount);
+                        if(obj.data.registerPhoto){
+                            $('.tips_avatar_img').attr('src',obj.data.registerPhoto);
+                        }
+                        if(obj.data.type=='dynamic') {
+                            if (obj.data.pics && obj.data.pics.length > 0) {
+                                obj.data.pics.forEach(function (pic, index) {
+                                    var picUrl = (pic.url == null || pic.url == 'null' || pic.url == '') ? '/assets/images/icon_user_1@2x.png' : pic.url;
+                                    var bbb = $('<img src="' + picUrl + '" />')
+                                    $('.pictureDetail').append(bbb)
+                                })
+                            }
+                        }
+                        $('.commentsNumber').html(obj.data.commentsCount);
+                        if(obj.data.comments &&obj.data.comments.length>0){
+                            $('.find_comment_list').html('');
+                            obj.data.comments.forEach(function (item,index) {
+                                var registerPhoto = (item.registerPhoto==null||item.registerPhoto=='null')?'/assets/images/icon_user_1@2x.png':item.registerPhoto;
+                                var registerNickName = (item.registerNickName==null||item.registerNickName=='null')?'':item.registerNickName;
+                                var itemContent = (item.content==null||item.content=='null')?'':item.content;
+                                var time = judgeTimeOrDate(getTimeFormat(item.createTime));
+                                var ccc = $('<li class="find_comment_tips clearfix">\n' +
+                                    '                <!--<div class="find_comment_avator">-->\n' +
+                                    '                <div class="find_comment_avator" style="\n' +
+                                    '    display: inline-block;\n' +
+                                    '    margin-top: 21px;\n' +
+                                    '    vertical-align: middle;\n' +
+                                    '"><img class="comment_avatar_img" src="'+registerPhoto+'">\n' +
+                                    '                <img class="comment_avatar_icon" style="display:none" src="/assets/images/icon_gr_rzh@2x.png">\n' +
+                                    '                </div>\n' +
+                                    '                <div class="find_comment_txt" style="width: 865px;display:inline-block;border-top: 1px solid #ececec;">\n' +
+                                    '                    <div class="find_comment_info">\n' +
+                                    '                        <p class="find_comment_name">\n' +
+                                    '                            <span>'+registerNickName+'</span>\n' +
+                                    '                            <span class="find_comment_content" style="display: inline-block;">'+time+'</span>\n' +
+                                    '                        </p>\n' +
+                                    '                        <p class="find_comment_time">'+itemContent+'</p>\n' +
+                                    '                    </div>\n' +
+                                    '                </div>\n' +
+                                    '            </li>')
+                                $('.find_comment_list').append(ccc);
+                            })
+                        }else{
+                            $('.find_comment_list').html('');
+                            var ddccd = $('<li class="list_defocus">暂无数据</li>');
+                            $('.find_comment_list').append(ddccd);
+                        }
+                        if(obj.data.type=='dynamic'){
+                            $('.testSecond').html('动态详情')
+                        }else if(obj.data.type=='article'){
+                            $('.testSecond').html('文章详情')
+                        }
+                        if(totalType == 'auth'){
+                            $('.buttonDetail').css({
+                                'display':'block'
+                            })
+                            $('.testTop').html('待审核')
+                        }else if(totalType == 'stick'){
+                            $('.buttonDetail').css({
+                                'display':'none'
+                            })
+                            $('.testTop').html('置顶')
+                        }else if(totalType == 'splendid'){
+                            $('.buttonDetail').css({
+                                'display':'none'
+                            })
+                            $('.testTop').html('加精')
+                        }else if(totalType == 'all'){
+                            $('.buttonDetail').css({
+                                'display':'none'
+                            })
+                            $('.testTop').html('全部')
+                        }
+
+                    }
+                    console.log(obj)
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+        /*
+        var index = layui.layer.open({
+            title: "文章详情",
+            type: 2,
+            content: "infoDetail.html",
+            id: 'info',
+            area: [width, height],
+            zIndex: layer.zIndex,
+            success: function(layero, index) {
+                var body = layui.layer.getChildFrame('body', index);
+                body.find('#id').val(infoId);
+                body.find('#type').val(type);
+                setTimeout(function() {
+                    layui.layer.tips('点击此处返回', '.layui-layer-setwin .layui-layer-close', {
+                        tips: 3
+                    });
+                }, 500)
+            }
+        })
+        */
+    }
+
+    // 审核通过
+    function go_success(){
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/auth",
+            cache: false,
+            data: {
+                id:infoId,
+                authStutas:0
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    $('.contentDetail').css({
+                        'display':'block'
+                    })
+                    $('.detail').css({
+                        'display':'none'
+                    })
+                    //刷新父页面
+                    $(".layui-laypage-btn").click();
+                    getTotalCount();
+                    //刷新父页面
+                    /*
+                     window.setTimeout(function() {
+                         layer.closeAll("iframe");
+                         location.reload();
+                     }, 800);
+                   */
+                    console.log(obj)
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+    // 审核不通过
+    function go_fail(){
+        $.ajax({
+            type: 'POST',
+            url: realPath + "/dmp/api/moSocialInfo/auth",
+            cache: false,
+            data: {
+                id:infoId,
+                authStutas:1
+            },
+            success: function(obj) {
+                if(obj.code == 0) {
+                    layer.msg("操作成功");
+                    $('.contentDetail').css({
+                        'display':'block'
+                    })
+                    $('.detail').css({
+                        'display':'none'
+                    })
+                    console.log(obj)
+                    //刷新父页面
+                    $(".layui-laypage-btn").click();
+                    getTotalCount();
+                    //刷新父页面
+                    /*
+                     window.setTimeout(function() {
+                         layer.closeAll("iframe");
+                         location.reload();
+                     }, 800);
+                   */
+                } else {
+                    layer.alert(obj.errorMsg);
+                }
+            },
+            err: function() {
+                layer.alert("网络异常,请稍后再试");
+            }
+        })
+    }
+    function getTotalCount() {
+        $.ajax({
+            type: 'GET',
+            url: realPath + "/dmp/api/moSocialInfo/count",
+            /*data:{status:1},*/
+            success: function (obj) {
+                var data = obj.data;
+                console.log(data);
+                $("#total1").html('待审核（'+(data.authCount == null?"0":data.authCount)+'）');
+                $("#total2").html('置顶（'+(data.stickCount == null?"0":data.stickCount)+'）');
+                $("#total3").html('加精（'+(data.splendidCount == null?"0":data.splendidCount)+'）');
+                $("#total4").html('全部（'+(data.count == null?"0":data.count)+'）');
+            }
+        })
+    }
+    window.onload=function getTotal() {
+        $.ajax({
+            type: 'GET',
+            url: realPath + "/dmp/api/moSocialInfo/count",
+            /*data:{status:1},*/
+            success: function (obj) {
+                var data = obj.data;
+                console.log(data);
+                $("#total1").html('待审核（'+(data.authCount == null?"0":data.authCount)+'）');
+                $("#total2").html('置顶（'+(data.stickCount == null?"0":data.stickCount)+'）');
+                $("#total3").html('加精（'+(data.splendidCount == null?"0":data.splendidCount)+'）');
+                $("#total4").html('全部（'+(data.count == null?"0":data.count)+'）');
+            }
+        })
+    }
+    function getInfoCountByKeyword(keyword) {
+        $.ajax({
+            type: 'GET',
+            url: realPath + "/dmp/api/moSocialInfo/count?keyword="+keyword,
+            /*data:{status:1},*/
+            success: function (obj) {
+                var data = obj.data;
+                console.log(data);
+                $("#total1").html('待审核（'+(data.authCount == null?"0":data.authCount)+'）');
+                $("#total2").html('置顶（'+(data.stickCount == null?"0":data.stickCount)+'）');
+                $("#total3").html('加精（'+(data.splendidCount == null?"0":data.splendidCount)+'）');
+                $("#total4").html('全部（'+(data.count == null?"0":data.count)+'）');
+            }
+        })
+    }
+ function delAuthInfo(id) {
+     layer.confirm('是否确定删除待审核文章/动态？', {
+         btn: ['确定','取消'] //按钮
+     }, function(){
+         $.ajax({
+             type: 'POST',
+             url: realPath + "/dmp/api/moSocialInfo/auth",
+             cache: false,
+             data: {
+                 id:id,
+                 authStutas:1
+             },
+             success: function(obj) {
+                 if(obj.code == 0) {
+                     layer.msg("操作成功");
+                     $('.contentDetail').css({
+                         'display':'block'
+                     })
+                     $('.detail').css({
+                         'display':'none'
+                     })
+                     console.log(obj)
+                     $(".layui-laypage-btn").click()
+                     getTotalCount();
+                     //刷新父页面
+                     /*
+                      window.setTimeout(function() {
+                          layer.closeAll("iframe");
+                          location.reload();
+                      }, 800);
+                    */
+                 } else {
+                     layer.alert(obj.errorMsg);
+                 }
+             },
+             err: function() {
+                 layer.alert("网络异常,请稍后再试");
+             }
+         })
+     });
+
+ }
+
+</script>
+
+</html>

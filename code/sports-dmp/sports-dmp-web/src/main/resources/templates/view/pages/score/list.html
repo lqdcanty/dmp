@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>排名列表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+				width:90px!important;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			.width80{
+				width:80px!important;
+			}
+			.width80 input{
+				width:80px!important;
+			}
+			
+			
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+
+					<div class="layui-inline" id="unitCodeHide">
+						<label class="layui-form-label">承办账号</label>
+						<div class="layui-inline width90">
+							<input class="layui-input" id="unitCode" placeholder="承办账号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">赛事名称</label>
+						<div class="layui-inline width90">
+							<input class="layui-input" id="match" placeholder="赛事名称/编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员手机</label>
+						<div class="layui-inline width90">
+							<input class="layui-input" id="playerPhone" placeholder="运动员手机" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员名称</label>
+						<div class="layui-inline width90">
+							<input class="layui-input" id="playerName" placeholder="运动员名称" autocomplete="off">
+						</div>
+					</div>
+					
+					<div class="layui-inline">
+						<label class="layui-form-label">排名类型</label>
+						<div class="layui-input-inline width90">
+							<select name="select-main" id="socreType" lay-filter="sortOrder">
+								<option value="" selected="selected">全部排名</option>
+								<option value="dmp">官方排名</option>
+								<option value="unit">合作方排名</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="layui-inline">
+						<label class="layui-form-label">创建时间范围</label>
+						<div class="layui-input-inline width90">
+							<input type="text" id="startTime" placeholder="开始时间" autocomplete="off" class="layui-input">
+						</div>
+						<div class="layui-form-mid">~</div>
+						<div class="layui-input-inline width90">
+							<input type="text" id="endTime" placeholder="结束时间" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">排序名称</label>
+						<div class="layui-input-inline width90">
+							<select name="select-main" id="sortField" lay-filter="sortField">
+								<option value="">默认 </option>
+								<option value="score">成绩数据</option>
+								<option value="ranking">排名数据</option>
+								<option value="partTime">参赛时间 </option>
+								<option value="gmtCreate">创建时间</option>
+							</select>
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">排序方式</label>
+						<div class="layui-input-inline width90">
+							<select name="select-main" id="sortOrder" lay-filter="sortOrder">
+								<option value="">默认</option>
+								<option value="asc">升序</option>
+								<option value="desc">降序</option>
+							</select>
+						</div>
+					</div>
+					
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="importCurrPage" style='margin-left: 20px'>导出当前页</label>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="importAllPage" style='margin-left: 20px'>导出所有页</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		</div>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+		<div id='pageWrap'></div>
+		<input type="hidden" id="count">
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>
+	
+	<script id="scoreTem" type="text/html">
+		{{d.score}}{{d.scoreUnit}}
+	</script>
+	
+	<script type="text/html" id="sRankTypeTem">
+		{{# if(d.rankType == 'dmp'){ }}
+		<span style="color: #5cb85c;">官方排名</span>
+        {{# } else if(d.rankType == 'unit'){ }}
+		<span style="color: #FF5722;">合作方排名</span>
+        {{# } }}
+	</script>
+
+	<script id="endDate" type="text/html">
+		{{getDate(d.endDate)}}
+	</script>
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate();
+		}
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='660px';
+			height="450px";
+		}else{
+			width='660px';
+			height="600px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/dmp/api/score/rank/list";
+		layui.use(['table', 'form', 'layedit', 'laydate','laypage'], function() {
+			var $=layui.jquery;
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var laypage=layui.laypage;
+			var size = 10;
+			var page = 1;
+			var count=0;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			var tableIns=table.render({
+				elem: '#demo',
+				id: 'demo',
+				cols: [
+					[{
+						field: 'idempotentId',
+						title: '唯一标识',
+						fixed:'left',
+						width:160
+					},
+					
+					 {
+						field: 'playerName',
+						title: '运动员名称',
+						width:120
+					},
+					 {
+						field: 'playerPhone',
+						title: '运动员电话',
+						width:130
+					},
+					{
+						field: 'ranking',
+						title: '名次',
+						align:'center',
+						width:80
+					},
+					{
+						field: 'score',
+						title: '参赛成绩',
+						align:'center',
+						templet: "#scoreTem",
+						width:100
+					},
+					{
+						field: 'promotion',
+						title: '晋级情况',
+						align:'center',
+						width:100
+					},
+					 {
+						field: 'eventName',
+						title: '项名称',
+						width:120
+					}, 
+					 {
+						field: 'partTime',
+						title: '参赛时间',
+						width: 160
+					},
+					{
+						field: 'unitCode',
+						title: '承办方',
+						width:100
+					}
+					, {
+						field: 'scoreRankType',
+						title: '排名类型',
+						width:100,
+						templet: "#sRankTypeTem",
+					},
+					 {
+						field: 'gmtCreateStr',
+						title: '创建时间',
+						width: 120
+					},
+					 {
+						 title: '操作',  
+						 templet:'#listBar',
+						 fixed:"right",
+						 align:"center",
+						 width:100
+					 } 
+					]
+				]
+			});
+			getData(page, size);
+			//获取数据
+			function getData(page, size) {
+				var unitCode = $('#unitCode').val();
+				var match = $('#match').val();
+				var playerPhone = $('#playerPhone').val();
+				var playerName = $('#playerName').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				var sortField=$("#sortField").val();
+				var sortOrder=$("#sortOrder").val();
+				var socreType=$("#socreType").val();
+				var index = parent.layer.load(2, {
+					shade: false
+				}); //0代表加载的风格，支持0-2
+				$.ajax({
+					type: 'get',
+					url: dataApi,
+					cache: false,
+					data: {
+						unitCode : unitCode,
+						match : match,
+						playerPhone : playerPhone,
+						playerName : playerName,
+						startTime,startTime,
+						pageNumber: page,
+						endTime:endTime,
+						pageSize: size,
+						sortField:sortField,
+						sortOrder:sortOrder,
+						socreType:socreType,
+						timestamp : (new Date()).valueOf()
+					},
+					success: function(obj) {
+						count=obj.data.allRow;
+						$("#count").val(obj.data.allRow);
+						parent.layer.close(index);
+						$("#gmtOrderField").attr("disabled",false)
+						$("#applyOrderField").attr("disabled",false)
+						$("#modifyOrderField").attr("disabled",false)
+						form.render("select");
+						if(obj.code != 0) {
+							layer.alert(obj.errorMsg, {
+								icon: 2
+							});
+							return;
+						}
+						if(obj.unitCode != null&&obj.unitCode!=''){
+							$('#unitCode').val(obj.unitCode);
+							$('#unitCode').attr("readonly", "readonly");
+							$('#unitCode').attr("disabled", "disabled");
+						}
+						tableIns.reload({
+							data: obj.data.list
+						});
+						laypage.render({
+							elem: 'pageWrap',
+							count: obj.data.allRow,
+							curr: obj.data.currentPage,
+							layout: ['count', 'prev', 'page', 'next', 'skip'],
+							jump: function(res, first) {
+								console.log(first);
+								console.log(res.curr);
+								if(!first) {
+									console.log(res.curr);
+									getData(res.curr, size);
+								}
+							}
+						});
+					}
+				 })
+			  }
+
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data
+				if(layEvent === 'edit') { //编辑
+					var index = layui.layer.open({
+						title: "详情",
+						type: 2,
+						content: "scoreInfo.html",
+						id: 'scoreInfo',
+						area: [width, height],
+						zIndex: layer.zIndex,
+						maxmin: true,
+						scrollbar: true,
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							if(data) {
+								//编辑
+								body.find('#addIframIndex').val(JSON.stringify(data));
+								//body.find(".addBtn").hide();
+								body.find('#btn').click();
+							}
+							setTimeout(function() {
+								layui.layer.tips('点击此处返回列表', '.layui-layer-setwin .layui-layer-close', {
+									tips: 3
+								});
+							}, 500)
+						}
+					})
+				}
+			});
+			
+			
+				
+			
+			
+			$('#search').on('click', function() {
+				page=1;
+				getData(page, size);
+			});
+			$("#importCurrPage").click(function(){
+				//var indexclose = layer.load(2, {shade: false});
+				var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+				var unitCode = $('#unitCode').val();
+				var match = $('#match').val();
+				var playerName = $('#playerName').val();
+				var playerPhone = $('#playerPhone').val();
+				var valid = $('#valid').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				var sortField=$("#sortField").val();
+				var sortOrder=$("#sortOrder").val();
+				var socreType=$("#socreType").val();
+				console.log(realPath);
+				var url=realPath+"/dmp/api/score/rank/export?unitCode="+unitCode+"&match="+match+"&playerPhone="+playerPhone+"&playerName="+playerName+"&startTime="+startTime+"&endTime="+endTime+"&valid="+valid+"&sortField="+sortField+"&sortOrder="+sortOrder+"&page="+page+"&exportAll=false"+"&socreType="+socreType;
+				XMLHttp(url,index);
+			})
+			$("#importAllPage").click(function(){
+				var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+				var unitCode = $('#unitCode').val();
+				var match = $('#match').val();
+				var playerName = $('#playerName').val();
+				var playerPhone = $('#playerPhone').val();
+				var valid = $('#valid').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				var gmtOrderField=$("#gmtOrderField").val();
+				var sortField=$("#sortField").val();
+				var sortOrder=$("#sortOrder").val();
+				var socreType=$("#socreType").val();
+				var url=realPath+"/dmp/api/score/rank/export?unitCode="+unitCode+"&match="+match+"&playerPhone="+playerPhone+"&playerName="+playerName+"&startTime="+startTime+"&endTime="+endTime+"&valid="+valid+"&sortField="+sortField+"&sortOrder="+sortOrder+"&exportAll=true"+"&socreType="+socreType;
+				 if($("#count").val()>10000){
+		        	 layer.open({
+		        		  content: '所有数据大于10000条，我们将只导出最近的10000条数据',
+		        		  yes: function(i, layero){
+		        		    //do something
+		        		    layer.close(i); //如果设定了yes回调，需进行手工关闭
+		        		    var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+		        		    XMLHttp(url,index);
+		        		  }
+		        		}); 
+				}else{
+					var index = layer.msg('文件正在下载，请稍候',{icon: 16,time:false,shade:0.8});
+        		    XMLHttp(url,index);
+				}
+			})
+			 function XMLHttp(url,index){
+				 var xhr = new XMLHttpRequest();
+			        xhr.open('GET', url, true);    // 也可以使用POST方式，根据接口
+			        xhr.responseType = 'blob';  
+			        
+			        xhr.onload = function () {
+			            if (this.status === 200) {
+			                var blob = this.response;
+			                var reader = new FileReader();
+			               reader.readAsDataURL(blob);    
+			                reader.onload = function (e) {
+			                    layer.close(index);
+			                    var headerName = xhr.getResponseHeader("Content-disposition");
+			                    var fileName = decodeURIComponent(headerName).substring(20);
+			                   // alert(fileName);
+			                 	if(xhr.getResponseHeader("Content-Type").search("excel")){
+			                 		layer.msg("下载成功");
+			                 	}else{
+			                 		layer.msg("下载失败");
+			                 	}
+			                    var a = document.createElement('a');
+			                    a.download = fileName;
+			                    a.href = e.target.result;
+			                    $("body").append(a);    // 修复firefox中无法触发click
+			                    a.click();
+			                    $(a).remove();
+			                }
+			            }
+			        };
+			        xhr.send()
+			}
+			form.on('select(demo1)',function(data){
+				console.log(data.value,"data")
+				if(data.value==1||data.value==-1){
+					$("#applyOrderField").attr("disabled",true)
+					$("#modifyOrderField").attr("disabled",true)
+					$("#modifyOrderField").val("");
+					$("#applyOrderField").val("");
+					form.render("select");
+				}else{
+					$("#applyOrderField").attr("disabled",false)
+					$("#modifyOrderField").attr("disabled",false)
+					form.render("select");
+				}
+			})
+			form.on('select(demo2)',function(data){
+				console.log(data.value,"data")
+				if(data.value==1||data.value==-1){
+					$("#gmtOrderField").attr("disabled",true)
+					$("#modifyOrderField").attr("disabled",true)
+					$("#modifyOrderField").val("");
+					$("#gmtOrderField").val("");
+					form.render("select");
+				}else{
+					$("#gmtOrderField").attr("disabled",false)
+					$("#modifyOrderField").attr("disabled",false)
+					form.render("select");
+				}
+			})
+			form.on('select(demo3)',function(data){
+				console.log(data.value,"data")
+				if(data.value==1||data.value==-1){
+					$("#applyOrderField").attr("disabled",true)
+					$("#gmtOrderField").attr("disabled",true)
+					$("#applyOrderField").val("");
+					$("#gmtOrderField").val("");
+					form.render("select");
+				}else{
+					$("#applyOrderField").attr("disabled",false)
+					$("#gmtOrderField").attr("disabled",false)
+					form.render("select");
+				}
+			})	
+
+		});
+	</script>
+
+</html>

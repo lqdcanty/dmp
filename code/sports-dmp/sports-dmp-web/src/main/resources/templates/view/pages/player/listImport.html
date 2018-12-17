@@ -1,0 +1,448 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>报名列表</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			table{
+			width:100%!important;
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			#loadError{
+				display:none;
+				margin:0 10px;
+			} 
+			#loadError a{
+			    text-decoration: underline;
+			    margin-right:5px;
+			    color:#1AA094;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">承办编号</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="unitCode" placeholder="承办编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">运动员</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="player" placeholder="运动员名称/编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">赛事</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="match" placeholder="赛事名称/编号" autocomplete="off">
+						</div>
+					</div>
+
+					<div class="layui-inline">
+						<label class="layui-form-label">手机号</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="playerPhone" placeholder="运动员手机号" autocomplete="off">
+						</div>
+					</div>
+
+				
+
+					<div class="layui-inline">
+						<label class="layui-form-label">开始时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="startTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">结束时间</label>
+						<div class="layui-input-inline width180">
+							<input type="text" id="endTime" autocomplete="off" class="layui-input">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+						<label class="layui-btn" id="personImport" style='margin-left: 20px'>个人报名导入</label>
+						<label class="layui-btn" id="teamImport" style='margin-left: 20px'>团体报名导入</label>
+						<label class="layui-btn"  style='margin-left: 20px' onclick="javascript:window.location.href='/download/player/templateV1.0.1.zip'">模板下载</label>
+						<!-- <div class="layui-inline" id="loadError">
+							<a>点击下载</a>
+							<span>倒计时:</span><span id="time">05分00秒</span>
+						</div> -->
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		</div>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+		<div class="inportIcon">
+			<i class="layui-icon layui-icon-loading layui-anim layui-anim-rotate layui-anim-loop" style="display: inline-block"></i><span>文件越大解析时间越长哦！请耐心等待</span>
+		</div>
+	</body>
+	<script type="text/html" id="listBar">
+		<div class="layui-btn-group">
+			<button class="layui-btn layui-btn-primary layui-btn-xs" lay-event="edit">
+    			<i class="layui-icon">&#xe647</i>详情
+  			</button>
+		</div>
+	</script>
+	<script type="text/html" id="liquidationSta">
+		{{# if(d.liquidationStatus == '已结算'){ }}
+		<span style="color: #5cb85c;">{{d.liquidationStatus}}</span> {{# } else if(d.liquidationStatus == '待结算'){ }}
+		<span style="color: #FF5722;">{{d.liquidationStatus}}</span> {{# } else { }} {{d.liquidationStatus}} {{# } }}
+	</script>
+	<script id="endDate" type="text/html">
+		{{getDate(d.endDate)}}
+	</script>
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.getFullYear() + "-" + (date.getMonth() + 1) + "-" +
+				date.getDate()+' '+date.getHours()+':'+date.getMinutes()+':'+date.getSeconds();
+		}
+	</script>
+<script id="remitTimeT" type="text/html">  
+    {{getDate(d.applyTime)}}   
+</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose;
+		if(document.body.clientWidth<1500){
+			width='680px';
+			height="450px";
+		}else{
+			width='700px';
+			height="850px";
+		}
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/dmp/api/player/list";
+		layui.use(['table', 'form', 'layedit', 'laydate','upload'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var upload = layui.upload;
+			var limit = 10;
+			var page = 1;
+			//日期
+			laydate.render({
+				elem: '#startTime'
+			});
+			laydate.render({
+				elem: '#endTime'
+			});
+			//展示已知数据
+			indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?channelCode=import&timestamp=" + (new Date()).valueOf(), //数据接口
+				cols: [
+					[ {
+						field: 'batchNumber',
+						title: '批次号',
+						width:180
+					},{
+							field: 'playerName',
+							title: '运动员名称',
+							width:120
+						}, {
+							field: 'playerPhone',
+							title: '手机号',
+							width:120
+						},
+						 {
+							field: 'gameName',
+							title: '所属项目',
+							width:140
+						}, {
+							field: 'matchName',
+							title: '所属赛事',
+							width:160
+						}, {
+							field: 'matchGroupName',
+							title: '所属比赛组',
+							width:160
+						}, {
+							field: 'eventName',
+							title: '所属比赛项',
+							width:200
+						},
+						{
+							field: 'playerNation',
+							width: 60,
+							title: '民族'
+						},
+						{
+							field: 'unitCode',
+							title: '承办方',
+							width: 140
+						}, {
+							field: 'eventType',
+							title: '报名类型',
+							width:100,
+							templet: function(d) {
+								
+								if(d.eventType=='personal'){
+									return '<button class="layui-btn" style="line-height:29px;height:28px;">个人</button>'
+								}
+								if(d.eventType=='group'){
+									return '<button class="layui-btn layui-btn-normal" style="line-height:29px;height:28px;">团体</button>'
+								}
+							}
+						},
+						{
+							field: 'gmtModifiedStr',
+							title: '导入时间',
+							width:180
+						},
+						 {
+							title: '操作',  
+							templet:'#listBar',
+							fixed:"right",
+							align:"center",
+							width: 100
+						} 
+					]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [10, 20, 30, 50, 100],
+				limit: 10, //每页默认显示的数量
+				done: function(res, curr, count) {
+					if(res.code==0){
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+						if(res.unitCode != null) {
+							//设置承办编号
+							$('#unitCode').val(res.unitCode);
+							$('#unitCode').attr("readonly", "readonly");
+							$('#unitCode').attr("disabled", "disabled");
+						}
+					}else{
+						layer.close(indexclose);
+						setTimeout(function() {
+							layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 100)
+					}
+				}
+			});
+
+			table.on('tool(demo)', function(obj) {
+				var layEvent = obj.event,
+					data = obj.data;
+
+				if(layEvent === 'edit') { //编辑
+					var index = layui.layer.open({
+						title: "详情",
+						type: 2,
+						content: "playerInfo.html",
+						id: 'playerInfo',
+						area: [width, height],
+						zIndex: layer.zIndex,
+						success: function(layero, index) {
+							var body = layui.layer.getChildFrame('body', index);
+							if(data) {
+								//编辑
+								body.find('#callLogId').val(JSON.stringify(data));
+								body.find('#importPage').val('true');
+								//body.find(".addBtn").hide();
+								body.find('#btn').click();
+								
+							}
+							setTimeout(function() {
+								layui.layer.tips('点击此处返回列表', '.layui-layer-setwin .layui-layer-close', {
+									tips: 3
+								});
+							}, 500)
+						}
+					})
+				}
+			});
+			
+			$('#search').on('click', function() {
+				var unitCode = $('#unitCode').val();
+				var match = $('#match').val();
+				var player = $('#player').val();
+				var playerPhone = $('#playerPhone').val();
+				var startTime = $('#startTime').val();
+				var endTime = $('#endTime').val();
+				indexclose = layer.load(2, {shade: false});
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						unitCode: unitCode,
+						match: match,
+						player: player,
+						playerPhone: playerPhone,
+						startTime: startTime,
+						endTime: endTime,
+						channelCode:'import',
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr;
+						}
+					}
+				});
+			});
+			
+			
+			//文件导入
+			var indexLayer
+			 upload.render({
+			    elem: '#personImport'
+			    ,url: '/dmp/api/template/enroll/import'
+			    ,accept: 'file' //普通文件
+			    ,exts:'xls|xlsx'
+		    	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+		    		//$(".inportIcon").show();
+		    		indexLayer = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+		    	  }
+			    ,done: function(res){
+			      	//console.log(res)
+			      	top.layer.close(indexLayer);
+			      	if(res.code==0){
+			      		layer.msg('导入成功');
+			      		setTimeout(function(){
+			      			location.reload();
+			      		},1000)
+			      	}else{
+			      		layer.open({
+			 			  title: '导入结果'
+			 			  ,content: res.errorMsg
+			 			}); 
+			      	}
+			    }
+			 	,error: function(){
+			 		$(".inportIcon").hide();
+			 		layer.open({
+		 			  title: '导入结果'
+		 			  ,content: '导入失败'
+		 			});  
+			    }
+			 });
+			 upload.render({
+				    elem: '#teamImport'
+				    ,url: '/dmp/api/template/td/enroll/import'
+				    ,accept: 'file' //普通文件
+				    ,exts:'xls|xlsx'
+			    	,before: function(obj){ //obj参数包含的信息，跟 choose回调完全一致，可参见上文。
+			    		indexLayer = top.layer.msg('数据提交中，请稍候',{icon: 16,time:false,shade:0.8});
+			    	  }
+				    ,done: function(res){
+				      	//console.log(res)
+				      	top.layer.close(indexLayer);
+				      	if(res.code==0){
+				      		layer.msg('导入成功');
+				      		setTimeout(function(){
+				      			location.reload();
+				      		},1000)
+				      	}else{
+				      		layer.open({
+				 			  title: '导入结果'
+				 			  ,content: res.errorMsg
+				 			}); 
+				      	}
+				    }
+				 	,error: function(){
+				 		$(".inportIcon").hide();
+				 		//layer.msg('导入失败');
+				 		layer.open({
+			 			  title: '导入结果'
+			 			  ,content: '导入失败'
+			 			});     
+			 			  
+				    }
+				 });
+			
+			
+			
+			//倒计时
+			 var startTime = '';
+		    //活动截止时间endTime（以服务器时间为标准，即给定的时间）
+		    var end = '';
+		    var endTime = '';
+		    //活动截止时间（以浏览器时间为标准）
+		    var browserEndTime = '';var minute0=5,second0=0;
+		    //距离活动结束还剩余的时间（以浏览器为标准）
+		    var plus = 5*60*1000;
+			  function setTimer() {
+		        if (plus) {
+		        	plus -= 1000;
+		            //更新当前时间(getTime()获取时间转化成毫秒后的数值)
+		        }
+		        var day = parseInt(plus / 1000 / 60 / 60 / 24);
+		        var hour = parseInt(plus / 1000 / 60 / 60) - day * 24;
+		        var minute = parseInt(plus / 1000 / 60) - parseInt(plus / 1000 / 60 / 60) * 60;
+		        var second = parseInt(plus / 1000) - parseInt(plus / 1000 / 60) * 60;
+		
+		        // 如果分钟或小时的值小于10，则在其值前加0，比如如果时间是下午3点20分9秒的话，则显示15：20：09            
+		        day = checkTime(day);
+		        hour = checkTime(hour);
+		        minute0 = checkTime(minute);
+		        second0 = checkTime(second);
+		
+		        $('#time').text ( minute0 + "分" + second0 + "秒");
+		
+		        if (plus <= 1) {
+		            clearInterval(id);
+		        }
+		    }
+			  
+			  function checkTime(i) {
+			        if (i < 10) {
+			            i = "0" + i;
+			        }
+			        return i;
+			    }
+			var id = setInterval(setTimer, 1000);
+			
+		});
+	</script>
+
+</html>

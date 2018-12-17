@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>添加系统</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/font-awesome.min.css" media="all" />
+	<style>
+	.icon-view .fa{    font-size: 34px;}
+	.margin0 button{
+		margin-left:0!important;
+	}
+	.margin_top15{
+		margin-top:35px!important;
+	}
+	.icon{
+	
+	}
+	</style>
+</head>
+<body class="childrenBody">
+<input type='hidden' id='addIframIndex'>
+<form class="layui-form layui-row">
+	<input type="hidden" class="layui-input sysId" name='sysId' >
+	<div class="layui-col-xs11">
+		<div class="layui-row">
+			<div class="layui-col-md11 layui-col-xs12 margin_top15">
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">系统名称</label>
+					<div class="layui-col-xs5">
+						<input type="text" class="layui-input sysname" lay-verify="required" name="sysname" placeholder="系统名称">
+					</div>
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">系统URL</label>
+					<div class="layui-col-xs5">
+						<input type="text" class="layui-input host" lay-verify="required" name="host" placeholder="系统URL">
+					</div>
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">系统图标</label>
+					<div class="layui-col-xs1" style="width:10%"><!--  -->
+						<input type='text' readonly class='layui-input icon' name='icon' lay-verify="required|icon" placeholder="图标">
+						<span class='icon-view'></span>
+					</div>
+					<a class="layui-btn selIcon layui-btn-normal " data-type="reload">选择图标</a>
+				
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">显示在主页</label>
+					<div class="layui-col-xs5">
+						<input type='hidden' class='layui-input dispaly' name='dispaly' value='0'>
+						<input type="checkbox"  class='displaBox' lay-filter="sysDispaly" lay-skin="switch" lay-text="是|否" >
+					</div>
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label"></label>
+					<div class="layui-col-xs5 margin0">
+						<button class="layui-btn  addBtn" lay-submit="" lay-filter="addBtn">立即添加</button>
+						<button class="layui-btn  updateBtn" lay-submit="" lay-filter="updateBtn">确认编辑</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+	<script type="text/html" id="propertytBar">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">选择</a>
+	</script>
+	<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+	<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets//system/sys/sysAdd.js"></script>
+</body>
+</html>
+<!-- 
+  var index = parent.layui.layer.getFrameIndex(window.name); 
+			    var body = parent.layui.layer.getChildFrame('body', $('#codeIframIndex').val()); 
+			       body.find('.icon').val($(this).find('i').attr('class').split(" ")[1]).hide(); -->

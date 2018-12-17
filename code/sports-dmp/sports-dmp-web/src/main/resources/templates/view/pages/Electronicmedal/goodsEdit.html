@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>商品编辑</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<style>
+		[v-cloak] {display: none;}
+		.imgBox{
+			width:200px;
+			height:100px;
+			border:1px solid #dedede;
+			margin-left:0;
+			margin-bottom:15px;
+		}
+	</style>
+</head>
+<body class="childrenBody userInfobody">
+<div id="app">
+<form class="layui-form layui-row userInfowrap" id=''>
+	<div class="layui-card">
+	  <div class="layui-card-header"><i class="layui-icon">&#xe642;</i>商品编辑</div>
+	  <div class="layui-card-body layui-row">
+		<div class="layui-col-md6 layui-col-xs12">
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品标题</label>
+					<div class="layui-input-block">
+						<input type="text" placeholder="请输入商品标题" class="layui-input" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"></label>
+					<div class="layui-input-block">
+						<div class="imgBox layui-input-block">
+							<img src="">
+						</div>
+						<button class="layui-btn">点击上传</button>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品价格</label>
+					<div class="layui-input-block">
+						<input type="number" value="" placeholder="请输入商品价格" lay-verify="required" class="layui-input" >
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label">商品介绍</label>
+					<div class="layui-input-block">
+				     	 <textarea style="height:80px;padding:5px;" placeholder="请输入商品介绍" class="layui-input"></textarea>
+					</div>
+				</div>
+				<div class="layui-form-item">
+					<label class="layui-form-label"></label>
+					<div class="layui-inline">
+						<a class="layui-btn" id="scane" @click="scane">浏览</a>
+					</div>
+					<div class="layui-inline">
+						<a class="layui-btn">保存</a>
+					</div>
+				</div>
+		</div>
+	  </div>
+	</div>
+</form>
+</div>
+<script type="text/javascript">
+		var realPath="${ctx}"
+	</script>
+	<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/system/common/vue/vue.js"></script>
+	<script type="text/javascript">
+			
+		//	function btnClick() {
+				layui.use(['table', 'form', 'layedit', 'laydate','laypage'], function() {
+					var table = layui.table;
+					var form = layui.form;
+					var layedit = layui.layedit;
+					var laydate = layui.laydate;
+					var $ = layui.jquery;
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							applyData:{},
+							appIdList:[],
+							optionSelectShow:false,
+							editFlage:null,
+						},
+						created: function() {
+							var that = this;
+						},
+						created:function(){
+							var that=this;
+							if($("#dataObj").val()){
+								that.applyData=JSON.parse($("#dataObj").val());
+								that.editFlage=true;
+							}
+							that.getList();
+						},
+						methods:{
+							save:save,
+							scane:scane,
+							getResultMethodsOther:getResultMethodsOther,
+							submitFun:submitFun,
+							getList:getList,
+							mouseleaveSelect:mouseleaveSelect,
+							optionSelect:optionSelect,
+							optionSelectInput:optionSelectInput,
+						}
+					})
+					function optionSelectInput(){
+						if(!vm.editFlage){
+							vm.optionSelectShow=true;
+						}
+					}
+					function optionSelect(list){
+						vm.applyData.appId=list.appId;
+						vm.optionSelectShow=false;
+						form.render();
+					}
+					function mouseleaveSelect(){
+						vm.optionSelectShow=false;
+					}
+					function getList(){
+						/* var index = layer.load(2, {
+							shade: false
+						}); */
+					/* 	$.ajax({
+							type: 'get',
+							url: "/app/list",
+							cache: false,
+							data: {
+								pageNumber: 1,
+								pageSize: 9999
+							},
+							success: function(obj) {
+								layer.close(index);
+								vm.appIdList=obj.data.list;
+								if(obj.code != 0) {
+									layer.alert(obj.errorMsg, {
+										icon: 2
+									});
+									return;
+								}
+							}
+						}) */
+					}
+					function submitFun(){
+						getResultMethodsOther('/template/query/apply',vm.applyData,function(d){
+							layer.msg("申请成功");
+							setTimeout(()=>{
+								var index=parent.layer.getFrameIndex(window.name);
+								parent.layer.close(index);
+							},500);
+						})
+					}
+					function save(){
+						console.log(vm.applyData,"params");
+						getResultMethodsOther('/template/query/up?tpl_code='+vm.applyData.tplCode,vm.applyData,function(d){
+							layer.msg("申请成功");
+							setTimeout(()=>{
+								var index=parent.layer.getFrameIndex(window.name);
+								parent.layer.close(index);
+							},500);
+						})
+					}
+					function scane(){
+						console.log("12")
+						var indexopen = layer.open({
+							title: "浏览",
+							type: 2,
+							content: 'scane.html',
+							id: 'scane',
+							area: ['700px', '500px'],
+							success: function(layero, index) { 
+								var body = layui.layer.getChildFrame('body', index);
+								body.find('#btn').click();
+							}
+						})
+					}
+					function getResultMethodsOther(url, prams, sufn) {
+						var index = layer.load(2, {shade: 0.01});
+					    $.ajax({
+					        url:  url,
+					        data: JSON.stringify(prams),
+					        contentType:'application/json',
+					        type: 'post',
+					        dataType: 'json',
+					        cache:false,
+					        success: function(d) {
+					        	layer.close(index);
+					        	if(d.code==0) {
+					        		if('function' === typeof sufn) sufn(d);
+					        	}else {
+					        		layer.msg(d.errorMsg);
+					        	}
+					        },
+						    error:function(){
+						    	layer.close(index);
+								layer.msg("请求出错");
+							}
+					    });
+					};
+				})
+			//}
+		</script>
+</body>
+</html>

@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>App版本管理</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta http-equiv="pragma" content="no-cache" />
+		<meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<style>
+			.layui-form-item .layui-input-inline {
+				margin-right: 0
+			}
+			
+			.layui-form-label {
+				padding: 9px 10px 0 0;
+			}
+			
+			.layui-form-item {
+				margin-bottom: 10px
+			}
+			.width180{
+				width:180px!important;
+			}
+			.width180 input{
+				width:180px!important;
+			}
+			table{
+			width:100%!important;
+			}
+		</style>
+	</head>
+
+	<body class="childrenBody">
+		<blockquote class="layui-elem-quote quoteBox">
+			<form class="layui-form">
+				<div class='layui-form-item'>
+					<div class="layui-inline">
+						<label class="layui-form-label">主键ID</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="appVersionID" placeholder="ID" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-form-label">版本号</label>
+						<div class="layui-inline width180">
+							<input class="layui-input" id="appVersion" placeholder="版本号" autocomplete="off">
+						</div>
+					</div>
+					<div class="layui-inline">
+						<label class="layui-btn" id="search" style='margin-left: 20px'>搜索</label>
+						<label class="layui-btn" id="add" style='margin-left: 20px'>添加</label>
+					</div>
+				</div>
+			</form>
+		</blockquote>
+		<table class="layui-hide" id="demo" lay-filter="demo"></table>
+	</body>
+	<script type="text/html" id="btnBar">
+		<span class="layui-btn layui-btn-xs" lay-event="edit">
+			<i class="layui-icon">&#xe716;</i>编辑
+		</span>
+	</script>
+	<script type="text/html" id="isForcedUpgradeTpl">
+		{{# if(d.isForcedUpgrade == 1){ }}
+		<span style="color: #5FB878;">是</span> {{# } else if(d.isForcedUpgrade == 0){ }}
+		<span style="color: #FF5722;">否</span> {{# } }}
+	</script>
+	<script type="text/html" id="statusTp1">
+		{{# if(d.status == 1){ }}
+		<span style="color: #5FB878;">通过</span> {{# } else if(d.status == 0){ }}
+		<span style="color: #FF5722;">未通过</span> {{# } }}
+	</script>
+	<script id="gmtModifiedTpl" type="text/html">
+		{{getDate(d.gmtModified)}}
+	</script>
+	<script id="gmtCreateTpl" type="text/html">
+		{{getDate(d.gmtCreate)}}
+	</script>
+	<script type="text/javascript">
+		function getDate(tm) {
+			var date = new Date(tm);
+			return date.Format('yyyy-MM-dd hh:mm:ss');
+		}
+		Date.prototype.Format = function (fmt) {
+			var o = {
+				"M+": this.getMonth() + 1, //月份
+				"d+": this.getDate(), //日
+				"h+": this.getHours(), //小时
+				"m+": this.getMinutes(), //分
+				"s+": this.getSeconds() //秒
+			};
+			if (/(y+)/.test(fmt)){ //根据y的长度来截取年
+				fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+			}
+			for (var k in o){
+				if (new RegExp("(" + k + ")").test(fmt)) fmt = fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr(("" + o[k]).length)));
+			}
+			return fmt;
+		}
+
+	</script>
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script>
+		var width,height,indexclose,indexclose2;
+		var realPath = "${ctx}";
+		var dataApi = realPath + "/dmp/api/appVersion/list";
+		layui.use(['table', 'form', 'layedit', 'laydate'], function() {
+			var table = layui.table;
+			var form = layui.form;
+			var layedit = layui.layedit;
+			var laydate = layui.laydate;
+			var limit = 10;
+			var page = 1;
+			//展示已知数据
+			indexclose = layer.load(2, {shade: false}); //0代表加载的风格，支持0-2
+			table.render({
+				elem: '#demo',
+				id: 'tableDemo',
+				url: dataApi + "?timestamp=" + (new Date()).valueOf(), //数据接口
+				cols: [
+					[{
+						field: 'id',
+						title: '主键ID',
+						width: 100
+					},{
+						field: 'appVersion',
+						title: '版本号',
+						width: 100
+					},{
+						field: 'appType',
+						title: '平台',
+						width: 100
+					},{
+						field: 'appdownUrl',
+						title: '服务app下载地址',
+						width: 300
+					},{
+						field: 'downUrl',
+						title: '应用商店地址',
+						width: 300
+					},{
+						field: 'appDesc',
+						title: '更新内容',
+						width: 300
+					},{
+						field: 'isForcedUpgrade',
+						title: '是否强制升级',
+						width: 130,
+						templet: '#isForcedUpgradeTpl'
+					},{
+                        field: 'status',
+                        title: '审核状态',
+                        width: 130,
+                        templet: '#statusTp1'
+                    },{
+						field: 'gmtCreate',
+						title: '创建时间',
+						width: 180,
+						templet: '#gmtCreateTpl'
+					},{
+						field: 'gmtModified',
+						title: '修改时间',
+						width: 180,
+						templet: '#gmtModifiedTpl'
+					},{
+						title: '操作',
+						width: 130,
+						templet: '#btnBar'
+					}]
+				],
+				skin: 'line', //表格风格
+				even: true,
+				page: true, //是否显示分页
+				limits: [10, 20, 50, 100],
+				limit: 10, //每页默认显示的数量
+				done: function(res, curr, count) {
+					if(res.code==0){
+						layer.close(indexclose);
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}else{
+						layer.close(indexclose);
+						setTimeout(function() {
+							layui.layer.tips(res.errorMsg, '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 100)
+					}
+				}
+			});
+
+			$('#search').on('click', function() {
+				var appVersionID = $('#appVersionID').val();
+				var appVersion = $('#appVersion').val();
+				table.reload('tableDemo', {
+					page: {
+						curr: 1
+					},
+					where: {
+						appVersionID: appVersionID,
+						appVersion: appVersion,
+						timestamp: (new Date()).valueOf()
+					},
+					url: dataApi,
+					done: function(res, curr, count) {
+						if(res.data != null) {
+							limit = res.data.length;
+							page = curr
+						}
+					}
+				});
+			});
+
+			$('#add').on('click', function() {
+				addProperty();
+			});
+
+			//列表操作
+			table.on('tool(demo)', function(obj) {
+				console.log(obj,"obj")
+				var layEvent = obj.event,
+						data = obj.data;
+				if(layEvent === 'edit') { //编辑
+					addProperty(data.id);
+				}
+			});
+			if(document.body.clientWidth<1500){
+				width='560px';
+				height="520px";
+			}else{
+				width='560px';
+				height="520px";
+			}
+			//添加版本
+			function addProperty(edit) {
+				var index = layui.layer.open({
+					title: !edit ? "APP版本管理" : "APP版本管理",
+					type: 2,
+					content: "appVersionEdit.html?appVersionID="+edit,
+					id: 'appVersionAdd',
+					area: [width, height],
+					maxmin: true,
+					scrollbar: true,
+					success: function(layero, index) {
+						var body = layui.layer.getChildFrame('body', index);
+						if(edit) {
+							//编辑
+							//body.find('#unitModel').val(JSON.stringify(edit));
+							//body.find('#appVersionID').val(edit);
+							body.find(".addBtn").hide();
+							//body.find('#btn').click();
+						} else {
+							//添加
+							body.find(".updateBtn").hide();
+							//body.find('#btn').click();
+						}
+						setTimeout(function() {
+							layui.layer.tips('点击此处返回', '.layui-layer-setwin .layui-layer-close', {
+								tips: 3
+							});
+						}, 500)
+					}
+				})
+				/*   layui.layer.full(index);  */
+				//改变窗口大小时，重置弹窗的宽高，防止超出可视区域（如F12调出debug的操作）
+/*				$(window).on("resize", function() {
+					layui.layer.full(index);
+				})*/
+			}
+		});
+
+	</script>
+
+</html>

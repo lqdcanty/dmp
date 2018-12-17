@@ -1,0 +1,228 @@
+# 默认的profile为dev，其他环境通过指定启动参数使用不同的profile，比如：  
+#   测试环境：java -jar xxx.jar --server.port=18080 --spring.profiles.active=test  
+#   生产环境：java -jar xxx.jar --server.port=18080 --spring.profiles.active=product
+#   开发环境  
+spring:  
+  profiles:  
+    active: dev
+  aop:
+    auto: true
+  redis:
+    database: 0
+    host: 127.0.0.1
+    port: 6379
+    password:
+    timeout: 8000 
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+#    url: jdbc:mysql://122.115.40.84:23306/sports-dmp?useUnicode=true&characterEncoding=utf8&useSSL=false
+#    username: deploy_admin
+#    password: WECBrsggz175sR1
+    url: jdbc:mysql://10.64.34.139:3308/sports-dmp?useUnicode=true&characterEncoding=UTF-8&useSSL=false
+    username: sports-dmp
+    password: WF5MgxFTjxg67SGQr4HB
+    initialize: true
+    minIdle: 2
+    maxActive: 100
+    initialSize: 5
+    timeBetweenEvictionRunsMillis: 3000
+    minEvictableIdleTimeMillis: 300000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+  freemarker:
+    suffix: .html
+    cache: false
+    charset: UTF-8
+    templateEncoding: UTF-8
+    template-loader-path: classpath:/templates/
+    settings:
+      number_format: 0.##
+      tag_syntax: auto_detect
+      date_format: yyyy-MM-dd
+      time_format: HH:mm:ss
+      datetime_format: yyyy-MM-dd HH:mm:ss   
+  http:
+    ecoding: 
+      charset: UTF-8
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/static/,classpath:/templates/,file:${web.upload-path}
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://192.168.8.4:9075
+#        address: zookeeper://127.0.0.1:2181
+        port: 21809
+      base-package: com.efida.sports.cert
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+server:
+    port: 18087
+    context-path: /
+    tomcat:
+      uri-encoding: UTF-8
+web:
+  upload-path: D:/soruce/
+  max-upload: 1000000KB
+  static-path: ${web.upload-path}static/file/
+mybatis-plus: 
+  mapper-locations: classpath*:cn/evake/auth/mapper/*.xml,classpath*:com/efida/sports/mapper/*.xml
+  type-aliases-package: cn.evake.auth.dao.model,com.efida.sports.cert.dao.entity
+# 测试环境配置
+---
+spring:  
+  profiles:  test
+  aop:
+    auto: true
+  redis:
+    database: 0
+    host: redis.zntyydh.com
+    port: 7000
+    password: ZNTY5lqUdYE7oA6C18
+    timeout: 8000 
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://sportsdmp.mysql.zntyydh.com:3306/sports-dmp?useUnicode=true&characterEncoding=utf8&useSSL=false
+    username: deploy_admin
+    password: WECBrsggz175sR1
+    initialize: true
+    minIdle: 2
+    maxActive: 100
+    initialSize: 5
+    timeBetweenEvictionRunsMillis: 3000
+    minEvictableIdleTimeMillis: 300000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+  freemarker:
+    suffix: .html
+    cache: false
+    charset: UTF-8
+    templateEncoding: UTF-8
+    template-loader-path: classpath:/templates/
+    settings:
+      number_format: 0.##
+      tag_syntax: auto_detect
+      date_format: yyyy-MM-dd
+      time_format: HH:mm:ss
+      datetime_format: yyyy-MM-dd HH:mm:ss   
+  http:
+    ecoding: 
+      charset: UTF-8
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/static/,classpath:/templates/,file:${web.upload-path}
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://zookeeper.zntyydh.com:9075
+        port: 21809
+      base-package: com.efida.sports.cert
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+server:
+    port: 18086
+    context-path: /
+    tomcat:
+      uri-encoding: UTF-8
+web:
+  upload-path: /home/znty/cos/work/sports-dmp/
+  max-upload: 1000000KB
+  static-path: ${web.upload-path}static/file/
+mybatis-plus: 
+  mapper-locations: classpath*:cn/evake/auth/mapper/*.xml,classpath*:com/efida/sports/mapper/*.xml
+  type-aliases-package: cn.evake.auth.dao.model,com.efida.sports.cert.dao.entity
+---
+# 正式环境配置
+spring:
+  profiles: product
+  aop:
+    auto: true
+  redis:  
+    password: ZNTY5lqUdYE7oA6C18 
+    timeout: 8000 
+    cluster:
+      nodes: redis1.zntyydh.com:7000,redis2.zntyydh.com:7000,redis3.zntyydh.com:7000,redis4.zntyydh.com:7000,redis5.zntyydh.com:7000,redis6.zntyydh.com:7000
+      maxRedirects: 6
+    pool:
+      max-idle: 20    
+      min-idle: 10    
+      max-active: 100
+      max-wait: 50
+  datasource:
+    driver-class-name: com.mysql.jdbc.Driver
+    type: com.alibaba.druid.pool.DruidDataSource
+    url: jdbc:mysql://sportsdmp.mysql.zntyydh.com:3308/sports-dmp
+    username: sports-dmp
+    password: WF5MgxFTjxg67SGQr4HB
+    initialize: true
+    minIdle: 10
+    maxActive: 2000
+    initialSize: 10
+    timeBetweenEvictionRunsMillis: 3000
+    minEvictableIdleTimeMillis: 300000
+    testWhileIdle: true
+    testOnBorrow: false
+    testOnReturn: false
+  freemarker:
+    suffix: .html
+    cache: false
+    charset: UTF-8
+    templateEncoding: UTF-8
+    template-loader-path: classpath:/templates/
+    settings:
+      number_format: 0.##
+      tag_syntax: auto_detect
+      date_format: yyyy-MM-dd
+      time_format: HH:mm:ss
+      datetime_format: yyyy-MM-dd HH:mm:ss   
+  http:
+    ecoding: 
+      charset: UTF-8
+  mvc:
+    static-path-pattern: /**
+  resources:
+    static-locations: classpath:/META-INF/resources/,classpath:/static/,classpath:/templates/,file:${web.upload-path}
+  dubbo:
+      protocol:
+        name: dubbo
+      application:
+        name: sports-dmp
+        owner: wangyi
+      registry:
+        address: zookeeper://zookeeper.zntyydh.com:9075
+        port: 21807
+      base-package: com.efida.sports.cert
+      consumer:
+        timeout: 20000 
+        check: false                        # 服务启动时检查被调用服务是否可用
+        retries: 2
+server:
+    port: 8898
+    context-path: /
+    tomcat:
+      uri-encoding: UTF-8
+web:
+  upload-path: /home/znty/cos/work/sports-dmp/
+  max-upload: 1000000KB
+  static-path: ${web.upload-path}static/file/
+mybatis-plus: 
+  mapper-locations: classpath*:cn/evake/auth/mapper/*.xml,classpath*:com/efida/sports/mapper/*.xml
+  type-aliases-package: cn.evake.auth.dao.model,com.efida.sports.cert.dao.entity

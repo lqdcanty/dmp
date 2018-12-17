@@ -1,0 +1,276 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>1.5.9.RELEASE</version>
+		<relativePath />
+	</parent>
+
+	<groupId>com.efida.sports.dmp</groupId>
+	<artifactId>sports-dmp-parent</artifactId>
+	<version>1.0.0</version>
+	<packaging>pom</packaging>
+	<description>sports-dmp for parent</description>
+
+	<name>sports-dmp-parent</name>
+	<url>http://maven.apache.org</url>
+
+	<modules>
+		<module>../sports-dmp-service</module>
+		<module>../sports-dmp-web</module>
+		<module>../sports-open-sdk</module>
+		<module>../sports-dmp-facade</module>
+		<!-- <module>../open-cert-application</module> -->
+	</modules>
+
+	<properties>
+		<java.version>1.8</java.version>
+		<mongo-java-driver.version>3.0.4</mongo-java-driver.version>
+		<es.version>5.1.1</es.version>
+		<fastjson.version>1.1.41</fastjson.version>
+		<guava.version>20.0-rc1</guava.version>
+		<commons-lang3.version>3.1</commons-lang3.version>
+		<commons-collections.version>3.2.1</commons-collections.version>
+		<commons-io.version>1.3.2</commons-io.version>
+		<zkclient.version>0.2</zkclient.version>
+		<zookeeper.version>3.4.11</zookeeper.version>
+		<dubbo.version>2.5.8</dubbo.version>
+		<!-- plugins versions start -->
+		<maven-resources-plugin>2.6</maven-resources-plugin>
+		<maven-compiler-plugin>2.5.1</maven-compiler-plugin>
+		<tomcat7-maven-plugin>2.2</tomcat7-maven-plugin>
+		<yuicompressor-maven-plugin.version>1.3.0</yuicompressor-maven-plugin.version>
+		<replacer.version>1.5.3</replacer.version>
+		<build-helper-maven-plugin.version>1.5</build-helper-maven-plugin.version>
+		<maven-antrun-plugin.version>1.1</maven-antrun-plugin.version>
+		<maven-source-plugin.version>2.1.2</maven-source-plugin.version>
+		<!-- plugins versions end -->
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+		<junit.version>4.12</junit.version>
+		<!-- poi -->
+		<poi.version>3.9</poi.version>
+		<ooxml.version>3.8</ooxml.version>
+		<scratchpad.version>3.10-FINAL</scratchpad.version>
+		<poi-ooxml-schemas.version>3.8</poi-ooxml-schemas.version>
+		<!-- json -->
+		<fastjson.version>1.2.28</fastjson.version>
+		<!-- spring boot mybits -->
+		<mybatis-plus-boot-starter.version>2.2.0</mybatis-plus-boot-starter.version>
+		<!-- spring boot redis -->
+		<spring-data-redis.version>1.8.10.RELEASE</spring-data-redis.version>
+		<!-- qr -->
+		<zxing.core.version>3.3.1</zxing.core.version>
+		<!--alibaba druid -->
+		<druid.version>1.1.3</druid.version>
+	</properties>
+
+
+	<repositories>
+		<repository>
+			<id>nexus</id>
+			<name>nexus</name>
+			<url>http://nexus.microdci.cn/nexus/content/repositories/release/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</repository>
+	</repositories>
+	<pluginRepositories>
+		<pluginRepository>
+			<id>nexus</id>
+			<name>nexus</name>
+			<url>http://nexus.microdci.cn/nexus/content/repositories/release/</url>
+			<releases>
+				<enabled>true</enabled>
+			</releases>
+			<snapshots>
+				<enabled>true</enabled>
+			</snapshots>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<distributionManagement>
+		<repository>
+			<id>nexus-releases</id>
+			<name>Nexus Release Repository</name>
+			<url>http://nexus.microdci.cn/nexus/content/repositories/release/</url>
+		</repository>
+		<snapshotRepository>
+			<id>nexus-snapshots</id>
+			<name>Nexus Snapshot Repository</name>
+			<url>http://nexus.microdci.cn/nexus/content/repositories/snapshots/</url>
+		</snapshotRepository>
+	</distributionManagement>
+
+
+	<!-- 依赖管理开始 -->
+	<dependencyManagement>
+		<dependencies>
+			<dependency>
+				<groupId>org.elasticsearch.client</groupId>
+				<artifactId>rest</artifactId>
+				<version>${es.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.mongodb</groupId>
+				<artifactId>mongo-java-driver</artifactId>
+				<version>${mongo-java-driver.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>org.apache.commons</groupId>
+				<artifactId>commons-lang3</artifactId>
+				<version>${commons-lang3.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-collections</groupId>
+				<artifactId>commons-collections</artifactId>
+				<version>${commons-collections.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>commons-io</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.google.guava</groupId>
+				<artifactId>guava</artifactId>
+				<version>${guava.version}</version>
+				<exclusions>
+					<exclusion>
+						<groupId>com.google.code.findbugs</groupId>
+						<artifactId>jsr305</artifactId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<!-- dubbo -->
+
+			<!-- zookeeper -->
+			<dependency>
+				<groupId>com.101tec</groupId>
+				<artifactId>zkclient</artifactId>
+				<version>${zkclient.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.zookeeper</groupId>
+				<artifactId>zookeeper</artifactId>
+				<version>${zookeeper.version}</version>
+			</dependency>
+			<!-- poi -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi</artifactId>
+				<version>${poi.version}</version>
+			</dependency>
+			<!-- excel -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml</artifactId>
+				<version>${ooxml.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-ooxml-schemas</artifactId>
+				<version>${poi-ooxml-schemas.version}</version>
+			</dependency>
+			<!-- word -->
+			<dependency>
+				<groupId>org.apache.poi</groupId>
+				<artifactId>poi-scratchpad</artifactId>
+				<version>${scratchpad.version}</version>
+			</dependency>
+			<!-- json -->
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>fastjson</artifactId>
+				<version>${fastjson.version}</version>
+			</dependency>
+			<!-- google 二维码生成 -->
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>core</artifactId>
+				<version>${zxing.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.zxing</groupId>
+				<artifactId>javase</artifactId>
+				<version>${zxing.core.version}</version>
+			</dependency>
+			<!-- spring boot mybits -->
+
+			<!-- mybatis-plus begin -->
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus-boot-starter</artifactId>
+				<version>${mybatis-plus-boot-starter.version}</version>
+				<exclusions>
+					<exclusion>
+						<artifactId>tomcat-jdbc</artifactId>
+						<groupId>org.apache.tomcat</groupId>
+					</exclusion>
+				</exclusions>
+			</dependency>
+			<dependency>
+				<groupId>com.baomidou</groupId>
+				<artifactId>mybatis-plus</artifactId>
+				<version>2.2.0</version>
+			</dependency>
+			<!-- mybatis-plus end -->
+
+			<dependency>
+				<groupId>com.alibaba</groupId>
+				<artifactId>druid</artifactId>
+				<version>${druid.version}</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger2</artifactId>
+				<version>2.8.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>io.springfox</groupId>
+				<artifactId>springfox-swagger-ui</artifactId>
+				<version>2.8.0</version>
+			</dependency>
+
+			<dependency>
+				<groupId>com.github.xiaoymin</groupId>
+				<artifactId>swagger-bootstrap-ui</artifactId>
+				<version>1.7</version>
+			</dependency>
+
+			<!-- dubbo springboot -->
+			<dependency>
+				<groupId>com.gitee.reger</groupId>
+				<artifactId>spring-boot-starter-dubbo</artifactId>
+				<version>1.0.11</version>
+			</dependency>
+			<!-- Springboot redis -->
+			<dependency>
+				<groupId>org.springframework.data</groupId>
+				<artifactId>spring-data-redis</artifactId>
+				<version>${spring-data-redis.version}</version>
+			</dependency>
+		</dependencies>
+	</dependencyManagement>
+
+	<!-- 依赖管理结束 -->
+
+</project>

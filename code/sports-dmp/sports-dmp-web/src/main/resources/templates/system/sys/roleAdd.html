@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>添加</title>
+	<meta name="renderer" content="webkit">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+	<meta name="apple-mobile-web-app-status-bar-style" content="black">
+	<meta name="apple-mobile-web-app-capable" content="yes">
+	<meta name="format-detection" content="telephone=no">
+	<link rel="stylesheet" href="/assets/system/common/layui/css/layui.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/public.css" media="all" />
+	<link rel="stylesheet" href="/assets/system/common/css/font-awesome.min.css" media="all" />
+	<style>
+	.icon-view .fa{    font-size: 34px;}
+	.margin0{
+		margin-left:0!important;
+	}
+	</style>
+</head>
+<body class="childrenBody" style="overflow-x:hidden;">
+<input type='hidden' id='addIframIndex'>
+<form class="layui-form layui-row">
+	<input type="hidden" class="layui-input roleId" name='roleId' >
+	<div class="layui-col-xs12">
+		<div class="layui-row">
+			<div class="layui-col-md11 layui-col-xs11">
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">角色名</label>
+					<div class="layui-col-xs5">
+						<input type="text" class="layui-input roleName" lay-verify="required" name="roleName" placeholder="角色名称">
+					</div>
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label">状态</label>
+					<div class="layui-col-xs5">
+						<input type='hidden' class='layui-input status' name='status' value='normal '>
+						<input type="checkbox"  class='statusBox' lay-filter="roleStatus" lay-skin="switch" lay-text="正常|否定" checked>
+					</div>
+				</div>
+				<div class="layui-form-item magt3">
+					<label class="layui-form-label"></label>
+					<div class="layui-col-xs5 margin0">
+						<button class="layui-btn  addBtn" lay-submit="" lay-filter="addBtn">立即添加</button>
+						<button class="layui-btn  updateBtn" lay-submit="" lay-filter="updateBtn">确认编辑</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</form>
+	<script type="text/html" id="propertytBar">
+		<a class="layui-btn layui-btn-xs" lay-event="edit">选择</a>
+	</script>
+	<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+	<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/system/sys/roleAdd.js"></script>
+</body>
+</html>

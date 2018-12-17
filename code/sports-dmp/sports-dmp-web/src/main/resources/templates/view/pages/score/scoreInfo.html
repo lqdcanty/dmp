@@ -1,0 +1,163 @@
+<!DOCTYPE html>
+<html>
+
+	<head>
+		<meta charset="utf-8">
+		<title>添加系统</title>
+		<meta name="renderer" content="webkit">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+		<meta name="apple-mobile-web-app-status-bar-style" content="black">
+		<meta name="apple-mobile-web-app-capable" content="yes">
+		<meta name="format-detection" content="telephone=no">
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/font-awesome.min.css" media="all" />
+		<style>
+			[v-cloak] {
+				display: none;
+			}
+			
+			.icon-view .fa {
+				font-size: 34px;
+			}
+		.valueWidth{
+				width:190px!important;
+			}
+			
+		</style>
+	</head>
+
+	<body>
+
+		<div id='app'>
+			<input type='hidden' id='addIframIndex'>
+			<input type='hidden' id='callLogId'>
+			<div class="tableBox">
+				<table class="tableWidth">
+					<tr>
+						<td class='infoItem'>唯一标识</td>
+						<td class="valueWidth">{{calllogInfo.idempotentId}}</td>
+					
+						<td class='infoItem'>项编号</td>
+						<td class="valueWidth">{{calllogInfo.eventCode}}</td>
+					</tr>
+					<tr class='infoItem'>
+						
+						<td class='infoItem'>名次</td>
+						<td class="valueWidth">{{calllogInfo.ranking}}</td>
+						<td class='infoItem'>晋级情况</td>
+						<td class="valueWidth">{{calllogInfo.promotion}}</td>
+					</tr>
+					<tr class='infoItem'>
+						<td class='infoItem'>运动员编号</td>
+						<td class="valueWidth">{{calllogInfo.playerCode}}</td>
+					
+						<td class='infoItem'>运动员名称</td>
+						<td class="valueWidth">{{calllogInfo.playerName}}</td>
+					</tr>
+					<tr class='infoItem'>
+						<td class='infoItem'>运动员手机号</td>
+						<td class="valueWidth">{{calllogInfo.playerPhone}}</td>
+					
+					    <td class='infoItem'>成绩名次编号</td>
+						<td class="valueWidth">{{calllogInfo.scoreRankCode}}</td>
+					
+					</tr>
+					<tr>
+						
+					</tr>
+					<tr class='infoItem'>
+						
+					
+					    <td class='infoItem'>赛事名称</td>
+						<td class="valueWidth">{{calllogInfo.matchName}}</td>
+					</tr>
+					<tr class='infoItem'>
+					    <td class='infoItem'>组编号</td>
+						<td class="valueWidth">{{calllogInfo.matchGroupCode}}</td>
+						
+						<td class='infoItem'>组名称</td>
+						<td class="valueWidth">{{calllogInfo.matchGroupName}}</td>
+					</tr>
+					
+				   <tr>
+						<td class='infoItem'>赛场编号</td>
+						<td class="valueWidth">{{calllogInfo.fieldCode}}</td>
+						
+				        <td class='infoItem'>赛场名称</td>
+						<td class="valueWidth">{{calllogInfo.fieldName}}</td>
+					</tr>
+					
+					<tr class='infoItem'>
+						<td class='infoItem'>参赛编号</td>
+						<td class="valueWidth">{{calllogInfo.partCode}}</td>
+					
+						<td class='infoItem'>参赛时间</td>
+						<td class="valueWidth">{{calllogInfo.partTime}}</td>
+					</tr>
+					
+					
+					<tr class='infoItem'>
+					    <td class='infoItem'>项名称</td>
+						<td class="valueWidth">{{calllogInfo.eventName}}</td>
+					
+						<td class='infoItem'>科目名(细类)</td>
+						<td class="valueWidth">{{calllogInfo.scoreName}}</td>
+						
+						<td class='infoItem'>成绩描述</td>
+						<td class="valueWidth">{{calllogInfo.scoreDesc}}</td>
+					</tr>
+					<tr class='infoItem'>
+						<td class='infoItem'>参赛成绩</td>
+						<td class="valueWidth">{{calllogInfo.score}}</td>	
+					
+						<td class='infoItem'>成绩单位</td>
+						<td class="valueWidth">{{calllogInfo.scoreUnit}}</td>
+					</tr>
+					<tr class='infoItem'>
+						<td class='infoItem'>承办方编号</td>
+						<td class="valueWidth">{{calllogInfo.unitCode}}</td>
+						
+						<td class='infoItem'>创建时间</td>
+						<td class="valueWidth">{{calllogInfo.gmtCreateStr}}</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		<a><span id='btn' onclick='btnClick()'></span></a>
+		<script type="text/javascript">
+			var realPath = "${ctx}"
+		</script>
+		<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+		<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+		<script type="text/javascript" src="/assets/system/common/layui/layui.js"></script>
+		<script type="text/javascript">
+			function btnClick() {
+				layui.use(['layer', 'form'], function() {
+					var layer = layui.layer,
+			         form = layui.form;
+					//vue
+					var vm = new Vue({
+						el: '#app',
+						data: {
+							calllogInfo:undefined,
+							status: true
+						},
+						created: function() {
+							var that = this;
+							var unitModel = $("#addIframIndex").val();
+							if(unitModel != undefined && unitModel != null &&
+									unitModel != '') {
+								//编辑初始化数据
+								that.status = false;
+								that.calllogInfo = JSON.parse(unitModel);
+							}
+						}
+					})
+				});
+			}
+		</script>
+	</body>
+
+</html>

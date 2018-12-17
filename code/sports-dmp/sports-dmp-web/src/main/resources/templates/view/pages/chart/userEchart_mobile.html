@@ -1,0 +1,807 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>图表分析</title>
+		    <meta name="viewport" content="width=device-width, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+	    <script>
+	    (function (doc, win) {  
+	          var docEl = doc.documentElement,  
+	            resizeEvt = 'orientationchange' in window ? 'orientationchange' : 'resize',  
+	            recalc = function () {  
+	              var clientWidth = docEl.clientWidth;  
+	              if (!clientWidth) return;  
+	              docEl.style.fontSize = 37.5 * (clientWidth / 375) + 'px';  
+	            };  
+	  
+	          if (!doc.addEventListener) return;  
+	          win.addEventListener(resizeEvt, recalc, false);  
+	          doc.addEventListener('DOMContentLoaded', recalc, false);  
+	        })(document, window);
+	    </script>
+	    <meta  name="apple-mobile-web-app-capable" content="yes"/>
+	    <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+	    <meta content="telephone=no" name="format-detection" />
+	    <meta name="format-detection" content="email=no" />
+	    <meta name="full-screen" content="true"/>
+	    <meta name="screen-orientation" content="portrait"/>
+	    <meta name="x5-fullscreen" content="true"/>
+	    <meta name="360-fullscreen" content="true"/>
+	    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	    <meta http-equiv="expires" content="0" />
+	    <meta http-equiv="pragma" content="no-cache" />
+	    <meta http-equiv="Cache-Control" content="no-cache, must-revalidate" />
+	    <meta name="apple-touch-fullscreen" content="yes" />
+		
+		<link rel="stylesheet" href="/assets/common/layui/css/layui.css" media="all" /> 
+		<link rel="stylesheet" href="/assets/common/css/public.css" media="all" />
+		<link rel="stylesheet" href="/assets/common/css/pagination.css" media="all" />
+		<link href="/assets/common/css/userEchart_phone.css" rel="stylesheet" type="text/css">
+		<style type="text/css">
+
+        
+    [v-cloak] {
+	  display: none;
+	} 
+	.flex{display:-webkit-box;display:-webkit-flex;display:-ms-flexbox;display:flex;}
+.flex-v{-webkit-box-orient:vertical;-webkit-flex-direction:column;-ms-flex-direction:column;flex-direction:column;}
+.flex-1{-webkit-box-flex:1;-webkit-flex:1;-ms-flex:1;flex:1;}
+	
+	.childrenBody .iconHeader{
+	
+	width:40px;
+	height:40px;
+	background:rgba(0,0,0,0.5);
+	position:fixed;
+	top:45%;
+	left:0.5rem;
+	text-align:center;
+	z-index:10000;
+}
+.childrenBody .iconHeader i{
+	font-size:20px;
+	color:#fff;
+	line-height:40px;
+}
+.childrenBody .m-header{
+	background: #1C9F95;
+	height:1rem;
+	position:fixed;
+	left:0;
+	top:0;
+	width:100%;
+	line-height:1rem;
+}
+.childrenBody .m-header .title{
+	line-height:1rem;
+	text-align:center;
+	color:#fff;
+	font-size:14px;
+}
+.childrenBody .m-header .title.on{
+	border-bottom:4px solid #fff;
+}
+</style>
+	</head>
+	<body class="childrenBody" >
+		<div id="app" v-cloak>
+			
+			<div class='userchart-pancel'>
+				<h3>整体趋势</h3>
+				<div class="Overall_trend">
+					 <table>
+					 	<tr class="td_left">
+					 		<td><p class="hf_18">{{userData.totalRegister}}</p><p>总用户</p></td>
+					 		<td><p class="hf">{{userData.sevenAvgActiveStr}}</p><p>近7日平均活跃用户</p></td>
+					 		<td><p class="hf">{{userData.thirtyActiveRegitsers}}</p><p>近30日总活跃度用户数</p></td>
+					 	</tr>
+					 	<tr>
+					 		<td><p class="hf">{{userData.sevenAvgNewRegister}}</p><p>近7日平均新增用户</p></td>
+					 		<td><p class="hf">{{userData.sevenRetention}}</p><p>近7日平均次日留存率</p></td>
+					 		<td><p class="hf">{{userData.sevenActiveRegitsers}}</p><p>近7日总活跃用户数</p></td>
+					 	</tr>
+					 </table>
+				</div>
+			</div>
+			<div class='userchart-pancel'>
+			<h3>平台访问量</h3>
+			<div class="custom_lie">
+			     <div class="custom_p">
+					<div class="echart-box">						
+						<div style='text-align: center;'>官网访问量</div>
+						<div style='text-align: center;padding-top: 10px;color: #999;text-align: right;padding-right: 80px;' class='analysis-date'>{{analysisDate}}</div>
+						<div id="analysis"></div>
+					</div>
+					<div class="Overall_trend">
+						<P class="analysisNum-date"><span>{{today}}</span> 丨 昨天</P>
+					 <table>
+					 	<tr class="td_left">
+					 		<td><p class="hf_18">{{analysisIos[0]}}</p><p>单日IOS活跃用户数</p></td>
+					 		<td><p class="hf">{{analysisIos[1]}}</p><p>单日IOS新注册用户数</p></td>
+					 	</tr>
+					 	<tr>
+					 		<td><p class="hf">{{analysisAndroid[0]}}</p><p>单日Android活跃用户数</p></td>
+					 		<td><p class="hf">{{analysisAndroid[1]}}</p><p>单日Android新注册用户数</p></td>
+
+					 	</tr>
+					 </table>
+				</div>
+				</div>
+			</div>
+			</div>
+			<div class='userchart-pancel'>
+			<h3>增长趋势</h3>
+			<div class='unitTime-wrap'>
+				<div  class="flex-input data_input" id="unitTime"></div>
+				<!-- <input type="text" class="flex-input data_input" id="unitTime" placeholder="开始 到 结束" readonly unselectable="on" onfocus="this.blur()"> -->
+				<i class="layui-icon iconTrans">&#xe61a;</i>
+			</div>
+			<div class="custom_lie">
+			     <div class="custom_p">
+					<div class="echart-box">
+						
+						<div id="growth"></div>
+					</div>
+						
+					<div class="table-box">
+						<div class="layui-item font_c table-bottom">
+							<div class="layui-inline ">
+							    <a id="detailed"><span>数据明细</span><i class="layui-icon layui-icon-up"></i></a>
+						     </div>
+						     <div class="layui-inline fr">
+							      <a @click="exportTable('growth')"><span>导出报表</span><i class="layui-icon">&#xe621;</i></a>
+						      </div>
+						</div>
+						<div class="addTable">
+							<table cellpadding="0" cellspacing="0">
+								<tr>
+									<th>日期</th><th>新增用户</th><th>累计用户</th>
+								</tr>
+								
+								<tr v-for="(tr, index) in growthData.table.list" v-if="growthData.table.list.length" :key="index">
+									<td>{{tr.dateStr}}</td>
+									<td>{{tr.newRegister}}</td>
+									<td>{{tr.totalRregister}}</td>
+								</tr>
+							</table>
+							
+							<div class="pageBox" v-if="growthData.table.totalPage > 1">
+								<div id="pagination" class="m-style"></div>
+			                 </div>
+			              </div>
+					</div>
+				</div>
+			</div>
+			</div>
+			<div class='userchart-pancel'>
+			<h3>项目方用户分析</h3>
+			<div class='dataTime-wrap'>
+				<div  class="flex-input data_input" id="dataTime"></div>
+				<!-- <input type="text" class="flex-input data_input" id="dataTime" style="float: none;"  placeholder="开始 到 结束" readonly unselectable="on" onfocus="this.blur()"> -->
+				<i class="layui-icon iconTrans">&#xe61a;</i>
+			</div>
+			
+			<div class="custom_lie" style='margin-bottom:0'>
+				<div class="custom_p">
+					<div class="echart-box">
+						
+					    <div class="layui-form">						
+							<div class="matchCode">
+								<div>
+									<input type="text" placeholder="点击输入/选择项目方" readonly id="unitcodeOne"  @click="optionSelectFun" v-model=getAllStringName>	
+									<a class='searchBtn'>搜索</a>
+								</div>
+								
+								
+								
+								<div class="layui-form-item selectBox" id="selectBox0" v-show="optionSelectShow">
+									<div class="layui-form-item labelinput select_choose">
+										<input type="checkbox" name="" lay-skin="primary" lay-filter="sourceCheck"><span>全选</span>
+										<button class="btn" @click="okOne">确定</button>
+									</div>
+									<ul id="labelId" class="labelUl" >
+										<li v-for="(unit, index) in sourceSelectLists" @click="unitSelectFun(unit)"><b  :class="{active: unit.top}"><input type="hidden" :value="unit.unitName"  /></b> <span>{{unit.unitName}}</span></li>
+									</ul>
+								</div>
+							</div>    
+						    <div style="clear:both"></div>
+						</div>
+						
+					<div id="source"></div>
+					
+					
+					<div class="table-box">
+						<div class="layui-item font_c table-bottom">
+							<div class="layui-inline ">
+							    <a id="detailed2"><span>数据明细</span><i class="layui-icon layui-icon-up"></i></a>
+						     </div>
+						     <div class="layui-inline fr">
+							      <a @click="exportTable('source')"><span>导出报表</span><i class="layui-icon">&#xe621;</i></a>
+						      </div>
+						</div>
+						
+						<table class="sourceTable">
+							<tr>
+								<th>项目方名称</th><th>新增用户</th><th>用户占比</th>
+							</tr>
+							
+							<tr  v-for="(tr, index) in sourceData.table" v-if="sourceData.table.length" :key="index">
+								<td>{{tr.channelName}}</td>
+								<td>{{tr.newRegister}}</td>
+								<td>{{tr.proportion}}</td>
+							</tr>
+						</table>
+						<div class="pageBox" v-if="sourceData.totalPage > 1">
+							<div id="pagination1" class="m-style"></div>
+		                </div>
+					</div>
+					
+				</div>
+			</div>
+		</div>	
+		<div class="iconHeader" @click="muneClick">
+				<i class="layui-icon" v-show="!mobileShow">&#xe602;</i>
+				<i class="layui-icon"  v-show="mobileShow">&#xe603;</i>
+			</div>
+			<div class="m-header flex" v-show="mobileShow">
+				<a v-for="(unit,index) in urlData" class="title flex-1 " :class="{on:clickFunParam==unit.menuUrl}" @click="clickFun(unit)" :href="unit.menuUrl">{{unit.menuName}}</a>
+			</div>
+			</div>
+	</body>
+	
+
+	
+	<script src="http://libs.baidu.com/jquery/2.0.0/jquery.min.js"></script>
+	<script type="text/javascript" src="/assets/common/layui/layui.js"></script>
+	<script type="text/javascript" src="/assets/common/echarts.min.js"></script>
+	<script type="text/javascript" src="/assets/common/jquery.pagination.js"></script>
+	<script type="text/javascript" src="/assets/common/vue/vue.js"></script>
+
+	<script>
+	var layerM;
+	function getDay(day){
+	    var today = new Date();
+	    var targetday_milliseconds=today.getTime() + 1000*60*60*24*day;
+	    today.setTime(targetday_milliseconds); //注意，这行是关键代码
+	    var tYear = today.getFullYear();
+	    var tMonth = today.getMonth();
+	    var tDate = today.getDate();
+	    tMonth = doHandleMonth(tMonth + 1);
+	    tDate = doHandleMonth(tDate);
+	    return tYear+"-"+tMonth+"-"+tDate;
+	}
+	function doHandleMonth(month){
+	    var m = month;
+	    if(month.toString().length == 1){
+	     m = "0" + month;
+	    }
+	    return m;
+	}
+	
+	$(function() {
+		vueInit();
+		$('#dataTime').html(getDay(-7)+' - '+getDay(0))
+		$('#unitTime').html(getDay(-7)+' - '+getDay(0))
+		
+		$("#detailed").click(function(){
+			if($("#detailed").find('i').hasClass('layui-icon-up')){
+				$("#detailed").find('i').removeClass('layui-icon-up')
+				$("#detailed").find('i').addClass('layui-icon-down')
+			}else{
+				$("#detailed").find('i').removeClass('layui-icon-down')
+				$("#detailed").find('i').addClass('layui-icon-up')
+			}
+			 $(".addTable").fadeToggle();	
+		});
+		
+		$("#detailed2").click(function(){
+			if($("#detailed2").find('i').hasClass('layui-icon-up')){
+				$("#detailed2").find('i').removeClass('layui-icon-up')
+				$("#detailed2").find('i').addClass('layui-icon-down')
+			}else{
+				$("#detailed2").find('i').removeClass('layui-icon-down')
+				$("#detailed2").find('i').addClass('layui-icon-up')
+			}
+			 $(".sourceTable").fadeToggle();			
+		});
+		
+		
+	});
+
+	var growthEChartObj = null,  sourceEChartObj = null; //新增趋势折线图 对象   //渠道折线图 对象
+	var analysisChartObj = null;
+	function vueInit() {
+		vm = new Vue({
+			el: '#app',
+			data: function() {
+				return {
+					growthData: {
+						echart: [],   //新增趋势图表数据
+						table: {}   ////新增趋势table数据
+					},
+					
+					sourceData: {
+						echart: [],  //渠道图表数据
+						table: []  //渠道列表数据
+					},
+					today:getDay(-1),
+					userData:[],
+					analysisDate:'',
+					sourceInputArr: [],
+					//getAllStringName: '',   //渠道下拉框   选中的值 array
+					optionSelectShow:false,
+					sourceSelectLists: [],    //渠道下拉框数据
+					unitSelectArr:[],
+					analysisAndroid:[],
+					analysisIos:[],
+					clickFunParam:'/pages/open/chart/userEchart',urlData:[],mobileShow:true,
+					growthParams: {startTime: getDay(-7), endTime: getDay(0), page: 1},    //增长趋势列表  请求参数
+					sourceParams: {startTime: getDay(-7), endTime: getDay(0), channelCodes: '',currentPage:1}      //渠道分析 请求数据的参数 
+				}
+			},
+			computed: {
+				getAllStringName: function() {
+					return this.sourceInputArr.map(function(k) {return k.name}).join(',');
+				}
+			},
+			methods: {
+				getGrowthData: getGrowthData,   //获取增长趋势 table数据
+				getGrowthechart:getGrowthechart,
+				allEchartInit: allEchartInit,   //所有echart对象初始化
+				growthEChartInit: growthEChartInit,  //增长趋势  图表渲染
+				listData:listData,
+				unitSelectFun: unitSelectFun,
+				getSourceData: getSourceData,  //获取渠道信息 数据
+				sourceEChartInit: sourceEChartInit,   //渠道图表  赋值渲染 
+				exportTable: exportTable,
+				
+				goType:goType,
+				clickFun:clickFun,
+				muneClick:muneClick,
+				okOne: function(){
+					this.optionSelectShow = false;
+					this.sourceParams.channelCodes = this.sourceInputArr.map(function(k) {return k.id}).join(',');
+					this.sourceParams.currentPage=1;
+					this.getSourceData();
+				},
+				getSourceSelectLists: getSourceSelectLists,  //获取所有渠道
+				optionSelectFun: function(){
+					var that = this;
+					that.optionSelectShow= !that.optionSelectShow;
+				
+					$('body').bind("touchmove",function(e){
+				               e.preventDefault();
+			     	});
+				},
+				getAnalysis:function(){
+					var that=this;
+					getResultMethods('${ctx}/dmp/api/register/analysis/access/analysis',{}, function(d){
+						 var list=d.access;
+						 that.analysisDate=list[0].dateStr+'-'+list[list.length-1].dateStr+'|近七日';
+						 d.termina.forEach(function(p1,p2){
+							 if(p1.terminaType=='android'){
+								 that.analysisAndroid=[p1.activeCount,p1.regCount]
+							 }
+							 if(p1.terminaType=='ios'){
+								 that.analysisIos=[p1.activeCount,p1.regCount]
+							 }
+						 })
+						 
+						 var xAxisData = list.map(function(v) {return v.dateStr});
+							
+							var option = {
+								color:"#00a1ff",
+								tooltip: {
+							        trigger: 'axis'
+							    },
+							    grid:{
+							    	top:'35'
+							    },
+								xAxis: {
+							        type: 'category',
+							        data: list.map(function(v) {return v.dateStr}) //['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+							    },
+							    yAxis: {
+							        type: 'value'
+							    },
+							    series: [{
+							        data: list.map(function(v) {return v.accessCount}),  //[820, 932, 901, 934, 1290, 1330, 1320],
+							        type: 'line'
+							    }]
+							};
+							analysisChartObj.setOption(option, true);
+					}.bind(this));
+				}
+			},
+			created() {
+				this.listData();
+				this.getSourceSelectLists();
+			},
+			//页面渲染完毕钩子函数
+			//调用函数通过 this调用
+			mounted() {
+				this.allEchartInit();    
+				this.getGrowthData();
+				this.getGrowthechart();
+				this.goType();
+				this.getAnalysis();
+				//this.getSourceData();
+				
+				/* this.detailed(); */
+				
+				layui.use(['table','form','layer','laypage','laydate','jquery','element','util'],function(){
+					var table = layui.table,
+						laypage = layui.laypage,
+						laydate=layui.laydate,
+						form = layui.form,
+						layer =layui.layer,
+					    element = layui.element,
+					    util = layui.util,
+					    $=layui.jquery;
+					layerM=layer;
+					parent.$('.layui-body').css({'background':'#f1f1f1','padding':'0'})
+			
+					laydate.render({
+					    elem: '#unitTime',
+					    range: true,
+					    min:'2018-01-01',
+					    max:getDay(0),
+					    done: function(value, date){
+					    	if(value==''){
+					    		$('#unitTime').html(getDay(-7)+' - '+ getDay(0));
+					    		vm.growthParams.startTime = getDay(-7);
+						    	vm.growthParams.endTime = getDay(0);
+					    	}else{
+						    	vm.growthParams.startTime = value.split(" - ")[0];
+						    	vm.growthParams.endTime = value.split(" - ")[1];
+					    	}
+					    	vm.getGrowthData();
+					    	vm.getGrowthechart();
+					      }
+					  });
+					
+					laydate.render({
+					    elem: '#dataTime',
+					    range: true,
+					    min:'2018-01-01',
+					    max:getDay(0),
+					    done: function(value, date){
+					    	if(value==''){
+					    		$('#dataTime').html(getDay(-7)+' - '+ getDay(0));
+					    		vm.growthParams.startTime = getDay(-7);
+						    	vm.growthParams.endTime = getDay(0);
+					    	}else{
+					    		vm.sourceParams.startTime = value.split(" - ")[0];
+						    	vm.sourceParams.endTime = value.split(" - ")[1];
+					    	}
+					    
+					    	vm.getSourceData();
+					      }
+					  });
+					
+					//渠道下拉框 全选
+					form.on('checkbox(sourceCheck)', function(data) {
+						if(data.elem.checked) {
+							vm.sourceSelectLists.forEach(function(v) {v.top = true});
+							vm.sourceInputArr = vm.sourceSelectLists.map(function(v) {return {id: v.unitCode, name: v.unitName}});
+						}else {
+							vm.sourceSelectLists.forEach(function(v) {v.top = false});
+							vm.sourceInputArr.splice(0, vm.sourceInputArr.length);
+						};
+					})
+				});							
+			},
+		});
+	};
+
+	//时间格式化
+	//function dateFormat(time) {
+//		var newDate = new Date(time);
+//		var year = newDate.getFullYear();
+//		var month = newDate.getMonth() + 1;
+//		var day = newDate.getDate();
+//		return [year, month, day].join('-');
+	//};
+	
+
+	//渠道下拉框 ul li 点击事件
+	function unitSelectFun(unit) {
+		unit.top = !unit.top;
+		
+		if(unit.top) vm.sourceInputArr.push({id: unit.unitCode, name: unit.unitName});
+		else {
+			vm.sourceInputArr.forEach(function(v, index) {
+				if(v.id == unit.unitCode) vm.sourceInputArr.splice(index, 1);
+			});
+		};
+		
+		this.sourceParams.channelCodes = this.sourceInputArr.map(function(k) {return k.id}).join(',');
+	};
+	
+	
+	//获取渠道select 列表数据
+	function getSourceSelectLists() {
+		getResultMethods('${ctx}/dmp/api/register/analysis/channel', {}, function(d){		
+			vm.sourceSelectLists = d;
+			vm.sourceInputArr.splice(0, vm.sourceInputArr.length);
+			d.forEach(function(v) {
+				if(v.top) vm.sourceInputArr.push({id: v.unitCode, name: v.unitName});
+			});
+			
+			this.sourceParams.channelCodes = this.sourceInputArr.map(function(k) {return k.id}).join(',');
+			
+			
+			this.getSourceData();
+		}.bind(this)); 
+	};
+	
+	
+	//所有echart对象初始化
+	function allEchartInit() {
+		growthEChartObj = echarts.init(document.querySelector('#growth'));
+		sourceEChartObj = echarts.init(document.querySelector('#source'));
+		analysisChartObj=echarts.init(document.querySelector('#analysis'));
+	};
+
+
+	function getResultMethods(url, prams, fn) {
+	    $.ajax({
+	        url:  url,
+	        data: prams,
+	        type: 'get',
+	        dataType: 'json',
+	        success: function(d) {
+	        	if(d.code== 0) {
+	        		if('function' === typeof fn) fn(d.data);
+	        	}else {
+
+	        	}
+	        }
+	    });
+	};
+	
+	
+	// 获取用户数据展示 
+	
+	function listData() {
+		getResultMethods('${ctx}/dmp/api/register/analysis/statistics', {}, function(d){		
+			this.userData = d;
+		}.bind(this))
+	}
+	
+	//获取增长趋势 
+	function getGrowthData(page) {
+		
+		//获取增长趋势 table数据
+     	var params = {pageSize:5, startTime: this.growthParams.startTime, endTime: this.growthParams.endTime};
+	
+	 	if(page) {
+	 		params.currentPage = page;
+	 		this.growthParams.page = page;
+	 	};
+        
+		getResultMethods('${ctx}/dmp/api/register/analysis/page/increase', params, function(d){
+			 vm.growthData.table = d;
+			 			 			
+ 			   vm.$nextTick(function(){
+ 		  		     $('#pagination').pagination({
+ 		  	    	    jump: true,
+ 		  	    	    totalData: d.allRow,
+ 		  	    	    current: d.currentPage,
+ 		  	    	    pageCount: d.totalPage,
+ 		  	    	  /*   showData: 5, */
+ 		
+ 		  	    	    callback: function (api) {
+ 		  	    	    	vm.getGrowthData(api.getCurrent());
+ 		  	    	    }
+ 		  		     });
+	  		   })
+		}.bind(this));
+	};
+	
+	
+	function getGrowthechart(){
+		//获取增长图标数据
+		var params = {startTime: this.growthParams.startTime, endTime: this.growthParams.endTime};
+		
+		getResultMethods('${ctx}/dmp/api/register/analysis/increase', params, function(d){
+			 this.growthData.echart  = d.list;
+			 this.growthEChartInit();
+		}.bind(this));
+	};
+	
+
+	//增长趋势  图表渲染
+	function growthEChartInit() {
+		var xAxisData = this.growthData.echart.map(function(v) {return v.dateStr});
+		
+		var option = {
+			tooltip: {
+		        trigger: 'axis'
+		    },
+			xAxis: {
+		        type: 'category',
+		        data: this.growthData.echart.map(function(v) {return v.dateStr})   //['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: [{
+		        data: this.growthData.echart.map(function(v) {return v.newRegister}),  //[820, 932, 901, 934, 1290, 1330, 1320],
+		        type: 'line'
+		    }]
+		};
+		
+		if(xAxisData.length > 6) option.dataZoom = [{startValue: ''}, {type: 'inside'}];
+		
+		growthEChartObj.setOption(option, true);
+	};
+
+
+	
+	//获取渠道信息 数据
+	function getSourceData(page) {
+		if(page) {
+			this.sourceParams.currentPage=page;
+	 	};
+		
+		// 渠道表单数据 
+		getResultMethods('${ctx}/dmp/api/register/analysis/channel/register',  this.sourceParams, function(d){	
+			vm.sourceData.table  = d.list;
+			vm.sourceData.totalPage  = d.totalPage;
+			  vm.$nextTick(function(){
+		  		     $('#pagination1').pagination({
+		  	    	    jump: true,
+		  	    	    totalData: d.allRow,
+		  	    	    current: d.currentPage,
+		  	    	    pageCount: d.totalPage,
+		  	    	  /*   showData: 5, */
+		  	    	    coping: true,
+		  	    	    homePage: '首页',
+		  	    	    endPage: '末页',
+		  	    	    prevContent: '上页',
+		  	    	    nextContent: '下页',
+		  	    	    callback: function (api) {
+		  	    	    	vm.getSourceData(api.getCurrent());
+		  	    	    }
+		  		     });
+	  		   })
+		});
+		
+		// 渠道图标数据 
+		getResultMethods('${ctx}/dmp/api/register/analysis/channel/register/increase',  this.sourceParams, function(d){	
+			 this.sourceData.echart = d.list;
+			 setTimeout(function() {vm.sourceEChartInit()}, 200);
+		}.bind(this));
+	};
+
+	//渠道图表  赋值渲染
+	function sourceEChartInit() {
+		var sourceData = this.sourceData;
+
+		var legendData=[] ;
+		
+		if(sourceData.echart.length>0){
+			legendData=sourceData.echart[0].trendModels;
+		}
+		
+		var series = legendData.map(function(v) {
+	    	return {
+	    		name: v.channelName,
+	    		type:'line',
+	    		data: sourceData.echart.map(function(k) {
+	    			return getSourceSeries(k.trendModels, v.channelCode);
+	    		})
+	    	}
+	    });
+		
+		var xAxisData = sourceData.echart.map(function(v) {return v.dateStr});
+		
+		var option = {
+		    tooltip: {
+		    	trigger: 'axis',
+    	        position: ['50%', '50%']
+		    },
+		    grid: {
+		        top:135,
+		        right:'0%',
+		        bottom:'80'
+		    },
+		    legend: {
+		    	 align: 'left',
+		         right:'0',
+		         top:'0%',
+		         width:'80%',
+		         itemWidth:18,
+		         itemHeight:10,
+		         itemGap:5,
+		        data: legendData.map(function(v) {return v.channelName})
+		    },
+		    xAxis: {
+		        type: 'category',
+		        boundaryGap: false,
+		        data: xAxisData
+		    },
+		    yAxis: {
+		        type: 'value'
+		    },
+		    series: series
+		};
+		
+		if(xAxisData.length > 5) option.dataZoom = [{startValue: ''}, {type: 'inside'}];
+		
+		sourceEChartObj.setOption(option, true);
+	};
+
+	function getSourceSeries(trendModels, channelCode) {
+		var text = '';
+		trendModels.forEach(function(d) {
+			if(d.channelCode == channelCode) text = d.newRegister;
+		});
+		return text;
+	};
+	
+	//导出报表
+	function exportTable(type) {
+		var url = '', params = {};
+		var growthParams = this.growthParams;
+		var sourceParams = this.sourceParams;
+		
+		if(type == 'growth') {
+			url = 'increase';
+			params = 'startTime='+growthParams.startTime+'&endTime='+growthParams.endTime+'&currentPage='+growthParams.page;
+		}else{
+			url = 'channel/register';
+			params = 'startTime='+sourceParams.startTime+'&endTime='+sourceParams.endTime+'&channelCodes='+sourceParams.channelCodes;
+		}
+		var newUrl = '${ctx}/dmp/api/register/analysis/export/' + url + '?' + params;
+		
+		window.location.href = newUrl;
+	};
+	function clickFun(item){
+		 vm.clickFunParam=item.menuUrl;
+	}
+	function muneClick(){
+		
+		vm.mobileShow=!vm.mobileShow;
+	}
+	function getResultMethodsOther(url, prams, sufn, erfn) {
+		//var index = layer.load(2, {shade: 0.01});
+	    $.ajax({
+	        url:  "${ctx}"+url,
+	        data: prams,
+	        type: 'get',
+	        dataType: 'json',
+	        cache:false,
+	        success: function(d) {
+	        	//layer.close(index);
+	        	if(d.code==0) {
+	        		if('function' === typeof sufn) sufn(d);
+	        	}else {
+	        		if('function' === typeof erfn) erfn(d);
+	        	}
+	        },
+		    error:function(){
+				//layer.msg("请求出错");
+			}
+	    });
+	};
+	function goType() {
+        if ((navigator.userAgent.match(/(phone|pad|pod|iPhone|iPod|ios|iPad|Android|Mobile|BlackBerry|IEMobile|MQQBrowser|JUC|Fennec|wOSBrowser|BrowserNG|WebOS|Symbian|Windows Phone)/i))) {
+            /*window.location.href="你的手机版地址";*/
+           
+        	getResultMethodsOther("/api/sys/moblie/menu/all",{},function(data){
+        		vm.urlData=data.data;
+        		var object={menuName:'退出',menuUrl:'/main/logout'};
+        		vm.urlData.push(object);
+        	},function(data){
+        		layerM.msg("请求出错");
+        	}.bind(this))
+        }
+        else {
+            /*window.location.href="你的电脑版地址";    */
+           
+        }
+    }
+	</script>
+</html>
